@@ -48,26 +48,44 @@ const getFormSchema = (type: string) => {
         startDate: z.string().min(1, "Start date is required"),
         compensation: z.string().min(1, "Compensation is required"),
       });
-    // Add more document types as needed
     default:
       return z.object(baseSchema);
   }
 };
 
-export default function DocumentCreator() {
-  const { type } = useParams();
-  const { toast } = useToast();
-  const formSchema = getFormSchema(type || "");
+// Type inference helper
+type FormSchema<T extends string> = z.infer<ReturnType<typeof getFormSchema>>;
 
-  const form = useForm({
+export default function DocumentCreator() {
+  const { type } = useParams<{ type: string }>();
+  const { toast } = useToast();
+
+  // Create form schema based on document type
+  const formSchema = getFormSchema(type || "");
+  type FormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
+      ...(type === "nda" && {
+        partyOne: "",
+        partyTwo: "",
+        duration: "",
+        confidentialityLevel: "standard",
+      }),
+      ...(type === "employment" && {
+        employerName: "",
+        employeeName: "",
+        position: "",
+        startDate: "",
+        compensation: "",
+      }),
     },
   });
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: FormValues) => {
     try {
       // Here we'll add the API call to generate the document using AI
       toast({
@@ -246,10 +264,7 @@ export default function DocumentCreator() {
 
       <Card className="p-6">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="title"

@@ -3,14 +3,16 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@/components/layout/navigation";
+import {
+  AIDocuments,
+  DocumentManagement,
+  Settings,
+  Help,
+  DocumentCreator,
+  DocumentReview,
+  LegalConsultation
+} from "@/pages";
 import Dashboard from "@/pages/dashboard";
-import AIDocuments from "@/pages/ai-documents";
-import DocumentReview from "@/pages/document-review";
-import DocumentCreator from "@/pages/document-creator";
-import LegalConsultation from "@/pages/legal-consultation";
-import DocumentManagement from "@/pages/document-management";
-import Settings from "@/pages/settings";
-import Help from "@/pages/help";
 import NotFound from "@/pages/not-found";
 
 function Router() {

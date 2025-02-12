@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface UploadedFile {
   name: string;
@@ -33,7 +34,7 @@ export default function DocumentReview() {
     status: 'analyzing',
     progress: 45,
     keyClauses: [
-      { 
+      {
         title: "Termination Clause",
         content: "Either party may terminate with 30 days notice",
         type: "neutral"
@@ -65,6 +66,8 @@ export default function DocumentReview() {
       "Review and potentially increase liability cap"
     ]
   });
+  const [showPreview, setShowPreview] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -97,6 +100,11 @@ export default function DocumentReview() {
     }
   };
 
+  const handlePreviewClick = (file: UploadedFile) => {
+    setSelectedFile(file);
+    setShowPreview(true);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -127,7 +135,6 @@ export default function DocumentReview() {
 
       {files.length > 0 && (
         <div className="space-y-6">
-          {/* Uploaded Files */}
           {files.map((file, index) => (
             <Card key={index}>
               <CardContent className="py-4 flex items-center justify-between">
@@ -141,9 +148,31 @@ export default function DocumentReview() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button size="icon" variant="ghost">
-                    <Eye className="h-4 w-4" />
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handlePreviewClick(file)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl h-[80vh]">
+                      <DialogHeader>
+                        <DialogTitle>{file.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex-1 overflow-auto">
+                        <div className="bg-muted rounded-lg p-4 h-full">
+                          <iframe
+                            src={`/api/preview/${file.name}`}
+                            className="w-full h-full border-0"
+                            title="Document Preview"
+                          />
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                   <Button size="icon" variant="ghost" className="text-destructive">
                     <X className="h-4 w-4" />
                   </Button>
@@ -152,7 +181,6 @@ export default function DocumentReview() {
             </Card>
           ))}
 
-          {/* Analysis Progress */}
           {analysis.status === 'analyzing' && (
             <Card>
               <CardHeader>
@@ -167,9 +195,7 @@ export default function DocumentReview() {
             </Card>
           )}
 
-          {/* Analysis Results */}
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Key Clauses */}
             <Card>
               <CardHeader>
                 <CardTitle>Key Clauses & Terms</CardTitle>
@@ -191,9 +217,7 @@ export default function DocumentReview() {
               </CardContent>
             </Card>
 
-            {/* Strengths & Risks */}
             <div className="space-y-6">
-              {/* Strengths */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -213,7 +237,6 @@ export default function DocumentReview() {
                 </CardContent>
               </Card>
 
-              {/* Risks */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -235,7 +258,6 @@ export default function DocumentReview() {
             </div>
           </div>
 
-          {/* Recommendations */}
           <Card>
             <CardHeader>
               <CardTitle>AI Recommendations</CardTitle>
