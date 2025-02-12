@@ -15,18 +15,18 @@ export function DocumentCard({ document, onDelete, onPreview }: DocumentCardProp
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100/80 text-green-800 border-green-800/20';
       case 'expired':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100/80 text-red-800 border-red-800/20';
       case 'draft':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-primary/10 text-primary border-primary/20';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100/80 text-gray-800 border-gray-800/20';
     }
   };
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col hover:shadow-md transition-shadow">
       <CardHeader className="flex-row gap-4 items-center">
         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
           <FileText className="h-5 w-5 text-primary" />
@@ -64,6 +64,7 @@ export function DocumentCard({ document, onDelete, onPreview }: DocumentCardProp
             variant="outline"
             size="icon"
             onClick={() => onPreview(document.id)}
+            className="hover:bg-primary/5"
           >
             <Eye className="h-4 w-4" />
           </Button>
