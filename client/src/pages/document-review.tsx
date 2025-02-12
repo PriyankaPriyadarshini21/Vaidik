@@ -1,12 +1,23 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Upload, X, Eye } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface UploadedFile {
   name: string;
   size: string;
   uploadedAt: string;
+}
+
+interface AnalysisResult {
+  status: 'analyzing' | 'complete';
+  progress: number;
+  keyClauses: Array<{ title: string; content: string; type: 'neutral' | 'positive' | 'negative' }>;
+  strengths: string[];
+  risks: string[];
+  recommendations: string[];
 }
 
 export default function DocumentReview() {
@@ -18,6 +29,43 @@ export default function DocumentReview() {
     }
   ]);
 
+  const [analysis, setAnalysis] = useState<AnalysisResult>({
+    status: 'analyzing',
+    progress: 45,
+    keyClauses: [
+      { 
+        title: "Termination Clause",
+        content: "Either party may terminate with 30 days notice",
+        type: "neutral"
+      },
+      {
+        title: "Liability Protection",
+        content: "Strong indemnification provisions",
+        type: "positive"
+      },
+      {
+        title: "Payment Terms",
+        content: "Payment schedule is not clearly defined",
+        type: "negative"
+      }
+    ],
+    strengths: [
+      "Comprehensive intellectual property protection",
+      "Clear dispute resolution process",
+      "Well-defined confidentiality terms"
+    ],
+    risks: [
+      "Vague payment terms could lead to disputes",
+      "Missing force majeure clause",
+      "Limited liability cap may be insufficient"
+    ],
+    recommendations: [
+      "Add specific payment milestones and deadlines",
+      "Include force majeure provisions",
+      "Review and potentially increase liability cap"
+    ]
+  });
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     // Handle file drop logic here
@@ -25,6 +73,28 @@ export default function DocumentReview() {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+  };
+
+  const getStatusColor = (type: 'neutral' | 'positive' | 'negative') => {
+    switch (type) {
+      case 'positive':
+        return 'text-green-600';
+      case 'negative':
+        return 'text-red-600';
+      default:
+        return 'text-blue-600';
+    }
+  };
+
+  const getStatusIcon = (type: 'neutral' | 'positive' | 'negative') => {
+    switch (type) {
+      case 'positive':
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case 'negative':
+        return <AlertTriangle className="h-5 w-5 text-red-600" />;
+      default:
+        return <AlertCircle className="h-5 w-5 text-blue-600" />;
+    }
   };
 
   return (
@@ -56,7 +126,8 @@ export default function DocumentReview() {
       </Card>
 
       {files.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* Uploaded Files */}
           {files.map((file, index) => (
             <Card key={index}>
               <CardContent className="py-4 flex items-center justify-between">
@@ -80,7 +151,106 @@ export default function DocumentReview() {
               </CardContent>
             </Card>
           ))}
-          <Button className="w-full">Start AI Analysis</Button>
+
+          {/* Analysis Progress */}
+          {analysis.status === 'analyzing' && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Analysis in Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Progress value={analysis.progress} className="mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Analyzing document contents... {analysis.progress}%
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Analysis Results */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Key Clauses */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Key Clauses & Terms</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {analysis.keyClauses.map((clause, index) => (
+                  <Collapsible key={index}>
+                    <CollapsibleTrigger className="flex items-center gap-2 w-full text-left">
+                      {getStatusIcon(clause.type)}
+                      <span className={`font-medium ${getStatusColor(clause.type)}`}>
+                        {clause.title}
+                      </span>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pl-7 pt-2">
+                      <p className="text-sm text-muted-foreground">{clause.content}</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Strengths & Risks */}
+            <div className="space-y-6">
+              {/* Strengths */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    Pros & Strengths
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {analysis.strengths.map((strength, index) => (
+                      <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <span className="text-green-600">•</span>
+                        {strength}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Risks */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-red-600" />
+                    Cons & Risks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {analysis.risks.map((risk, index) => (
+                      <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <span className="text-red-600">•</span>
+                        {risk}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Recommendations */}
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Recommendations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {analysis.recommendations.map((recommendation, index) => (
+                  <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    {recommendation}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
