@@ -5,11 +5,52 @@ import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+// Demo documents for initial display
+const demoDocuments: Document[] = [
+  {
+    id: 1,
+    title: "Employment Agreement - Software Developer",
+    type: "employment",
+    status: "active",
+    createdAt: new Date("2025-02-10T10:00:00Z"),
+    updatedAt: new Date("2025-02-10T10:00:00Z"),
+    expiresAt: new Date("2026-02-10T10:00:00Z"),
+  },
+  {
+    id: 2,
+    title: "Non-Disclosure Agreement - Project Alpha",
+    type: "nda",
+    status: "active",
+    createdAt: new Date("2025-02-11T15:30:00Z"),
+    updatedAt: new Date("2025-02-11T15:30:00Z"),
+    expiresAt: new Date("2026-02-11T15:30:00Z"),
+  },
+  {
+    id: 3,
+    title: "Service Agreement - Cloud Services",
+    type: "service",
+    status: "draft",
+    createdAt: new Date("2025-02-12T09:15:00Z"),
+    updatedAt: new Date("2025-02-12T09:15:00Z"),
+    expiresAt: null,
+  },
+  {
+    id: 4,
+    title: "Lease Agreement - Office Space",
+    type: "lease",
+    status: "expired",
+    createdAt: new Date("2024-02-12T14:20:00Z"),
+    updatedAt: new Date("2024-02-12T14:20:00Z"),
+    expiresAt: new Date("2025-02-12T14:20:00Z"),
+  }
+];
+
 export function DocumentList() {
   const { toast } = useToast();
-  
+
   const { data: documents, isLoading } = useQuery<Document[]>({
     queryKey: ["/api/documents"],
+    initialData: demoDocuments,
   });
 
   const deleteMutation = useMutation({
@@ -24,6 +65,14 @@ export function DocumentList() {
       });
     },
   });
+
+  const handlePreview = (id: number) => {
+    // Handle document preview
+    toast({
+      title: "Preview",
+      description: "Document preview functionality will be implemented soon.",
+    });
+  };
 
   if (isLoading) {
     return (
@@ -53,6 +102,7 @@ export function DocumentList() {
           key={doc.id}
           document={doc}
           onDelete={(id) => deleteMutation.mutate(id)}
+          onPreview={handlePreview}
         />
       ))}
     </div>
