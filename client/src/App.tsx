@@ -6,6 +6,7 @@ import Navigation from "@/components/layout/navigation";
 import Dashboard from "@/pages/dashboard";
 import AIDocuments from "@/pages/ai-documents";
 import DocumentReview from "@/pages/document-review";
+import DocumentCreator from "@/pages/document-creator";
 import LegalConsultation from "@/pages/legal-consultation";
 import DocumentManagement from "@/pages/document-management";
 import Settings from "@/pages/settings";
@@ -21,6 +22,7 @@ function Router() {
           <Switch>
             <Route path="/" component={Dashboard} />
             <Route path="/ai-documents" component={AIDocuments} />
+            <Route path="/create/:type" component={DocumentCreator} />
             <Route path="/review" component={DocumentReview} />
             <Route path="/consultation" component={LegalConsultation} />
             <Route path="/documents" component={DocumentManagement} />
