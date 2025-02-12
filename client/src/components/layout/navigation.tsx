@@ -27,9 +27,9 @@ export default function Navigation() {
 
   const NavContent = () => (
     <>
-      <NavLink href="/">Home</NavLink>
-      <NavLink href="/dashboard">Dashboard</NavLink>
-      <NavLink href="/create">Create Document</NavLink>
+      <NavLink href="/">Dashboard</NavLink>
+      <NavLink href="/consultation">AI Consultation</NavLink>
+      <NavLink href="/review">Document Review</NavLink>
     </>
   );
 
