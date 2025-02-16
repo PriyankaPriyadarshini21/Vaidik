@@ -10,7 +10,8 @@ import {
   Help,
   DocumentCreator,
   DocumentReview,
-  LegalConsultation
+  LegalConsultation,
+  Pricing
 } from "@/pages";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
@@ -28,6 +29,7 @@ function Router() {
             <Route path="/review" component={DocumentReview} />
             <Route path="/consultation" component={LegalConsultation} />
             <Route path="/documents" component={DocumentManagement} />
+            <Route path="/pricing" component={Pricing} />
             <Route path="/settings" component={Settings} />
             <Route path="/help" component={Help} />
             <Route component={NotFound} />
