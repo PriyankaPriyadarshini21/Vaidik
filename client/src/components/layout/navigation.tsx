@@ -101,6 +101,7 @@ export default function Navigation() {
     <div className="space-y-2">
       <NavLink href="/" icon={Home}>Dashboard</NavLink>
       <NavLink href="/profile" icon={User}>Profile</NavLink>
+      <NavLink href="/documents/new" icon={FileText}>Create Document</NavLink>
       <NavLink href="/ai-documents" icon={FileText}>AI-Written Documents</NavLink>
       <NavLink href="/review" icon={Search}>Document Review</NavLink>
       <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>

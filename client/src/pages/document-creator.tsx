@@ -23,6 +23,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
+// Type to help with form fields based on document type
+type FormFields = {
+  title: string;
+  description?: string;
+  partyOne?: string;
+  partyTwo?: string;
+  duration?: string;
+  confidentialityLevel?: "standard" | "strict" | "very-strict";
+  employerName?: string;
+  employeeName?: string;
+  position?: string;
+  startDate?: string;
+  compensation?: string;
+};
+
 // Dynamic form schema based on document type
 const getFormSchema = (type: string) => {
   const baseSchema = {
@@ -53,18 +68,14 @@ const getFormSchema = (type: string) => {
   }
 };
 
-// Type inference helper
-type FormSchema<T extends string> = z.infer<ReturnType<typeof getFormSchema>>;
-
 export default function DocumentCreator() {
   const { type } = useParams<{ type: string }>();
   const { toast } = useToast();
 
   // Create form schema based on document type
   const formSchema = getFormSchema(type || "");
-  type FormValues = z.infer<typeof formSchema>;
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -85,7 +96,7 @@ export default function DocumentCreator() {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: FormFields) => {
     try {
       // Here we'll add the API call to generate the document using AI
       toast({
