@@ -8,11 +8,24 @@ import {
   Search,
   Users,
   FolderOpen,
-  Settings,
-  HelpCircle
+  HelpCircle,
+  BellRing,
+  Sun,
+  LogOut,
+  User,
+  Inbox,
+  Lock
 } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NavLink = ({ href, icon: Icon, children }: { 
   href: string; 
@@ -46,17 +59,68 @@ export default function Navigation() {
       <NavLink href="/review" icon={Search}>Document Review</NavLink>
       <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>
       <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
-      <NavLink href="/settings" icon={Settings}>Settings & Profile</NavLink>
       <NavLink href="/help" icon={HelpCircle}>Help & Support</NavLink>
+    </div>
+  );
+
+  const ProfileMenu = () => (
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="icon" className="relative">
+        <BellRing className="h-5 w-5" />
+      </Button>
+      <Button variant="ghost" size="icon">
+        <Sun className="h-5 w-5" />
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+              <AvatarFallback>SP</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <div className="flex items-center gap-2 p-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+              <AvatarFallback>SP</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col space-y-0.5">
+              <p className="text-sm font-medium">Shaun Park</p>
+              <p className="text-xs text-muted-foreground">Project Leader</p>
+            </div>
+          </div>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Inbox className="mr-2 h-4 w-4" />
+            Inbox
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Lock className="mr-2 h-4 w-4" />
+            Lock Screen
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="text-red-600">
+            <LogOut className="mr-2 h-4 w-4" />
+            Log Out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 
   return (
     <nav className="border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center border-b px-4">
+      <div className="flex h-14 items-center border-b px-4 justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <span className="font-bold">Vidhik AI</span>
         </Link>
+        <ProfileMenu />
       </div>
 
       {isMobile ? (
