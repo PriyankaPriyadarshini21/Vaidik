@@ -10,6 +10,7 @@ import {
   FolderOpen,
   HelpCircle,
   BellRing,
+  Moon,
   Sun,
   LogOut,
   User,
@@ -26,6 +27,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 
 const NavLink = ({ href, icon: Icon, children }: { 
   href: string; 
@@ -50,7 +57,55 @@ const NavLink = ({ href, icon: Icon, children }: {
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notifications] = useState([
+    // Demo notifications - in real app, these would come from your backend
+    {
+      id: 1,
+      message: "Your document review is complete",
+      timestamp: "10 mins ago"
+    }
+  ]);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
+    toast({
+      title: `${isDarkMode ? 'Light' : 'Dark'} mode activated`,
+      duration: 1500
+    });
+  };
+
+  const handleMenuAction = (action: string) => {
+    switch (action) {
+      case 'profile':
+        toast({
+          title: "Profile",
+          description: "Viewing profile details",
+        });
+        break;
+      case 'inbox':
+        toast({
+          title: "Inbox",
+          description: "Opening inbox messages",
+        });
+        break;
+      case 'lock':
+        toast({
+          title: "Lock Screen",
+          description: "Locking your screen",
+        });
+        break;
+      case 'logout':
+        toast({
+          title: "Logout",
+          description: "Logging out...",
+        });
+        break;
+    }
+  };
 
   const NavContent = () => (
     <div className="space-y-2">
@@ -65,12 +120,50 @@ export default function Navigation() {
 
   const ProfileMenu = () => (
     <div className="flex items-center gap-2">
-      <Button variant="ghost" size="icon" className="relative">
-        <BellRing className="h-5 w-5" />
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="ghost" size="icon" className="relative">
+            <BellRing className="h-5 w-5" />
+            {notifications.length > 0 && (
+              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600" />
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-80">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h4 className="font-medium">Notifications</h4>
+              {notifications.length > 0 && (
+                <Button variant="ghost" size="sm" className="h-auto p-0">
+                  Mark all as read
+                </Button>
+              )}
+            </div>
+            <div className="space-y-2">
+              {notifications.length > 0 ? (
+                notifications.map(notification => (
+                  <div key={notification.id} className="flex items-start gap-2 p-2 hover:bg-muted rounded-lg">
+                    <BellRing className="h-4 w-4 mt-1 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground">{notification.timestamp}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No messages from admin
+                </p>
+              )}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Button variant="ghost" size="icon" onClick={toggleTheme}>
+        {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
       </Button>
-      <Button variant="ghost" size="icon">
-        <Sun className="h-5 w-5" />
-      </Button>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -92,20 +185,23 @@ export default function Navigation() {
             </div>
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleMenuAction('profile')}>
             <User className="mr-2 h-4 w-4" />
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleMenuAction('inbox')}>
             <Inbox className="mr-2 h-4 w-4" />
             Inbox
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleMenuAction('lock')}>
             <Lock className="mr-2 h-4 w-4" />
             Lock Screen
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem 
+            className="text-red-600"
+            onClick={() => handleMenuAction('logout')}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Log Out
           </DropdownMenuItem>
