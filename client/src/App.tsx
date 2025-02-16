@@ -11,7 +11,8 @@ import {
   DocumentCreator,
   DocumentReview,
   LegalConsultation,
-  Pricing
+  Pricing,
+  Profile
 } from "@/pages";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
@@ -32,6 +33,7 @@ function Router() {
             <Route path="/pricing" component={Pricing} />
             <Route path="/settings" component={Settings} />
             <Route path="/help" component={Help} />
+            <Route path="/profile" component={Profile} />
             <Route component={NotFound} />
           </Switch>
         </div>
