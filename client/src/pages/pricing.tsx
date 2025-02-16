@@ -53,6 +53,7 @@ export default function Pricing() {
               </li>
             </ul>
             <Button className="w-full mt-4" onClick={() => handlePayment('free')}>Sign Up Free</Button>
+            <p className="text-xs text-muted-foreground text-center">*Excludes legal consultation</p>
           </CardContent>
         </Card>
 
@@ -82,6 +83,7 @@ export default function Pricing() {
               </li>
             </ul>
             <Button className="w-full mt-4" variant="default" onClick={() => handlePayment('pro', 999)}>Upgrade to Pro</Button>
+            <p className="text-xs text-muted-foreground text-center">*Excludes legal consultation</p>
           </CardContent>
         </Card>
 
