@@ -10,8 +10,6 @@ import {
   FolderOpen,
   HelpCircle,
   BellRing,
-  Moon,
-  Sun,
   LogOut,
   User,
   Inbox,
@@ -57,7 +55,6 @@ const NavLink = ({ href, icon: Icon, children }: {
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [notifications] = useState([
     // Demo notifications - in real app, these would come from your backend
     {
@@ -68,15 +65,6 @@ export default function Navigation() {
   ]);
   const isMobile = useIsMobile();
   const { toast } = useToast();
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-    toast({
-      title: `${isDarkMode ? 'Light' : 'Dark'} mode activated`,
-      duration: 1500
-    });
-  };
 
   const handleMenuAction = (action: string) => {
     switch (action) {
@@ -159,10 +147,6 @@ export default function Navigation() {
           </div>
         </PopoverContent>
       </Popover>
-
-      <Button variant="ghost" size="icon" onClick={toggleTheme}>
-        {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-      </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

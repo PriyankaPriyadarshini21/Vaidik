@@ -4,6 +4,6 @@
   "accent": "#c7a4ff",
   "background": "hsl(0, 0%, 100%)",
   "foreground": "#000000",
-  "appearance": "system",
+  "appearance": "light",
   "radius": 0.5
 }
