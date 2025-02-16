@@ -5,3 +5,4 @@ export { default as Help } from './help';
 export { default as DocumentCreator } from './document-creator';
 export { default as DocumentReview } from './document-review';
 export { default as LegalConsultation } from './legal-consultation';
+export { default as Pricing } from './pricing';

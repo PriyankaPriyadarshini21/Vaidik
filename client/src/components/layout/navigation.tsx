@@ -1,10 +1,10 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { 
-  Menu, 
+import {
+  Menu,
   Home,
-  FileText, 
+  FileText,
   Search,
   Users,
   FolderOpen,
@@ -32,18 +32,18 @@ import {
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 
-const NavLink = ({ href, icon: Icon, children }: { 
-  href: string; 
+const NavLink = ({ href, icon: Icon, children }: {
+  href: string;
   icon: React.ElementType;
-  children: React.ReactNode 
+  children: React.ReactNode
 }) => {
   const [location] = useLocation();
   const isActive = location === href;
 
   return (
     <Link href={href}>
-      <Button 
-        variant={isActive ? "secondary" : "ghost"} 
+      <Button
+        variant={isActive ? "secondary" : "ghost"}
         className="w-full justify-start gap-2"
       >
         <Icon className="h-4 w-4" />
@@ -102,6 +102,7 @@ export default function Navigation() {
       <NavLink href="/review" icon={Search}>Document Review</NavLink>
       <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>
       <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
+      <NavLink href="/pricing" icon={FileText}>Pricing</NavLink>
       <NavLink href="/help" icon={HelpCircle}>Help & Support</NavLink>
     </div>
   );
@@ -182,7 +183,7 @@ export default function Navigation() {
             Lock Screen
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             className="text-red-600"
             onClick={() => handleMenuAction('logout')}
           >
