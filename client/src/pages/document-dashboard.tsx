@@ -1,3 +1,4 @@
+import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { FileText, Users, Scale, Building2, Shield, FileSpreadsheet, Plus } from "lucide-react";
@@ -16,6 +17,8 @@ const documentTypes = [
 ];
 
 export default function DocumentDashboard() {
+  const [, setLocation] = useLocation();
+
   return (
     <div className="space-y-6">
       <div>
@@ -36,6 +39,7 @@ export default function DocumentDashboard() {
             <Card 
               key={type.id}
               className="p-4 hover:bg-accent cursor-pointer transition-colors flex flex-col items-center text-center gap-2"
+              onClick={() => setLocation(`/create/${type.id}`)}
             >
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Icon className="h-6 w-6 text-primary" />
