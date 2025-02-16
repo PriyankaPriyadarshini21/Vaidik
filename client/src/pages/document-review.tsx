@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle, Download, MessageSquare, Edit, Save } from "lucide-react";
+import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle, Download, MessageSquare, Edit, Save, History, Share, Archive, Settings, Trash } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useQueryClient } from "@tanstack/react-query";
@@ -410,6 +410,105 @@ export default function DocumentReview() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Added sections */}
+              <div className="grid gap-6 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Similar Documents
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="font-medium">Service Agreement - Tech Solutions</p>
+                          <p className="text-sm text-muted-foreground">85% similar content</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="font-medium">IT Services Contract - Project Beta</p>
+                          <p className="text-sm text-muted-foreground">72% similar content</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="font-medium">Consulting Agreement Template</p>
+                          <p className="text-sm text-muted-foreground">65% similar content</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <History className="h-5 w-5" />
+                      Document History
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="h-2 w-2 rounded-full bg-primary mt-2" />
+                        <div>
+                          <p className="font-medium">Initial Upload</p>
+                          <p className="text-sm text-muted-foreground">Feb 16, 2025 - 10:30 AM</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-2 w-2 rounded-full bg-primary mt-2" />
+                        <div>
+                          <p className="font-medium">AI Analysis Completed</p>
+                          <p className="text-sm text-muted-foreground">Feb 16, 2025 - 10:32 AM</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-2 w-2 rounded-full bg-primary mt-2" />
+                        <div>
+                          <p className="font-medium">Tags Added</p>
+                          <p className="text-sm text-muted-foreground">Feb 16, 2025 - 10:35 AM</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Document Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Share className="h-4 w-4" />
+                      Share Document
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <FileText className="h-4 w-4" />
+                      Export as PDF
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Archive className="h-4 w-4" />
+                      Archive Document
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2 text-red-600 hover:text-red-600">
+                      <Trash className="h-4 w-4" />
+                      Delete Document
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
             </>
           )}
         </div>
