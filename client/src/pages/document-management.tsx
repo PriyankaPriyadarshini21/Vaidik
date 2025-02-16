@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Upload, Download, Eye, Trash2, Search } from "lucide-react";
+import { FileText, Upload, Download, Eye, Trash2, Search, Edit2, Check, X } from "lucide-react";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -12,6 +12,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+
+type DocumentStatus = 'active' | 'expired' | 'in-review' | 'draft';
 
 type Document = {
   id: string;
@@ -20,7 +30,8 @@ type Document = {
   size: string;
   uploadedAt: string;
   url: string;
-  data?: string | ArrayBuffer | null; // For storing the actual file data
+  status: DocumentStatus;
+  data?: string | ArrayBuffer | null;
 };
 
 export default function DocumentManagement() {
@@ -28,8 +39,51 @@ export default function DocumentManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewType, setPreviewType] = useState<string>("");
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [sortBy, setSortBy] = useState<"name" | "date" | "status">("date");
+  const [selectedStatus, setSelectedStatus] = useState<DocumentStatus | "all">("all");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Initialize with sample documents
+  const [documents, setDocuments] = useState<Document[]>([
+    {
+      id: "1",
+      name: "Service Agreement.pdf",
+      type: "PDF",
+      size: "1.2 MB",
+      uploadedAt: "2025-02-16",
+      url: "/documents/service-agreement.pdf",
+      status: "active"
+    },
+    {
+      id: "2",
+      name: "Employee Contract.docx",
+      type: "DOCX",
+      size: "850 KB",
+      uploadedAt: "2025-02-15",
+      url: "/documents/employee-contract.docx",
+      status: "in-review"
+    },
+    {
+      id: "3",
+      name: "NDA Template.pdf",
+      type: "PDF",
+      size: "500 KB",
+      uploadedAt: "2025-02-14",
+      url: "/documents/nda-template.pdf",
+      status: "draft"
+    },
+    {
+      id: "4",
+      name: "Old Contract.pdf",
+      type: "PDF",
+      size: "1.5 MB",
+      uploadedAt: "2024-12-31",
+      url: "/documents/old-contract.pdf",
+      status: "expired"
+    }
+  ]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,6 +99,7 @@ export default function DocumentManagement() {
           size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
           uploadedAt: new Date().toISOString().split("T")[0],
           url: URL.createObjectURL(file),
+          status: 'draft',
           data: event.target?.result || null
         };
 
@@ -54,7 +109,6 @@ export default function DocumentManagement() {
           description: "Document uploaded successfully",
         });
 
-        // Clear the file input
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
@@ -72,10 +126,10 @@ export default function DocumentManagement() {
 
   const handleDownload = (doc: Document) => {
     try {
-      if (!doc.data) throw new Error("Document data not found");
+      if (!doc.data && !doc.url) throw new Error("Document data not found");
 
       const link = document.createElement('a');
-      link.href = doc.data.toString();
+      link.href = doc.data?.toString() || doc.url;
       link.download = doc.name;
       document.body.appendChild(link);
       link.click();
@@ -111,7 +165,7 @@ export default function DocumentManagement() {
   };
 
   const handlePreview = (doc: Document) => {
-    if (!doc.data) {
+    if (!doc.data && !doc.url) {
       toast({
         title: "Error",
         description: "Document preview not available",
@@ -119,13 +173,80 @@ export default function DocumentManagement() {
       });
       return;
     }
-    setPreviewUrl(doc.data.toString());
+    setPreviewUrl(doc.data?.toString() || doc.url);
     setPreviewType(doc.type.toLowerCase());
   };
 
-  const filteredDocuments = documents.filter(doc =>
+  const handleUpdateStatus = (docId: string, newStatus: DocumentStatus) => {
+    setDocuments(prev => prev.map(doc => 
+      doc.id === docId ? { ...doc, status: newStatus } : doc
+    ));
+    toast({
+      title: "Success",
+      description: "Document status updated",
+    });
+  };
+
+  const startEditing = (doc: Document) => {
+    setEditingId(doc.id);
+    setEditName(doc.name);
+  };
+
+  const saveEditing = () => {
+    if (!editingId) return;
+
+    setDocuments(prev => prev.map(doc =>
+      doc.id === editingId ? { ...doc, name: editName } : doc
+    ));
+    setEditingId(null);
+    setEditName("");
+    toast({
+      title: "Success",
+      description: "Document name updated",
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditName("");
+  };
+
+  const getStatusColor = (status: DocumentStatus) => {
+    switch (status) {
+      case 'active': return 'bg-green-500/10 text-green-500';
+      case 'expired': return 'bg-red-500/10 text-red-500';
+      case 'in-review': return 'bg-yellow-500/10 text-yellow-500';
+      case 'draft': return 'bg-gray-500/10 text-gray-500';
+    }
+  };
+
+  let filteredAndSortedDocs = [...documents];
+
+  // Filter by status
+  if (selectedStatus !== 'all') {
+    filteredAndSortedDocs = filteredAndSortedDocs.filter(
+      doc => doc.status === selectedStatus
+    );
+  }
+
+  // Filter by search
+  filteredAndSortedDocs = filteredAndSortedDocs.filter(doc =>
     doc.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Sort documents
+  filteredAndSortedDocs.sort((a, b) => {
+    switch (sortBy) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'date':
+        return b.uploadedAt.localeCompare(a.uploadedAt);
+      case 'status':
+        return a.status.localeCompare(b.status);
+      default:
+        return 0;
+    }
+  });
 
   return (
     <div className="space-y-6">
@@ -169,61 +290,143 @@ export default function DocumentManagement() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Your Documents</CardTitle>
-            <div className="relative w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search documents..."
-                className="pl-8"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <CardTitle>Your Documents</CardTitle>
+              <div className="flex items-center gap-4">
+                <Select value={selectedStatus} onValueChange={(value: DocumentStatus | "all") => setSelectedStatus(value)}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="expired">Expired</SelectItem>
+                    <SelectItem value="in-review">In Review</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={(value: "name" | "date" | "status") => setSortBy(value)}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Sort by Name</SelectItem>
+                    <SelectItem value="date">Sort by Date</SelectItem>
+                    <SelectItem value="status">Sort by Status</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="relative w-64">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search documents..."
+                    className="pl-8"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredDocuments.map((doc) => (
+            {filteredAndSortedDocs.map((doc) => (
               <div
                 key={doc.id}
                 className="flex items-center justify-between p-4 border rounded-lg"
               >
                 <div className="flex items-center gap-4">
                   <FileText className="h-8 w-8 text-primary" />
-                  <div>
-                    <p className="font-medium">{doc.name}</p>
+                  <div className="min-w-[200px]">
+                    {editingId === doc.id ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          className="h-8"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={saveEditing}
+                          className="h-8 w-8"
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={cancelEditing}
+                          className="h-8 w-8"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <p className="font-medium flex items-center gap-2">
+                        {doc.name}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => startEditing(doc)}
+                          className="h-6 w-6"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </Button>
+                      </p>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       {doc.type} • {doc.size} • Uploaded on {doc.uploadedAt}
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handlePreview(doc)}
+                <div className="flex items-center gap-4">
+                  <Select
+                    value={doc.status}
+                    onValueChange={(value: DocumentStatus) => handleUpdateStatus(doc.id, value)}
                   >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDownload(doc)}
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(doc.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue>
+                        <Badge variant="outline" className={getStatusColor(doc.status)}>
+                          {doc.status.replace('-', ' ')}
+                        </Badge>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="expired">Expired</SelectItem>
+                      <SelectItem value="in-review">In Review</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handlePreview(doc)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDownload(doc)}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(doc.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
-            {filteredDocuments.length === 0 && (
+            {filteredAndSortedDocs.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
                 No documents found
               </div>
