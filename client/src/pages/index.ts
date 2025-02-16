@@ -7,3 +7,4 @@ export { default as DocumentReview } from './document-review';
 export { default as LegalConsultation } from './legal-consultation';
 export { default as Pricing } from './pricing';
 export { default as Profile } from './profile';
+export { default as DocumentDashboard } from './document-dashboard';

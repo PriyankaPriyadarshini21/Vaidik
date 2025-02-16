@@ -12,7 +12,8 @@ import {
   DocumentReview,
   LegalConsultation,
   Pricing,
-  Profile
+  Profile,
+  DocumentDashboard
 } from "@/pages";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
@@ -27,6 +28,7 @@ function Router() {
             <Route path="/" component={Dashboard} />
             <Route path="/ai-documents" component={AIDocuments} />
             <Route path="/create/:type" component={DocumentCreator} />
+            <Route path="/documents/new" component={DocumentDashboard} />
             <Route path="/review" component={DocumentReview} />
             <Route path="/consultation" component={LegalConsultation} />
             <Route path="/documents" component={DocumentManagement} />
