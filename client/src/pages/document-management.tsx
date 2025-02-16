@@ -3,13 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText, Upload, Download, Eye, Trash2, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 type Document = {
@@ -19,64 +20,107 @@ type Document = {
   size: string;
   uploadedAt: string;
   url: string;
+  data?: string | ArrayBuffer | null; // For storing the actual file data
 };
 
 export default function DocumentManagement() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<Document[]>([
-    {
-      id: "1",
-      name: "Contract Agreement.pdf",
-      type: "PDF",
-      size: "2.5 MB",
-      uploadedAt: "2025-02-16",
-      url: "/documents/contract.pdf"
-    },
-    // Add more sample documents as needed
-  ]);
+  const [previewType, setPreviewType] = useState<string>("");
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Here we would normally upload to a server
-    // For now, just show a success message
-    const newDoc: Document = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.split("/")[1].toUpperCase(),
-      size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
-      uploadedAt: new Date().toISOString().split("T")[0],
-      url: URL.createObjectURL(file)
-    };
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const newDoc: Document = {
+          id: Date.now().toString(),
+          name: file.name,
+          type: file.type.split("/")[1].toUpperCase(),
+          size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+          uploadedAt: new Date().toISOString().split("T")[0],
+          url: URL.createObjectURL(file),
+          data: event.target?.result || null
+        };
 
-    setDocuments([newDoc, ...documents]);
-    toast({
-      title: "Success",
-      description: "Document uploaded successfully",
-    });
+        setDocuments(prev => [newDoc, ...prev]);
+        toast({
+          title: "Success",
+          description: "Document uploaded successfully",
+        });
+
+        // Clear the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload document",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownload = (doc: Document) => {
-    // In a real app, we would use the actual document URL
-    toast({
-      title: "Downloading",
-      description: `Downloading ${doc.name}...`,
-    });
+    try {
+      if (!doc.data) throw new Error("Document data not found");
+
+      const link = document.createElement('a');
+      link.href = doc.data.toString();
+      link.download = doc.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: "Success",
+        description: `Downloading ${doc.name}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to download document",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = (docId: string) => {
-    setDocuments(documents.filter(doc => doc.id !== docId));
-    toast({
-      title: "Success",
-      description: "Document deleted successfully",
-    });
+    try {
+      setDocuments(prev => prev.filter(doc => doc.id !== docId));
+      toast({
+        title: "Success",
+        description: "Document deleted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete document",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePreview = (doc: Document) => {
-    setPreviewUrl(doc.url);
+    if (!doc.data) {
+      toast({
+        title: "Error",
+        description: "Document preview not available",
+        variant: "destructive",
+      });
+      return;
+    }
+    setPreviewUrl(doc.data.toString());
+    setPreviewType(doc.type.toLowerCase());
   };
 
   const filteredDocuments = documents.filter(doc =>
@@ -116,6 +160,7 @@ export default function DocumentManagement() {
                 className="hidden"
                 accept=".pdf,.doc,.docx"
                 onChange={handleFileUpload}
+                ref={fileInputRef}
               />
             </div>
           </div>
@@ -187,17 +232,35 @@ export default function DocumentManagement() {
         </CardContent>
       </Card>
 
-      <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
-        <DialogContent className="max-w-4xl">
+      <Dialog open={!!previewUrl} onOpenChange={() => {
+        setPreviewUrl(null);
+        setPreviewType("");
+      }}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>Document Preview</DialogTitle>
+            <DialogDescription>
+              You can scroll to view the entire document
+            </DialogDescription>
           </DialogHeader>
           {previewUrl && (
-            <iframe
-              src={previewUrl}
-              className="w-full h-[600px] rounded-lg"
-              title="Document Preview"
-            />
+            <div className="mt-4 overflow-auto max-h-[calc(80vh-8rem)]">
+              {previewType === 'pdf' ? (
+                <iframe
+                  src={previewUrl}
+                  className="w-full h-[600px] rounded-lg"
+                  title="Document Preview"
+                />
+              ) : (
+                <div className="bg-white p-4 rounded-lg">
+                  <img 
+                    src={previewUrl} 
+                    alt="Document Preview" 
+                    className="max-w-full h-auto"
+                  />
+                </div>
+              )}
+            </div>
           )}
         </DialogContent>
       </Dialog>
