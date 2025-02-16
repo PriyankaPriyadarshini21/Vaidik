@@ -1,8 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Pricing() {
+  const { toast } = useToast();
+
+  const handlePayment = (plan: string, amount?: number) => {
+    if (plan === 'free') {
+      toast({
+        title: "Success",
+        description: "You've been signed up for the Free Plan",
+      });
+      return;
+    }
+
+    // Here we would integrate with a payment provider like Stripe
+    toast({
+      title: "Redirecting to payment",
+      description: `Processing payment for ${plan} plan...`,
+    });
+    // Payment integration would go here
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -32,7 +52,7 @@ export default function Pricing() {
                 <span>24*7 Support</span>
               </li>
             </ul>
-            <Button className="w-full mt-4">Sign Up Free</Button>
+            <Button className="w-full mt-4" onClick={() => handlePayment('free')}>Sign Up Free</Button>
           </CardContent>
         </Card>
 
@@ -61,7 +81,7 @@ export default function Pricing() {
                 <span>24*7 support</span>
               </li>
             </ul>
-            <Button className="w-full mt-4" variant="default">Upgrade to Pro</Button>
+            <Button className="w-full mt-4" variant="default" onClick={() => handlePayment('pro', 999)}>Upgrade to Pro</Button>
           </CardContent>
         </Card>
 
@@ -102,7 +122,7 @@ export default function Pricing() {
                 <span>24*7 support</span>
               </li>
             </ul>
-            <Button className="w-full mt-4">Upgrade to Enterprise</Button>
+            <Button className="w-full mt-4" onClick={() => handlePayment('enterprise', 1499)}>Upgrade to Enterprise</Button>
             <p className="text-xs text-muted-foreground text-center">*Excludes legal consultation</p>
           </CardContent>
         </Card>

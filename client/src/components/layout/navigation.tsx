@@ -13,7 +13,8 @@ import {
   LogOut,
   User,
   Inbox,
-  Lock
+  Lock,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,6 +26,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
@@ -55,6 +62,8 @@ const NavLink = ({ href, icon: Icon, children }: {
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showInbox, setShowInbox] = useState(false);
   const [notifications] = useState([
     // Demo notifications - in real app, these would come from your backend
     {
@@ -69,16 +78,10 @@ export default function Navigation() {
   const handleMenuAction = (action: string) => {
     switch (action) {
       case 'profile':
-        toast({
-          title: "Profile",
-          description: "Viewing profile details",
-        });
+        setShowProfile(true);
         break;
       case 'inbox':
-        toast({
-          title: "Inbox",
-          description: "Opening inbox messages",
-        });
+        setShowInbox(true);
         break;
       case 'lock':
         toast({
@@ -192,6 +195,67 @@ export default function Navigation() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Profile Dialog */}
+      <Dialog open={showProfile} onOpenChange={setShowProfile}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                <AvatarFallback>SP</AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="text-lg font-medium">Shaun Park</h3>
+                <p className="text-sm text-muted-foreground">Project Leader</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span>@shaunpark</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Inbox className="h-4 w-4 text-muted-foreground" />
+                <span>shaun.park@example.com</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Settings className="h-4 w-4 text-muted-foreground" />
+                <span>Account Settings</span>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Inbox Dialog */}
+      <Dialog open={showInbox} onOpenChange={setShowInbox}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Inbox</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {notifications.length > 0 ? (
+              notifications.map(notification => (
+                <div key={notification.id} className="flex items-start gap-2 p-2 hover:bg-muted rounded-lg">
+                  <BellRing className="h-4 w-4 mt-1 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm">{notification.message}</p>
+                    <p className="text-xs text-muted-foreground">{notification.timestamp}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Your inbox is empty
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 
