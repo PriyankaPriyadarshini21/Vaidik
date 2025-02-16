@@ -90,9 +90,13 @@ export default function Navigation() {
         break;
       case 'logout':
         toast({
-          title: "Logout",
-          description: "Logging out...",
+          title: "Success",
+          description: "You have been logged out successfully",
         });
+        // Redirect to login page after logout
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
         break;
     }
   };
