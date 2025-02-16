@@ -10,6 +10,7 @@ export interface IStorage {
   createDocument(doc: InsertDocument): Promise<Document>;
   updateDocument(id: number, doc: Partial<InsertDocument>): Promise<Document>;
   deleteDocument(id: number): Promise<void>;
+  uploadDocument(file: Express.Multer.File, metadata: Partial<InsertDocument>): Promise<Document>;
 
   // Consultation operations
   getConsultations(): Promise<Consultation[]>;
@@ -43,7 +44,8 @@ export class MemStorage implements IStorage {
       ...doc,
       id,
       createdAt: new Date(),
-      status: doc.status || "draft"  // Ensure status is set
+      updatedAt: new Date(),
+      status: doc.status || "draft"
     };
     this.documents.set(id, document);
     return document;
@@ -56,6 +58,7 @@ export class MemStorage implements IStorage {
     const updated: Document = {
       ...existing,
       ...doc,
+      updatedAt: new Date(),
       status: doc.status || existing.status
     };
     this.documents.set(id, updated);
@@ -64,6 +67,21 @@ export class MemStorage implements IStorage {
 
   async deleteDocument(id: number): Promise<void> {
     this.documents.delete(id);
+  }
+
+  async uploadDocument(file: Express.Multer.File, metadata: Partial<InsertDocument>): Promise<Document> {
+    // In memory storage, we'll just store the file metadata
+    const doc: InsertDocument = {
+      title: metadata.title || file.originalname,
+      type: metadata.type || 'unknown',
+      content: {},
+      status: 'draft',
+      filename: file.originalname,
+      fileSize: `${Math.round(file.size / 1024)} KB`,
+      fileUrl: `/uploads/${file.filename}`, // This would be a real URL in production
+    };
+
+    return this.createDocument(doc);
   }
 
   async getConsultations(): Promise<Consultation[]> {

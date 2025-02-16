@@ -5,6 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 interface UploadedFile {
   name: string;
@@ -22,6 +24,8 @@ interface AnalysisResult {
 }
 
 export default function DocumentReview() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [files, setFiles] = useState<UploadedFile[]>([
     {
       name: "Contract_Draft_v2.pdf",
@@ -69,9 +73,74 @@ export default function DocumentReview() {
   const [showPreview, setShowPreview] = useState(false);
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
-    // Handle file drop logic here
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    if (droppedFiles.length === 0) return;
+
+    const formData = new FormData();
+    formData.append('file', droppedFiles[0]);
+
+    try {
+      const response = await fetch('/api/documents/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
+      }
+
+      const document = await response.json();
+      queryClient.invalidateQueries({ queryKey: ['/api/documents'] });
+
+      toast({
+        title: 'Success',
+        description: 'Document uploaded successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'An error occurred during upload',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length === 0) return;
+
+    const formData = new FormData();
+    formData.append('file', selectedFiles[0]);
+
+    try {
+      const response = await fetch('/api/documents/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
+      }
+
+      const document = await response.json();
+      queryClient.invalidateQueries({ queryKey: ['/api/documents'] });
+
+      toast({
+        title: 'Success',
+        description: 'Document uploaded successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'An error occurred during upload',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -115,10 +184,18 @@ export default function DocumentReview() {
       </div>
 
       <Card
-        className="border-dashed"
+        className="border-dashed cursor-pointer"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onClick={() => document.getElementById('file-upload')?.click()}
       >
+        <input
+          type="file"
+          id="file-upload"
+          className="hidden"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileSelect}
+        />
         <CardContent className="py-12 flex flex-col items-center justify-center text-center">
           <Upload className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">
@@ -163,13 +240,20 @@ export default function DocumentReview() {
                         <DialogTitle>{file.name}</DialogTitle>
                       </DialogHeader>
                       <div className="flex-1 overflow-auto">
-                        <div className="bg-muted rounded-lg p-4 h-full">
+                        {file.name.toLowerCase().endsWith('.pdf') ? (
                           <iframe
-                            src={`/api/preview/${file.name}`}
+                            src={`/api/preview/${encodeURIComponent(file.name)}`}
                             className="w-full h-full border-0"
                             title="Document Preview"
                           />
-                        </div>
+                        ) : (
+                          <div className="bg-muted rounded-lg p-4 h-full flex items-center justify-center">
+                            <p className="text-muted-foreground">
+                              Preview not available for this file type.
+                              You can download the file to view it.
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </DialogContent>
                   </Dialog>

@@ -1,9 +1,53 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
 import { storage } from "./storage";
 import { insertDocumentSchema, insertConsultationSchema } from "@shared/schema";
 
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: 'uploads/',
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname));
+    }
+  }),
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = ['.pdf', '.doc', '.docx'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF and Word documents are allowed.'));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
 export function registerRoutes(app: Express): Server {
+  // Document upload endpoint
+  app.post("/api/documents/upload", upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const document = await storage.uploadDocument(req.file, {
+        title: req.body.title || req.file.originalname,
+        type: req.body.type || 'unknown',
+      });
+
+      res.status(201).json(document);
+    } catch (error: any) {
+      res.status(500).json({ 
+        message: error.message || "Failed to upload document" 
+      });
+    }
+  });
+
   // Documents endpoints
   app.get("/api/documents", async (_req, res) => {
     const documents = await storage.getDocuments();
@@ -62,6 +106,11 @@ export function registerRoutes(app: Express): Server {
     }
     const consultation = await storage.createConsultation(parsed.data);
     res.status(201).json(consultation);
+  });
+
+  // Serve uploaded files
+  app.get('/api/preview/:filename', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'uploads', req.params.filename));
   });
 
   const httpServer = createServer(app);

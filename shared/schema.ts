@@ -8,7 +8,12 @@ export const documents = pgTable("documents", {
   type: text("type").notNull(),
   content: jsonb("content").notNull(),
   status: text("status").notNull().default("draft"),
+  filename: text("filename"),
+  fileUrl: text("file_url"),
+  fileSize: text("file_size"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  expiresAt: timestamp("expires_at"),
 });
 
 export const consultations = pgTable("consultations", {
@@ -18,12 +23,17 @@ export const consultations = pgTable("consultations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertDocumentSchema = createInsertSchema(documents).pick({
-  title: true,
-  type: true,
-  content: true,
-  status: true,
-});
+export const insertDocumentSchema = createInsertSchema(documents)
+  .pick({
+    title: true,
+    type: true,
+    content: true,
+    status: true,
+    filename: true,
+    fileUrl: true,
+    fileSize: true,
+    expiresAt: true,
+  });
 
 export const insertConsultationSchema = createInsertSchema(consultations).pick({
   question: true,
