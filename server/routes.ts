@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
-import { insertDocumentSchema, insertConsultationSchema } from "@shared/schema";
+import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema, insertUserSubscriptionSchema } from "@shared/schema";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -38,6 +38,7 @@ export function registerRoutes(app: Express): Server {
       const document = await storage.uploadDocument(req.file, {
         title: req.body.title || req.file.originalname,
         type: req.body.type || 'unknown',
+        userId: req.body.userId,
       });
 
       res.status(201).json(document);
@@ -106,6 +107,61 @@ export function registerRoutes(app: Express): Server {
     }
     const consultation = await storage.createConsultation(parsed.data);
     res.status(201).json(consultation);
+  });
+
+  // Pricing Plans endpoints
+  app.get("/api/pricing-plans", async (_req, res) => {
+    try {
+      const plans = await storage.getPricingPlans();
+      res.json(plans);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/pricing-plans", async (req, res) => {
+    const parsed = insertPricingPlanSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ message: "Invalid pricing plan data" });
+      return;
+    }
+    try {
+      const plan = await storage.createPricingPlan(parsed.data);
+      res.status(201).json(plan);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // User Subscriptions endpoints
+  app.get("/api/users/:userId/subscription", async (req, res) => {
+    try {
+      const subscription = await storage.getUserSubscription(Number(req.params.userId));
+      if (!subscription) {
+        res.status(404).json({ message: "No active subscription found" });
+        return;
+      }
+      res.json(subscription);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/users/:userId/subscription", async (req, res) => {
+    const parsed = insertUserSubscriptionSchema.safeParse({
+      ...req.body,
+      userId: Number(req.params.userId),
+    });
+    if (!parsed.success) {
+      res.status(400).json({ message: "Invalid subscription data" });
+      return;
+    }
+    try {
+      const subscription = await storage.createUserSubscription(parsed.data);
+      res.status(201).json(subscription);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   // Serve uploaded files

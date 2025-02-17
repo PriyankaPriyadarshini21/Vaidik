@@ -1,7 +1,23 @@
 import { 
   Document, InsertDocument, 
-  Consultation, InsertConsultation 
+  Consultation, InsertConsultation,
+  documents,
+  consultations,
+  users,
+  pricingPlans,
+  userSubscriptions,
+  PricingPlan,
+  InsertPricingPlan,
+  UserSubscription,
+  InsertUserSubscription
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
+
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // Document operations
@@ -15,67 +31,66 @@ export interface IStorage {
   // Consultation operations
   getConsultations(): Promise<Consultation[]>;
   createConsultation(consultation: InsertConsultation): Promise<Consultation>;
+
+  // Pricing plan operations
+  getPricingPlans(): Promise<PricingPlan[]>;
+  createPricingPlan(plan: InsertPricingPlan): Promise<PricingPlan>;
+  getUserSubscription(userId: number): Promise<UserSubscription | undefined>;
+  createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
+
+  // Session store for authentication
+  sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private documents: Map<number, Document>;
-  private consultations: Map<number, Consultation>;
-  private docId: number;
-  private consultId: number;
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
 
   constructor() {
-    this.documents = new Map();
-    this.consultations = new Map();
-    this.docId = 1;
-    this.consultId = 1;
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
+    });
   }
 
   async getDocuments(): Promise<Document[]> {
-    return Array.from(this.documents.values());
+    return await db.select().from(documents);
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
-    return this.documents.get(id);
+    const [doc] = await db.select().from(documents).where(eq(documents.id, id));
+    return doc;
   }
 
   async createDocument(doc: InsertDocument): Promise<Document> {
-    const id = this.docId++;
-    const document: Document = {
-      ...doc,
-      id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: doc.status || "draft"
-    };
-    this.documents.set(id, document);
-    return document;
+    const [newDoc] = await db.insert(documents).values(doc).returning();
+    return newDoc;
   }
 
   async updateDocument(id: number, doc: Partial<InsertDocument>): Promise<Document> {
-    const existing = this.documents.get(id);
-    if (!existing) throw new Error("Document not found");
+    const [updatedDoc] = await db
+      .update(documents)
+      .set({ ...doc, updatedAt: new Date() })
+      .where(eq(documents.id, id))
+      .returning();
 
-    const updated: Document = {
-      ...existing,
-      ...doc,
-      updatedAt: new Date(),
-      status: doc.status || existing.status
-    };
-    this.documents.set(id, updated);
-    return updated;
+    if (!updatedDoc) {
+      throw new Error("Document not found");
+    }
+
+    return updatedDoc;
   }
 
   async deleteDocument(id: number): Promise<void> {
-    this.documents.delete(id);
+    await db.delete(documents).where(eq(documents.id, id));
   }
 
   async uploadDocument(file: Express.Multer.File, metadata: Partial<InsertDocument>): Promise<Document> {
-    // In memory storage, we'll just store the file metadata
     const doc: InsertDocument = {
       title: metadata.title || file.originalname,
       type: metadata.type || 'unknown',
       content: {},
       status: 'draft',
+      userId: metadata.userId!,
       filename: file.originalname,
       fileSize: `${Math.round(file.size / 1024)} KB`,
       fileUrl: `/uploads/${file.filename}`, // This would be a real URL in production
@@ -85,19 +100,43 @@ export class MemStorage implements IStorage {
   }
 
   async getConsultations(): Promise<Consultation[]> {
-    return Array.from(this.consultations.values());
+    return await db.select().from(consultations);
   }
 
   async createConsultation(consultation: InsertConsultation): Promise<Consultation> {
-    const id = this.consultId++;
-    const newConsultation: Consultation = {
-      ...consultation,
-      id,
-      createdAt: new Date()
-    };
-    this.consultations.set(id, newConsultation);
+    const [newConsultation] = await db
+      .insert(consultations)
+      .values(consultation)
+      .returning();
     return newConsultation;
+  }
+
+  // New methods for pricing plans and subscriptions
+  async getPricingPlans(): Promise<PricingPlan[]> {
+    return await db.select().from(pricingPlans);
+  }
+
+  async createPricingPlan(plan: InsertPricingPlan): Promise<PricingPlan> {
+    const [newPlan] = await db.insert(pricingPlans).values(plan).returning();
+    return newPlan;
+  }
+
+  async getUserSubscription(userId: number): Promise<UserSubscription | undefined> {
+    const [subscription] = await db
+      .select()
+      .from(userSubscriptions)
+      .where(eq(userSubscriptions.userId, userId))
+      .orderBy(userSubscriptions.createdAt, "desc");
+    return subscription;
+  }
+
+  async createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription> {
+    const [newSubscription] = await db
+      .insert(userSubscriptions)
+      .values(subscription)
+      .returning();
+    return newSubscription;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
