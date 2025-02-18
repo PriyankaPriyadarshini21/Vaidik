@@ -1,10 +1,55 @@
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { insertUserSchema, type InsertUser } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+
+type LoginFormData = {
+  username: string;
+  password: string;
+};
 
 export default function Auth() {
+  const { loginMutation, registerMutation, user } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const loginForm = useForm<LoginFormData>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const registerForm = useForm<InsertUser>({
+    resolver: zodResolver(insertUserSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      fullName: "",
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      setLocation("/");
+    }
+  }, [user, setLocation]);
+
+  const onLoginSubmit = (data: LoginFormData) => {
+    loginMutation.mutate(data);
+  };
+
+  const onRegisterSubmit = (data: InsertUser) => {
+    registerMutation.mutate(data);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="flex w-full max-w-5xl p-4 gap-8">
@@ -24,37 +69,76 @@ export default function Auth() {
               </TabsList>
 
               <TabsContent value="login">
-                <form className="space-y-4">
+                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter your email" />
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      {...loginForm.register("username")}
+                      placeholder="Enter your username"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="Enter your password" />
+                    <Input
+                      id="password"
+                      type="password"
+                      {...loginForm.register("password")}
+                      placeholder="Enter your password"
+                    />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={loginMutation.isPending}
+                  >
+                    {loginMutation.isPending ? "Logging in..." : "Login"}
                   </Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="register">
-                <form className="space-y-4">
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Enter your full name" />
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      {...registerForm.register("fullName")}
+                      placeholder="Enter your full name"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-email">Email</Label>
-                    <Input id="register-email" type="email" placeholder="Enter your email" />
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      {...registerForm.register("username")}
+                      placeholder="Choose a username"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-password">Password</Label>
-                    <Input id="register-password" type="password" placeholder="Create a password" />
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...registerForm.register("email")}
+                      placeholder="Enter your email"
+                    />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Create Account
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      {...registerForm.register("password")}
+                      placeholder="Create a password"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={registerMutation.isPending}
+                  >
+                    {registerMutation.isPending ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
               </TabsContent>
