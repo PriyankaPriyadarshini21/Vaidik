@@ -19,7 +19,6 @@ import {
   HelpCircle,
   Upload,
   Bell,
-  LogOut,
   Download,
   Edit,
   Trash,
@@ -31,11 +30,9 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
 
 export default function Profile() {
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
   const [userInfo, setUserInfo] = useState({
     name: "Shaun Park",
     email: "shaun.park@example.com",
@@ -103,48 +100,13 @@ export default function Profile() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Logged out successfully",
-          description: "You have been logged out of your account.",
-        });
-        setLocation('/auth');
-      } else {
-        throw new Error('Logout failed');
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to logout. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-semibold mb-2">Profile</h1>
-          <p className="text-muted-foreground">
-            Manage your account settings and preferences
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="flex items-center gap-2"
-        >
-          <LogOut className="h-4 w-4" />
-          Logout
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold mb-2">Profile</h1>
+        <p className="text-muted-foreground">
+          Manage your account settings and preferences
+        </p>
       </div>
 
       <Tabs defaultValue="account" className="space-y-6">

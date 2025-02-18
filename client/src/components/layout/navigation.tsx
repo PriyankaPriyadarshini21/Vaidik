@@ -64,7 +64,6 @@ export default function Navigation() {
   const [open, setOpen] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
   const [notifications] = useState([
-    // Demo notifications - in real app, these would come from your backend
     {
       id: 1,
       message: "Your document review is complete",
@@ -73,44 +72,55 @@ export default function Navigation() {
   ]);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
-  const handleMenuAction = (action: string) => {
-    switch (action) {
-      case 'profile':
-        window.location.href = '/profile';
-        break;
-      case 'inbox':
-        setShowInbox(true);
-        break;
-      case 'lock':
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
         toast({
-          title: "Lock Screen",
-          description: "Locking your screen",
+          title: "Logged out successfully",
+          description: "You have been logged out of your account.",
         });
-        break;
-      case 'logout':
-        toast({
-          title: "Success",
-          description: "You have been logged out successfully",
-        });
-        // Redirect to login page after logout
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1000);
-        break;
+        setLocation('/auth');
+      } else {
+        throw new Error('Logout failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to logout. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   const NavContent = () => (
-    <div className="space-y-2">
-      <NavLink href="/" icon={Home}>Dashboard</NavLink>
-      <NavLink href="/profile" icon={User}>Profile</NavLink>
-      <NavLink href="/ai-documents" icon={FileText}>AI-Written Documents</NavLink>
-      <NavLink href="/review" icon={Search}>Document Review</NavLink>
-      <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>
-      <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
-      <NavLink href="/pricing" icon={FileText}>Pricing</NavLink>
-      <NavLink href="/help" icon={HelpCircle}>Help & Support</NavLink>
+    <div className="flex flex-col h-full">
+      <div className="space-y-2 flex-1">
+        <NavLink href="/" icon={Home}>Dashboard</NavLink>
+        <NavLink href="/profile" icon={User}>Profile</NavLink>
+        <NavLink href="/ai-documents" icon={FileText}>AI-Written Documents</NavLink>
+        <NavLink href="/review" icon={Search}>Document Review</NavLink>
+        <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>
+        <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
+        <NavLink href="/pricing" icon={FileText}>Pricing</NavLink>
+        <NavLink href="/help" icon={HelpCircle}>Help & Support</NavLink>
+      </div>
+      <div className="p-2 mt-auto">
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start gap-2 text-red-600 hover:text-red-600 hover:bg-red-100"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4" />
+          Logout
+        </Button>
+      </div>
     </div>
   );
 
@@ -196,13 +206,6 @@ export default function Navigation() {
                 Lock Screen
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-600"
-                onClick={() => handleMenuAction('logout')}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Log Out
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
