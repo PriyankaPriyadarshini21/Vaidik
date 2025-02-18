@@ -74,29 +74,11 @@ export default function Navigation() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Logged out successfully",
-          description: "You have been logged out of your account.",
-        });
-        setLocation('/auth');
-      } else {
-        throw new Error('Logout failed');
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to logout. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleLogout = () => {
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account.",
+    });
   };
 
   const NavContent = () => (

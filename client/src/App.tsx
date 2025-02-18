@@ -17,49 +17,38 @@ import {
 } from "@/pages";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
-import Auth from "@/pages/auth";
-import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/auth">
-        <Auth />
-      </Route>
-      <Route path="/">
-        <div className="flex min-h-screen bg-background">
-          <Navigation />
-          <main className="flex-1 overflow-y-auto">
-            <div className="container mx-auto px-4 py-8">
-              <Switch>
-                <Route path="/" component={Dashboard} />
-                <Route path="/ai-documents" component={AIDocuments} />
-                <Route path="/create/:type" component={DocumentCreator} />
-                <Route path="/documents/new" component={DocumentDashboard} />
-                <Route path="/review" component={DocumentReview} />
-                <Route path="/consultation" component={LegalConsultation} />
-                <Route path="/documents" component={DocumentManagement} />
-                <Route path="/pricing" component={Pricing} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/help" component={Help} />
-                <Route path="/profile" component={Profile} />
-                <Route component={NotFound} />
-              </Switch>
-            </div>
-          </main>
+    <div className="flex min-h-screen bg-background">
+      <Navigation />
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-8">
+          <Switch>
+            <Route path="/" component={Dashboard} />
+            <Route path="/ai-documents" component={AIDocuments} />
+            <Route path="/create/:type" component={DocumentCreator} />
+            <Route path="/documents/new" component={DocumentDashboard} />
+            <Route path="/review" component={DocumentReview} />
+            <Route path="/consultation" component={LegalConsultation} />
+            <Route path="/documents" component={DocumentManagement} />
+            <Route path="/pricing" component={Pricing} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/help" component={Help} />
+            <Route path="/profile" component={Profile} />
+            <Route component={NotFound} />
+          </Switch>
         </div>
-      </Route>
-    </Switch>
+      </main>
+    </div>
   );
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
+      <Router />
+      <Toaster />
     </QueryClientProvider>
   );
 }
