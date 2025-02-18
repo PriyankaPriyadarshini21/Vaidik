@@ -8,3 +8,4 @@ export { default as LegalConsultation } from './legal-consultation';
 export { default as Pricing } from './pricing';
 export { default as Profile } from './profile';
 export { default as DocumentDashboard } from './document-dashboard';
+export { default as Auth } from './auth';
