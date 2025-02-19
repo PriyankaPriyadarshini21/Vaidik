@@ -3,15 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Send, HelpCircle, MessageSquare, Clock, User } from "lucide-react";
+import { Mail, Send, HelpCircle, MessageSquare, Clock, User, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface Message {
   id: number;
   content: string;
   sender: 'user' | 'admin';
   timestamp: Date;
+  status: 'sending' | 'sent' | 'delivered';
 }
 
 interface Conversation {
@@ -20,6 +22,7 @@ interface Conversation {
   messages: Message[];
   status: 'active' | 'closed';
   createdAt: Date;
+  isTyping?: boolean;
 }
 
 export default function Help() {
@@ -33,6 +36,15 @@ export default function Help() {
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversations]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +57,8 @@ export default function Help() {
           id: Date.now(),
           content: query.message,
           sender: 'user',
-          timestamp: new Date()
+          timestamp: new Date(),
+          status: 'sent'
         }
       ],
       status: 'active',
@@ -59,6 +72,42 @@ export default function Help() {
       description: "Your message has been sent to our admin team.",
     });
     setQuery({ name: '', email: '', subject: '', message: '' });
+
+    // Simulate typing indicator
+    setTimeout(() => {
+      setConversations(prev => 
+        prev.map(conv => 
+          conv.id === newConversation.id 
+            ? { ...conv, isTyping: true }
+            : conv
+        )
+      );
+    }, 1000);
+
+    // Simulate admin response
+    setTimeout(() => {
+      setConversations(prev =>
+        prev.map(conv => {
+          if (conv.id === newConversation.id) {
+            return {
+              ...conv,
+              isTyping: false,
+              messages: [
+                ...conv.messages,
+                {
+                  id: Date.now(),
+                  content: "Thank you for reaching out. I'm here to help! Could you please provide more details about your query?",
+                  sender: 'admin',
+                  timestamp: new Date(),
+                  status: 'delivered'
+                }
+              ]
+            };
+          }
+          return conv;
+        })
+      );
+    }, 3000);
   };
 
   const handleSendMessage = (conversationId: number) => {
@@ -75,7 +124,8 @@ export default function Help() {
                 id: Date.now(),
                 content: newMessage,
                 sender: 'user',
-                timestamp: new Date()
+                timestamp: new Date(),
+                status: 'sending'
               }
             ]
           };
@@ -84,6 +134,37 @@ export default function Help() {
       })
     );
 
+    const message = newMessage;
+    setNewMessage('');
+
+    // Update status to sent
+    setTimeout(() => {
+      setConversations(prev =>
+        prev.map(conv => {
+          if (conv.id === conversationId) {
+            return {
+              ...conv,
+              messages: conv.messages.map(msg => 
+                msg.status === 'sending' ? { ...msg, status: 'sent' } : msg
+              )
+            };
+          }
+          return conv;
+        })
+      );
+    }, 500);
+
+    // Show typing indicator
+    setTimeout(() => {
+      setConversations(prev => 
+        prev.map(conv => 
+          conv.id === conversationId 
+            ? { ...conv, isTyping: true }
+            : conv
+        )
+      );
+    }, 1000);
+
     // Simulate admin response
     setTimeout(() => {
       setConversations(prev =>
@@ -91,13 +172,15 @@ export default function Help() {
           if (conv.id === conversationId) {
             return {
               ...conv,
+              isTyping: false,
               messages: [
                 ...conv.messages,
                 {
                   id: Date.now(),
                   content: "Thanks for your message. How can I assist you further?",
                   sender: 'admin',
-                  timestamp: new Date()
+                  timestamp: new Date(),
+                  status: 'delivered'
                 }
               ]
             };
@@ -105,14 +188,11 @@ export default function Help() {
           return conv;
         })
       );
-    }, 1000);
-
-    setNewMessage('');
+    }, 3000);
   };
 
   return (
     <div className="space-y-12">
-      {/* Help & Support Section */}
       <div>
         <h1 className="text-2xl font-semibold mb-2">Help & Support</h1>
         <p className="text-muted-foreground">
@@ -230,12 +310,12 @@ export default function Help() {
           </Card>
 
           {conversations.map((conversation) => (
-            <Card key={conversation.id}>
-              <CardHeader>
+            <Card key={conversation.id} className="relative">
+              <CardHeader className="pb-4">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-5 w-5" />
-                    {conversation.subject}
+                    <span className="font-semibold">{conversation.subject}</span>
                   </div>
                   <span className="text-sm text-muted-foreground">
                     {new Date(conversation.createdAt).toLocaleString()}
@@ -243,46 +323,66 @@ export default function Help() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-4 max-h-[400px] overflow-y-auto mb-4 pr-2">
                   {conversation.messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex gap-2 ${
+                      className={cn(
+                        "flex gap-3",
                         message.sender === 'admin' ? 'flex-row' : 'flex-row-reverse'
-                      }`}
+                      )}
                     >
                       <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                        className={cn(
+                          "flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0",
                           message.sender === 'admin'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted'
-                        }`}
+                        )}
                       >
                         <User className="w-4 h-4" />
                       </div>
                       <div
-                        className={`flex flex-col max-w-[80%] ${
+                        className={cn(
+                          "flex flex-col max-w-[80%]",
                           message.sender === 'admin' ? 'items-start' : 'items-end'
-                        }`}
+                        )}
                       >
                         <div
-                          className={`rounded-lg p-3 ${
+                          className={cn(
+                            "rounded-lg p-3 shadow-sm",
                             message.sender === 'admin'
                               ? 'bg-muted'
                               : 'bg-primary text-primary-foreground'
-                          }`}
+                          )}
                         >
-                          <p className="text-sm">{message.content}</p>
+                          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                         </div>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {new Date(message.timestamp).toLocaleTimeString()}
-                        </span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(message.timestamp).toLocaleTimeString()}
+                          </span>
+                          {message.sender === 'user' && (
+                            <span className="text-xs text-muted-foreground">
+                              {message.status === 'sending' && '• Sending...'}
+                              {message.status === 'sent' && '• Sent'}
+                              {message.status === 'delivered' && '• Delivered'}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
+                  {conversation.isTyping && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="text-sm">Admin is typing...</span>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-4 sticky bottom-0 bg-background">
                   <Input
                     placeholder="Type your message..."
                     value={newMessage}
@@ -293,10 +393,12 @@ export default function Help() {
                         handleSendMessage(conversation.id);
                       }
                     }}
+                    className="flex-1"
                   />
                   <Button
                     onClick={() => handleSendMessage(conversation.id)}
                     size="icon"
+                    className="flex-shrink-0"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
