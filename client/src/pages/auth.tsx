@@ -45,7 +45,7 @@ export default function Auth() {
     e.preventDefault();
     try {
       await registerMutation.mutateAsync({
-        username: formData.email.split('@')[0], // Generate username from email
+        username: formData.email, // Use email as username
         email: formData.email,
         password: formData.password,
         fullName: formData.fullName,
