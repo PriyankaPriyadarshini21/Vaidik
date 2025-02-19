@@ -18,6 +18,8 @@ import {
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
 import Auth from "@/pages/auth";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
   return (
@@ -31,17 +33,17 @@ function Router() {
           <main className="flex-1 overflow-y-auto">
             <div className="container mx-auto px-4 py-8">
               <Switch>
-                <Route path="/" component={Dashboard} />
-                <Route path="/ai-documents" component={AIDocuments} />
-                <Route path="/create/:type" component={DocumentCreator} />
-                <Route path="/documents/new" component={DocumentDashboard} />
-                <Route path="/review" component={DocumentReview} />
-                <Route path="/consultation" component={LegalConsultation} />
-                <Route path="/documents" component={DocumentManagement} />
-                <Route path="/pricing" component={Pricing} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/help" component={Help} />
-                <Route path="/profile" component={Profile} />
+                <ProtectedRoute path="/" component={Dashboard} />
+                <ProtectedRoute path="/ai-documents" component={AIDocuments} />
+                <ProtectedRoute path="/create/:type" component={DocumentCreator} />
+                <ProtectedRoute path="/documents/new" component={DocumentDashboard} />
+                <ProtectedRoute path="/review" component={DocumentReview} />
+                <ProtectedRoute path="/consultation" component={LegalConsultation} />
+                <ProtectedRoute path="/documents" component={DocumentManagement} />
+                <ProtectedRoute path="/pricing" component={Pricing} />
+                <ProtectedRoute path="/settings" component={Settings} />
+                <ProtectedRoute path="/help" component={Help} />
+                <ProtectedRoute path="/profile" component={Profile} />
                 <Route component={NotFound} />
               </Switch>
             </div>
@@ -55,8 +57,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
