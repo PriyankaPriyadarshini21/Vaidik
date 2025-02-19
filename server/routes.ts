@@ -4,6 +4,15 @@ import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
 import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema, insertUserSubscriptionSchema } from "@shared/schema";
+import { setupAuth } from "./auth";
+
+// Authentication middleware
+function isAuthenticated(req: Express.Request, res: Express.Response, next: Express.NextFunction) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  next();
+}
 
 // Configure multer for file uploads
 const upload = multer({
@@ -28,8 +37,11 @@ const upload = multer({
 });
 
 export function registerRoutes(app: Express): Server {
-  // Document upload endpoint
-  app.post("/api/documents/upload", upload.single('file'), async (req, res) => {
+  // Set up authentication routes
+  setupAuth(app);
+
+  // Document upload endpoint - protected by auth
+  app.post("/api/documents/upload", isAuthenticated, upload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -38,7 +50,7 @@ export function registerRoutes(app: Express): Server {
       const document = await storage.uploadDocument(req.file, {
         title: req.body.title || req.file.originalname,
         type: req.body.type || 'unknown',
-        userId: req.body.userId,
+        userId: req.user!.id, // Get userId from authenticated user
       });
 
       res.status(201).json(document);
@@ -49,14 +61,14 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Documents endpoints
-  app.get("/api/documents", async (_req, res) => {
-    const documents = await storage.getDocuments();
+  // Protected document routes
+  app.get("/api/documents", isAuthenticated, async (req, res) => {
+    const documents = await storage.getDocuments(req.user!.id);
     res.json(documents);
   });
 
-  app.get("/api/documents/:id", async (req, res) => {
-    const document = await storage.getDocument(Number(req.params.id));
+  app.get("/api/documents/:id", isAuthenticated, async (req, res) => {
+    const document = await storage.getDocument(Number(req.params.id), req.user!.id);
     if (!document) {
       res.status(404).json({ message: "Document not found" });
       return;
@@ -64,8 +76,11 @@ export function registerRoutes(app: Express): Server {
     res.json(document);
   });
 
-  app.post("/api/documents", async (req, res) => {
-    const parsed = insertDocumentSchema.safeParse(req.body);
+  app.post("/api/documents", isAuthenticated, async (req, res) => {
+    const parsed = insertDocumentSchema.safeParse({
+      ...req.body,
+      userId: req.user!.id
+    });
     if (!parsed.success) {
       res.status(400).json({ message: "Invalid document data" });
       return;
@@ -74,33 +89,36 @@ export function registerRoutes(app: Express): Server {
     res.status(201).json(document);
   });
 
-  app.patch("/api/documents/:id", async (req, res) => {
+  app.patch("/api/documents/:id", isAuthenticated, async (req, res) => {
     const parsed = insertDocumentSchema.partial().safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ message: "Invalid document data" });
       return;
     }
     try {
-      const document = await storage.updateDocument(Number(req.params.id), parsed.data);
+      const document = await storage.updateDocument(Number(req.params.id), parsed.data, req.user!.id);
       res.json(document);
     } catch (error) {
       res.status(404).json({ message: "Document not found" });
     }
   });
 
-  app.delete("/api/documents/:id", async (req, res) => {
-    await storage.deleteDocument(Number(req.params.id));
+  app.delete("/api/documents/:id", isAuthenticated, async (req, res) => {
+    await storage.deleteDocument(Number(req.params.id), req.user!.id);
     res.status(204).send();
   });
 
-  // AI Consultation endpoints
-  app.get("/api/consultations", async (_req, res) => {
-    const consultations = await storage.getConsultations();
+  // Consultation endpoints - protected
+  app.get("/api/consultations", isAuthenticated, async (req, res) => {
+    const consultations = await storage.getConsultations(req.user!.id);
     res.json(consultations);
   });
 
-  app.post("/api/consultations", async (req, res) => {
-    const parsed = insertConsultationSchema.safeParse(req.body);
+  app.post("/api/consultations", isAuthenticated, async (req, res) => {
+    const parsed = insertConsultationSchema.safeParse({
+      ...req.body,
+      userId: req.user!.id
+    });
     if (!parsed.success) {
       res.status(400).json({ message: "Invalid consultation data" });
       return;
@@ -109,7 +127,7 @@ export function registerRoutes(app: Express): Server {
     res.status(201).json(consultation);
   });
 
-  // Pricing Plans endpoints
+  // Public pricing plans endpoints
   app.get("/api/pricing-plans", async (_req, res) => {
     try {
       const plans = await storage.getPricingPlans();
@@ -119,24 +137,15 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/pricing-plans", async (req, res) => {
-    const parsed = insertPricingPlanSchema.safeParse(req.body);
-    if (!parsed.success) {
-      res.status(400).json({ message: "Invalid pricing plan data" });
-      return;
-    }
+  // Protected subscription endpoints
+  app.get("/api/users/:userId/subscription", isAuthenticated, async (req, res) => {
     try {
-      const plan = await storage.createPricingPlan(parsed.data);
-      res.status(201).json(plan);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
+      // Only allow users to access their own subscription
+      if (Number(req.params.userId) !== req.user!.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
 
-  // User Subscriptions endpoints
-  app.get("/api/users/:userId/subscription", async (req, res) => {
-    try {
-      const subscription = await storage.getUserSubscription(Number(req.params.userId));
+      const subscription = await storage.getUserSubscription(req.user!.id);
       if (!subscription) {
         res.status(404).json({ message: "No active subscription found" });
         return;
@@ -147,25 +156,8 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/users/:userId/subscription", async (req, res) => {
-    const parsed = insertUserSubscriptionSchema.safeParse({
-      ...req.body,
-      userId: Number(req.params.userId),
-    });
-    if (!parsed.success) {
-      res.status(400).json({ message: "Invalid subscription data" });
-      return;
-    }
-    try {
-      const subscription = await storage.createUserSubscription(parsed.data);
-      res.status(201).json(subscription);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  // Serve uploaded files
-  app.get('/api/preview/:filename', (req, res) => {
+  // Protected file preview
+  app.get('/api/preview/:filename', isAuthenticated, (req, res) => {
     res.sendFile(path.join(process.cwd(), 'uploads', req.params.filename));
   });
 
