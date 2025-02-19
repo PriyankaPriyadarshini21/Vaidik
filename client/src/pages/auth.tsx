@@ -1,25 +1,59 @@
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocation } from "wouter";
 
 export default function Auth() {
+  const [, setLocation] = useLocation();
+  const { user, registerMutation, loginMutation } = useAuth();
   const [formData, setFormData] = useState({
+    username: "",
     fullName: "",
     email: "",
     password: "",
   });
+
+  // Redirect if already logged in
+  if (user) {
+    setLocation("/");
+    return null;
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    try {
+      await loginMutation.mutateAsync({
+        username: formData.email, // Using email as username for login
+        password: formData.password,
+      });
+      setLocation("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await registerMutation.mutateAsync({
+        username: formData.email.split('@')[0], // Generate username from email
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+      });
+      setLocation("/");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
@@ -41,7 +75,7 @@ export default function Auth() {
               </TabsList>
 
               <TabsContent value="login">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input 
@@ -50,7 +84,8 @@ export default function Auth() {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="Enter your email" 
+                      placeholder="Enter your email"
+                      required 
                     />
                   </div>
                   <div className="space-y-2">
@@ -61,15 +96,18 @@ export default function Auth() {
                       type="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      placeholder="Enter your password" 
+                      placeholder="Enter your password"
+                      required 
                     />
                   </div>
-                  <Button type="submit" className="w-full">Login</Button>
+                  <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                    {loginMutation.isPending ? "Logging in..." : "Login"}
+                  </Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="register">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
                     <Input 
@@ -77,7 +115,8 @@ export default function Auth() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      placeholder="Enter your full name" 
+                      placeholder="Enter your full name"
+                      required 
                     />
                   </div>
                   <div className="space-y-2">
@@ -88,7 +127,8 @@ export default function Auth() {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="Enter your email" 
+                      placeholder="Enter your email"
+                      required 
                     />
                   </div>
                   <div className="space-y-2">
@@ -99,10 +139,13 @@ export default function Auth() {
                       type="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      placeholder="Create a password" 
+                      placeholder="Create a password"
+                      required 
                     />
                   </div>
-                  <Button type="submit" className="w-full">Create Account</Button>
+                  <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+                    {registerMutation.isPending ? "Creating Account..." : "Create Account"}
+                  </Button>
                 </form>
               </TabsContent>
             </Tabs>
