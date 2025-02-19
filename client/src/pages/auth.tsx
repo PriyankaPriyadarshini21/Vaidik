@@ -1,53 +1,25 @@
-import { useEffect } from "react";
-import { useLocation } from "wouter";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { insertUserSchema, type InsertUser } from "@shared/schema";
-import { useAuth } from "@/hooks/use-auth";
-
-type LoginFormData = {
-  username: string;
-  password: string;
-};
 
 export default function Auth() {
-  const { loginMutation, registerMutation, user } = useAuth();
-  const [, setLocation] = useLocation();
-
-  const loginForm = useForm<LoginFormData>({
-    defaultValues: {
-      username: "",
-      password: "",
-    },
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
   });
 
-  const registerForm = useForm<InsertUser>({
-    resolver: zodResolver(insertUserSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-      fullName: "",
-    },
-  });
-
-  useEffect(() => {
-    if (user) {
-      setLocation("/");
-    }
-  }, [user, setLocation]);
-
-  const onLoginSubmit = (data: LoginFormData) => {
-    loginMutation.mutate(data);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const onRegisterSubmit = (data: InsertUser) => {
-    registerMutation.mutate(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
   };
 
   return (
@@ -57,11 +29,11 @@ export default function Auth() {
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>Welcome to Vidhik AI</CardTitle>
-            <CardDescription>
-              Login or create an account to continue
-            </CardDescription>
           </CardHeader>
           <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Login or create an account to continue
+            </p>
             <Tabs defaultValue="login" className="space-y-4">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
@@ -69,77 +41,68 @@ export default function Auth() {
               </TabsList>
 
               <TabsContent value="login">
-                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      {...loginForm.register("username")}
-                      placeholder="Enter your username"
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter your email" 
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input
+                    <Input 
                       id="password"
+                      name="password"
                       type="password"
-                      {...loginForm.register("password")}
-                      placeholder="Enter your password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Enter your password" 
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loginMutation.isPending}
-                  >
-                    {loginMutation.isPending ? "Logging in..." : "Login"}
-                  </Button>
+                  <Button type="submit" className="w-full">Login</Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="register">
-                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
-                    <Input
+                    <Input 
                       id="fullName"
-                      {...registerForm.register("fullName")}
-                      placeholder="Enter your full name"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name" 
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      {...registerForm.register("username")}
-                      placeholder="Choose a username"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
+                    <Label htmlFor="register-email">Email</Label>
+                    <Input 
+                      id="register-email"
+                      name="email"
                       type="email"
-                      {...registerForm.register("email")}
-                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter your email" 
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
+                    <Label htmlFor="register-password">Password</Label>
+                    <Input 
+                      id="register-password"
+                      name="password"
                       type="password"
-                      {...registerForm.register("password")}
-                      placeholder="Create a password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Create a password" 
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={registerMutation.isPending}
-                  >
-                    {registerMutation.isPending ? "Creating Account..." : "Create Account"}
-                  </Button>
+                  <Button type="submit" className="w-full">Create Account</Button>
                 </form>
               </TabsContent>
             </Tabs>
@@ -148,9 +111,7 @@ export default function Auth() {
 
         {/* Hero Section */}
         <div className="hidden md:flex flex-1 flex-col justify-center space-y-6">
-          <h1 className="text-4xl font-bold">
-            Transform Your Legal Work with AI
-          </h1>
+          <h1 className="text-4xl font-bold">Transform Your Legal Work with AI</h1>
           <p className="text-xl text-muted-foreground">
             Streamline document creation, get instant analysis, and collaborate seamlessly with our AI-powered legal platform.
           </p>
