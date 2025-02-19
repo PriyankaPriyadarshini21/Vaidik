@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Document } from "@shared/schema";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
@@ -50,11 +50,11 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     },
   });
 
-  // Update the document download handler
+  // Handle document download
   const handleDownload = async () => {
     try {
       // First check if we have a valid document
-      if (!document || !document.id) {
+      if (!document?.id) {
         throw new Error('Invalid document');
       }
 
@@ -65,7 +65,6 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
 
       // Create blob from response
       const blob = await response.blob();
-      // Create object URL
       const url = window.URL.createObjectURL(blob);
 
       // Create temporary link element
@@ -74,9 +73,9 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
       downloadLink.download = document.filename || 'document';
 
       // Append to body, click, and clean up
-      document.body.appendChild(downloadLink);
+      window.document.body.appendChild(downloadLink);
       downloadLink.click();
-      document.body.removeChild(downloadLink);
+      window.document.body.removeChild(downloadLink);
       window.URL.revokeObjectURL(url);
 
       toast({
@@ -118,10 +117,10 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     }
   };
 
-  // Update the export handler similarly
+  // Handle PDF export
   const handleExport = async () => {
     try {
-      if (!document || !document.id) {
+      if (!document?.id) {
         throw new Error('Invalid document');
       }
 
@@ -137,9 +136,9 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
       downloadLink.href = url;
       downloadLink.download = `${document.title || 'document'}.pdf`;
 
-      document.body.appendChild(downloadLink);
+      window.document.body.appendChild(downloadLink);
       downloadLink.click();
-      document.body.removeChild(downloadLink);
+      window.document.body.removeChild(downloadLink);
       window.URL.revokeObjectURL(url);
 
       toast({
