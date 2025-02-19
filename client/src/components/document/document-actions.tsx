@@ -22,6 +22,7 @@ interface DocumentActionsProps {
 export function DocumentActions({ document, variant = "summary" }: DocumentActionsProps) {
   const { toast } = useToast();
 
+  // Delete document mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
       await apiRequest("DELETE", `/api/documents/${document.id}`);
@@ -42,18 +43,19 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     },
   });
 
+  // Handle document download
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/preview/${document.filename}`);
+      const response = await fetch(`/api/documents/${document.id}/download`);
+      if (!response.ok) throw new Error('Download failed');
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = document.filename;
-      document.body.appendChild(a);
-      a.click();
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = document.filename || 'document';
+      link.click();
       window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
     } catch (error) {
       toast({
         title: "Download failed",
@@ -63,26 +65,28 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     }
   };
 
+  // Handle document sharing
   const handleShare = () => {
-    // Implement sharing functionality here
+    // Implement sharing functionality
     toast({
       title: "Share document",
       description: "Sharing functionality will be implemented soon",
     });
   };
 
+  // Handle PDF export
   const handleExport = async () => {
     try {
       const response = await fetch(`/api/documents/${document.id}/export`);
+      if (!response.ok) throw new Error('Export failed');
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${document.title}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${document.title}.pdf`;
+      link.click();
       window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
     } catch (error) {
       toast({
         title: "Export failed",
@@ -92,6 +96,7 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     }
   };
 
+  // Handle document archiving
   const handleArchive = async () => {
     try {
       await apiRequest("PATCH", `/api/documents/${document.id}`, {
@@ -111,6 +116,7 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     }
   };
 
+  // Summary view buttons
   if (variant === "summary") {
     return (
       <div className="flex gap-4 mt-4">
@@ -130,6 +136,7 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     );
   }
 
+  // Sidebar view buttons
   return (
     <Card className="p-4">
       <h2 className="text-lg font-semibold mb-4">Document Actions</h2>
