@@ -55,8 +55,8 @@ export function registerRoutes(app: Express): Server {
 
       res.status(201).json(document);
     } catch (error: any) {
-      res.status(500).json({ 
-        message: error.message || "Failed to upload document" 
+      res.status(500).json({
+        message: error.message || "Failed to upload document"
       });
     }
   });
@@ -108,6 +108,72 @@ export function registerRoutes(app: Express): Server {
     res.status(204).send();
   });
 
+  // Document download endpoint
+  app.get("/api/documents/:id/download", isAuthenticated, async (req, res) => {
+    try {
+      const document = await storage.getDocument(Number(req.params.id), req.user!.id);
+      if (!document || !document.filename) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Send the file
+      const filePath = path.join(process.cwd(), 'uploads', document.filename);
+      res.download(filePath, document.filename, (err) => {
+        if (err) {
+          console.error('Download error:', err);
+          // Only send error if headers haven't been sent yet
+          if (!res.headersSent) {
+            res.status(500).json({ message: "Error downloading file" });
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      res.status(500).json({ message: "Could not process download request" });
+    }
+  });
+
+  // Document export endpoint
+  app.get("/api/documents/:id/export", isAuthenticated, async (req, res) => {
+    try {
+      const document = await storage.getDocument(Number(req.params.id), req.user!.id);
+      if (!document || !document.filename) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      const filePath = path.join(process.cwd(), 'uploads', document.filename);
+      res.download(filePath, `${document.title}.pdf`, (err) => {
+        if (err) {
+          console.error('Export error:', err);
+          if (!res.headersSent) {
+            res.status(500).json({ message: "Error exporting file" });
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      res.status(500).json({ message: "Could not process export request" });
+    }
+  });
+
+  // Preview endpoint (updated with error handling)
+  app.get('/api/preview/:filename', isAuthenticated, (req, res) => {
+    try {
+      const filePath = path.join(process.cwd(), 'uploads', req.params.filename);
+      res.sendFile(filePath, (err) => {
+        if (err) {
+          console.error('Preview error:', err);
+          if (!res.headersSent) {
+            res.status(500).json({ message: "Error previewing file" });
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Preview error:', error);
+      res.status(500).json({ message: "Could not process preview request" });
+    }
+  });
+
   // Consultation endpoints - protected
   app.get("/api/consultations", isAuthenticated, async (req, res) => {
     const consultations = await storage.getConsultations(req.user!.id);
@@ -154,11 +220,6 @@ export function registerRoutes(app: Express): Server {
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
-  });
-
-  // Protected file preview
-  app.get('/api/preview/:filename', isAuthenticated, (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'uploads', req.params.filename));
   });
 
   const httpServer = createServer(app);

@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  Download, 
-  Users, 
-  FileEdit, 
-  Share2, 
-  FileOutput, 
-  Archive, 
+import {
+  Download,
+  Users,
+  FileEdit,
+  Share2,
+  FileOutput,
+  Archive,
   Trash2,
   Copy,
-  Check
+  Check,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -50,23 +50,44 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     },
   });
 
-  // Handle document download
+  // Update the document download handler
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/documents/${document.id}/download`);
-      if (!response.ok) throw new Error('Download failed');
+      // First check if we have a valid document
+      if (!document || !document.id) {
+        throw new Error('Invalid document');
+      }
 
+      const response = await fetch(`/api/documents/${document.id}/download`);
+      if (!response.ok) {
+        throw new Error(await response.text() || 'Download failed');
+      }
+
+      // Create blob from response
       const blob = await response.blob();
+      // Create object URL
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = document.filename || 'document';
-      link.click();
+
+      // Create temporary link element
+      const downloadLink = window.document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = document.filename || 'document';
+
+      // Append to body, click, and clean up
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
       window.URL.revokeObjectURL(url);
-    } catch (error) {
+
+      toast({
+        title: "Download started",
+        description: "Your document is being downloaded",
+      });
+    } catch (error: any) {
+      console.error('Download error:', error);
       toast({
         title: "Download failed",
-        description: "Could not download the document",
+        description: error.message || "Could not download the document",
         variant: "destructive",
       });
     }
@@ -97,23 +118,39 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
     }
   };
 
-  // Handle PDF export
+  // Update the export handler similarly
   const handleExport = async () => {
     try {
+      if (!document || !document.id) {
+        throw new Error('Invalid document');
+      }
+
       const response = await fetch(`/api/documents/${document.id}/export`);
-      if (!response.ok) throw new Error('Export failed');
+      if (!response.ok) {
+        throw new Error(await response.text() || 'Export failed');
+      }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${document.title}.pdf`;
-      link.click();
+
+      const downloadLink = window.document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = `${document.title || 'document'}.pdf`;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
       window.URL.revokeObjectURL(url);
-    } catch (error) {
+
+      toast({
+        title: "Export successful",
+        description: "Your document has been exported as PDF",
+      });
+    } catch (error: any) {
+      console.error('Export error:', error);
       toast({
         title: "Export failed",
-        description: "Could not export the document to PDF",
+        description: error.message || "Could not export the document",
         variant: "destructive",
       });
     }
