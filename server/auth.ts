@@ -69,4 +69,76 @@ export function setupAuth(app: Express) {
       done(error);
     }
   });
+
+  // Registration endpoint
+  app.post("/api/register", async (req, res) => {
+    try {
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Hash password and create user
+      const hashedPassword = await hashPassword(req.body.password);
+      const user = await storage.createUser({
+        ...req.body,
+        password: hashedPassword,
+      });
+
+      // Remove password from response
+      const { password: _, ...userWithoutPassword } = user;
+
+      // Log in the user after registration
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login after registration failed" });
+        }
+        return res.status(200).json(userWithoutPassword);
+      });
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      res.status(500).json({ 
+        message: error.message || "Failed to register user"
+      });
+    }
+  });
+
+  // Login endpoint
+  app.post("/api/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return res.status(500).json({ message: "Authentication error" });
+      }
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login failed" });
+        }
+        const { password: _, ...userWithoutPassword } = user;
+        return res.json(userWithoutPassword);
+      });
+    })(req, res, next);
+  });
+
+  // Logout endpoint
+  app.post("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  // Get current user endpoint
+  app.get("/api/user", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    const { password: _, ...userWithoutPassword } = req.user!;
+    res.json(userWithoutPassword);
+  });
 }
