@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { DocumentActions } from "@/components/document/document-actions";
 
 interface UploadedFile {
   id?: number;
@@ -17,6 +18,7 @@ interface UploadedFile {
   size: string;
   uploadedAt: string;
   tags?: string[];
+  fileUrl?: string; // Added fileUrl
 }
 
 interface AnalysisResult {
@@ -71,7 +73,8 @@ export default function DocumentReview() {
         name: document.filename,
         size: document.fileSize,
         uploadedAt: 'Just now',
-        tags: []
+        tags: [],
+        fileUrl: document.fileUrl // Added fileUrl
       });
 
       // Start AI analysis
@@ -392,22 +395,24 @@ export default function DocumentReview() {
                     </ul>
                   </div>
 
-                  <div className="flex gap-4 pt-4">
-                    <Button onClick={downloadReport} className="flex items-center gap-2">
-                      <Download className="h-4 w-4" />
-                      Download Report
-                    </Button>
-                    <Link href="/consultation">
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4" />
-                        Consult an Expert
-                      </Button>
-                    </Link>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Edit className="h-4 w-4" />
-                      Edit Document
-                    </Button>
-                  </div>
+                  <DocumentActions 
+                    document={{
+                      id: currentFile?.id || 0,
+                      title: currentFile?.name || '',
+                      type: 'document',
+                      content: {},
+                      status: 'active',
+                      userId: 0, 
+                      filename: currentFile?.name || '',
+                      fileSize: currentFile?.size || '',
+                      fileUrl: currentFile?.fileUrl || '',
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                      tags: currentFile?.tags || [],
+                      expiresAt: null
+                    }}
+                    variant="summary"
+                  />
                 </CardContent>
               </Card>
 
@@ -488,23 +493,25 @@ export default function DocumentReview() {
                       Document Actions
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <Share className="h-4 w-4" />
-                      Share Document
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <FileText className="h-4 w-4" />
-                      Export as PDF
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <Archive className="h-4 w-4" />
-                      Archive Document
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start gap-2 text-red-600 hover:text-red-600">
-                      <Trash className="h-4 w-4" />
-                      Delete Document
-                    </Button>
+                  <CardContent>
+                    <DocumentActions
+                      document={{
+                        id: currentFile?.id || 0,
+                        title: currentFile?.name || '',
+                        type: 'document',
+                        content: {},
+                        status: 'active',
+                        userId: 0, 
+                        filename: currentFile?.name || '',
+                        fileSize: currentFile?.size || '',
+                        fileUrl: currentFile?.fileUrl || '',
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        tags: currentFile?.tags || [],
+                        expiresAt: null
+                      }}
+                      variant="sidebar"
+                    />
                   </CardContent>
                 </Card>
               </div>
