@@ -75,9 +75,9 @@ export default function Help() {
 
     // Simulate typing indicator
     setTimeout(() => {
-      setConversations(prev => 
-        prev.map(conv => 
-          conv.id === newConversation.id 
+      setConversations(prev =>
+        prev.map(conv =>
+          conv.id === newConversation.id
             ? { ...conv, isTyping: true }
             : conv
         )
@@ -144,7 +144,7 @@ export default function Help() {
           if (conv.id === conversationId) {
             return {
               ...conv,
-              messages: conv.messages.map(msg => 
+              messages: conv.messages.map(msg =>
                 msg.status === 'sending' ? { ...msg, status: 'sent' } : msg
               )
             };
@@ -156,9 +156,9 @@ export default function Help() {
 
     // Show typing indicator
     setTimeout(() => {
-      setConversations(prev => 
-        prev.map(conv => 
-          conv.id === conversationId 
+      setConversations(prev =>
+        prev.map(conv =>
+          conv.id === conversationId
             ? { ...conv, isTyping: true }
             : conv
         )
@@ -235,8 +235,8 @@ export default function Help() {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <a 
-                  href="mailto:contact@vidhikai.com" 
+                <a
+                  href="mailto:contact@vidhikai.com"
                   className="text-primary hover:underline"
                 >
                   contact@vidhikai.com
@@ -310,7 +310,7 @@ export default function Help() {
           </Card>
 
           {conversations.map((conversation) => (
-            <Card key={conversation.id} className="relative">
+            <Card key={conversation.id} className="relative max-w-3xl mx-auto">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -323,12 +323,12 @@ export default function Help() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4 max-h-[400px] overflow-y-auto mb-4 pr-2">
+                <div className="space-y-4 h-[400px] overflow-y-auto mb-4 pr-2 scrollbar-thin scrollbar-thumb-border">
                   {conversation.messages.map((message) => (
                     <div
                       key={message.id}
                       className={cn(
-                        "flex gap-3",
+                        "flex gap-3 px-2",
                         message.sender === 'admin' ? 'flex-row' : 'flex-row-reverse'
                       )}
                     >
@@ -344,7 +344,7 @@ export default function Help() {
                       </div>
                       <div
                         className={cn(
-                          "flex flex-col max-w-[80%]",
+                          "flex flex-col max-w-[70%]",
                           message.sender === 'admin' ? 'items-start' : 'items-end'
                         )}
                       >
@@ -358,7 +358,7 @@ export default function Help() {
                         >
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-1 px-1">
                           <span className="text-xs text-muted-foreground">
                             {new Date(message.timestamp).toLocaleTimeString()}
                           </span>
@@ -374,7 +374,7 @@ export default function Help() {
                     </div>
                   ))}
                   {conversation.isTyping && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="flex items-center gap-2 text-muted-foreground px-4">
                       <Loader2 className="h-4 w-4 animate-spin" />
                       <span className="text-sm">Admin is typing...</span>
                     </div>
@@ -382,7 +382,7 @@ export default function Help() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                <div className="flex gap-2 mt-4 sticky bottom-0 bg-background">
+                <div className="flex gap-2 mt-4 sticky bottom-0 bg-background p-2 border-t">
                   <Input
                     placeholder="Type your message..."
                     value={newMessage}
