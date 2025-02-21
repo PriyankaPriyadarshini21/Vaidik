@@ -73,7 +73,6 @@ export default function Help() {
     });
     setQuery({ name: '', email: '', subject: '', message: '' });
 
-    // Simulate typing indicator
     setTimeout(() => {
       setConversations(prev =>
         prev.map(conv =>
@@ -84,7 +83,6 @@ export default function Help() {
       );
     }, 1000);
 
-    // Simulate admin response
     setTimeout(() => {
       setConversations(prev =>
         prev.map(conv => {
@@ -137,7 +135,6 @@ export default function Help() {
     const message = newMessage;
     setNewMessage('');
 
-    // Update status to sent
     setTimeout(() => {
       setConversations(prev =>
         prev.map(conv => {
@@ -154,7 +151,6 @@ export default function Help() {
       );
     }, 500);
 
-    // Show typing indicator
     setTimeout(() => {
       setConversations(prev =>
         prev.map(conv =>
@@ -165,7 +161,6 @@ export default function Help() {
       );
     }, 1000);
 
-    // Simulate admin response
     setTimeout(() => {
       setConversations(prev =>
         prev.map(conv => {
@@ -323,7 +318,7 @@ export default function Help() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4 h-[400px] overflow-y-auto mb-4 pr-2 scrollbar-thin scrollbar-thumb-border">
+                <div className="space-y-4 h-[400px] overflow-y-auto mb-4 pr-2">
                   {conversation.messages.map((message) => (
                     <div
                       key={message.id}
