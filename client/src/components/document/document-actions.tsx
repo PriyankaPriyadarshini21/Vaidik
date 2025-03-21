@@ -15,7 +15,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Document } from "@shared/schema";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
@@ -53,7 +59,6 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
   // Handle document download
   const handleDownload = async () => {
     try {
-      // First check if we have a valid document
       if (!document?.id) {
         throw new Error('Invalid document');
       }
@@ -63,16 +68,12 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
         throw new Error(await response.text() || 'Download failed');
       }
 
-      // Create blob from response
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-
-      // Create temporary link element
       const downloadLink = window.document.createElement('a');
       downloadLink.href = url;
       downloadLink.download = document.filename || 'document';
 
-      // Append to body, click, and clean up
       window.document.body.appendChild(downloadLink);
       downloadLink.click();
       window.document.body.removeChild(downloadLink);
@@ -131,7 +132,6 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-
       const downloadLink = window.document.createElement('a');
       downloadLink.href = url;
       downloadLink.download = `${document.title || 'document'}.pdf`;
@@ -178,9 +178,12 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
   // Share Dialog Component
   const ShareDialog = () => (
     <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Share document</DialogTitle>
+          <DialogDescription>
+            Share this document with others by copying the link below.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
@@ -188,11 +191,13 @@ export function DocumentActions({ document, variant = "summary" }: DocumentActio
               readOnly
               value={`${window.location.origin}/documents/${document.id}`}
               className="flex-1"
+              aria-label="Share link"
             />
             <Button
               size="icon"
               onClick={handleCopyLink}
               className="shrink-0"
+              aria-label={copied ? "Link copied" : "Copy link"}
             >
               {copied ? (
                 <Check className="h-4 w-4" />
