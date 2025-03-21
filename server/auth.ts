@@ -130,19 +130,20 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/logout", (req, res) => {
-    const user = req.user;
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
+    if (req.session) {
       req.session.destroy((err) => {
         if (err) {
-          return res.status(500).json({ message: "Session destruction failed" });
+          console.error("Session destruction error:", err);
+          return res.status(500).json({ message: "Logout failed" });
         }
-        res.clearCookie('vidhik.sid');
-        res.json({ message: "Logged out successfully" });
+        req.logout(() => {
+          res.clearCookie('vidhik.sid');
+          res.status(200).json({ message: "Logged out successfully" });
+        });
       });
-    });
+    } else {
+      res.status(200).json({ message: "Already logged out" });
+    }
   });
 
   app.get("/api/user", (req, res) => {
