@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,11 +17,12 @@ export default function Auth() {
     password: "",
   });
 
-  // Redirect if already logged in
-  if (user) {
-    setLocation("/");
-    return null;
-  }
+  // Handle redirect in useEffect
+  useEffect(() => {
+    if (user) {
+      setLocation("/");
+    }
+  }, [user, setLocation]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,10 +33,9 @@ export default function Auth() {
     e.preventDefault();
     try {
       await loginMutation.mutateAsync({
-        username: formData.email, // Using email as username for login
+        username: formData.email,
         password: formData.password,
       });
-      setLocation("/");
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -45,16 +45,20 @@ export default function Auth() {
     e.preventDefault();
     try {
       await registerMutation.mutateAsync({
-        username: formData.email, // Use email as username
+        username: formData.email,
         email: formData.email,
         password: formData.password,
         fullName: formData.fullName,
       });
-      setLocation("/");
     } catch (error) {
       console.error("Registration failed:", error);
     }
   };
+
+  // Return null if we're already logged in
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
