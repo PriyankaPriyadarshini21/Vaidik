@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-// FormFields type update to fix duplicates
+// Update FormFields type to include Vendor Agreement fields
 type FormFields = {
   // Employment Agreement Fields
   dateOfAgreement?: string;
@@ -89,9 +89,17 @@ type FormFields = {
   endDate?: string;
   compensationAmount?: string;
   paymentTerms?: string | "installments" | "lumpsum";
+  // Vendor Agreement Fields
+  vendorName?: string;
+  vendorType?: "company" | "individual";
+  vendorAddress?: string;
+  vendorTitle?: string;
+  goodsDescription?: string;
+  pricePerUnit?: string;
+  deliveryAddress?: string;
 };
 
-// Dynamic form schema based on document type
+// Add vendor schema to getFormSchema function
 const getFormSchema = (type: string) => {
   switch (type) {
     case "employment":
@@ -197,6 +205,27 @@ const getFormSchema = (type: string) => {
         noticePeriod: z.string().min(1, "Notice Period is required"),
         arbitrationLocation: z.string().min(1, "Arbitration Location is required"),
         jurisdiction: z.string().min(1, "Jurisdiction is required"),
+      });
+    case "vendor":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        vendorName: z.string().min(1, "Vendor Name is required"),
+        vendorType: z.enum(["company", "individual"]),
+        vendorAddress: z.string().min(1, "Vendor Address is required"),
+        vendorTitle: z.string().min(1, "Vendor Title is required"),
+        companyName: z.string().min(1, "Company Name is required"),
+        companyAddress: z.string().min(1, "Company Address is required"),
+        companyTitle: z.string().min(1, "Company Title is required"),
+        goodsDescription: z.string().min(1, "Description of Goods/Services is required"),
+        startDate: z.string().min(1, "Start Date is required"),
+        endDate: z.string().min(1, "End Date is required"),
+        pricePerUnit: z.string().min(1, "Price per Unit/Service is required"),
+        paymentTerms: z.string().min(1, "Payment Terms are required"),
+        paymentMode: z.string().min(1, "Mode of Payment is required"),
+        deliveryAddress: z.string().min(1, "Delivery Address is required"),
+        terminationNoticePeriod: z.string().min(1, "Termination Notice Period is required"),
+        nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
+        arbitrationCity: z.string().min(1, "Arbitration City is required"),
       });
     default:
       return z.object({});
@@ -311,6 +340,26 @@ export default function DocumentCreator() {
         arbitrationLocation: "",
         jurisdiction: "",
       }),
+      ...(type === "vendor" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        vendorName: "",
+        vendorType: "company",
+        vendorAddress: "",
+        vendorTitle: "",
+        companyName: "",
+        companyAddress: "",
+        companyTitle: "",
+        goodsDescription: "",
+        startDate: "",
+        endDate: "",
+        pricePerUnit: "",
+        paymentTerms: "30",
+        paymentMode: "",
+        deliveryAddress: "",
+        terminationNoticePeriod: "30",
+        nonPaymentNoticePeriod: "15",
+        arbitrationCity: "",
+      }),
     },
   });
 
@@ -342,6 +391,8 @@ export default function DocumentCreator() {
         return "Consulting Agreement";
       case "commission":
         return "Commission Agreement";
+      case "vendor":
+        return "Vendor Agreement";
       default:
         return "Document";
     }
@@ -1735,6 +1786,279 @@ export default function DocumentCreator() {
                   )}
                 />
               </div>
+            </div>
+          </>
+        );
+      case "vendor":
+        return (
+          <>
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="vendorType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select vendor type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="company">Company</SelectItem>
+                          <SelectItem value="individual">Individual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="vendorName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vendor's Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter vendor's full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="vendorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vendor's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter vendor's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="vendorTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vendor's Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., CEO, Manager" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company's Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company's Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Director, Manager" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="companyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter registered address of the company" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="goodsDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description of Goods/Services</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter details of goods/services to be supplied" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="pricePerUnit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price per Unit/Service (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 30, 45" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="paymentMode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mode of Payment</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Bank Transfer, UPI, Cheque" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="deliveryAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter delivery address for goods/services" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="terminationNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nonPaymentNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Payment Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="arbitrationCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter city for arbitration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </>
         );
