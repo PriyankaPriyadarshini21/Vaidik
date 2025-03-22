@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
@@ -23,6 +24,7 @@ import { User } from "@shared/schema";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import { Loader2 } from "lucide-react";
 import {
   Upload,
   CheckCircle,
@@ -55,8 +57,10 @@ export default function Profile() {
   const queryClient = useQueryClient();
 
   // Fetch user data
-  const { data: userInfo, isLoading } = useQuery<User>({
+  const { data: userInfo, isLoading, error } = useQuery<User>({
     queryKey: ["/api/user"],
+    retry: 2,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const response = await apiRequest("GET", "/api/user");
       if (!response.ok) {
@@ -69,10 +73,10 @@ export default function Profile() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: userInfo?.fullName || "",
-      email: userInfo?.email || "",
-      phone: userInfo?.phone || "",
-      company: userInfo?.company || "",
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
     },
   });
 
@@ -139,7 +143,22 @@ export default function Profile() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
+          <p className="text-destructive">Failed to load profile data</p>
+        </div>
+      </div>
+    );
   }
 
   const [subscription] = useState({
@@ -183,7 +202,6 @@ export default function Profile() {
     });
   };
 
-
   return (
     <div className="space-y-6">
       <div>
@@ -197,19 +215,17 @@ export default function Profile() {
         <TabsList>
           <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="subscription">Subscription</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="support">Support</TabsTrigger>
         </TabsList>
 
-        {/* Account Tab */}
-        <TabsContent value="account" className="space-y-6">
+        <TabsContent value="account">
           <Card>
             <CardHeader>
               <CardTitle>Profile Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center gap-6">
+            <CardContent>
+              <div className="flex items-center gap-6 mb-6">
                 <div className="relative">
                   <Avatar className="h-24 w-24">
                     <AvatarImage src={userInfo?.avatarUrl} />
@@ -318,8 +334,6 @@ export default function Profile() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        {/* Subscription Tab */}
         <TabsContent value="subscription" className="space-y-6">
           <Card>
             <CardHeader>
@@ -386,79 +400,6 @@ export default function Profile() {
           </Card>
         </TabsContent>
 
-        {/* Documents Tab */}
-        <TabsContent value="documents" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Documents</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                {documents.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <FileText className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-medium">{doc.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {doc.category} • {doc.date}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h4 className="font-medium">Upcoming Consultations</h4>
-                {consultations.map((consultation) => (
-                  <div
-                    key={consultation.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <Calendar className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-medium">
-                          Consultation with {consultation.lawyer}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {consultation.date} at {consultation.time}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        Reschedule
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Security Tab */}
         <TabsContent value="security" className="space-y-6">
           <Card>
             <CardHeader>
@@ -528,7 +469,6 @@ export default function Profile() {
           </Card>
         </TabsContent>
 
-        {/* Support Tab */}
         <TabsContent value="support" className="space-y-6">
           <Card>
             <CardHeader>
