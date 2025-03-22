@@ -94,8 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Logged out successfully",
         description: "You have been logged out of your account.",
       });
-      // Redirect to auth page after state is cleared
-      setTimeout(() => setLocation("/auth"), 100);
+      // Add delay for the exit animation to complete
+      setTimeout(() => setLocation("/auth"), 300);
     },
     onError: (error: Error) => {
       toast({
