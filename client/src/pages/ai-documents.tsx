@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Users, Scale, Building2, Shield, FileSpreadsheet, Plus } from "lucide-react";
+import { FileText, Users, Scale, Building2, Shield, FileSpreadsheet, Plus, FileCheck, Briefcase, Code, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
 
@@ -12,25 +12,44 @@ interface DocumentType {
 }
 
 const documentTypes: DocumentType[] = [
-  // Business Agreements
-  { id: 'nda', name: 'Non-Disclosure Agreement', icon: FileText, category: 'Business' },
-  { id: 'partnership', name: 'Partnership Agreement', icon: Users, category: 'Business' },
-  { id: 'employment', name: 'Employment Agreement', icon: Users, category: 'Business' },
-  { id: 'service', name: 'Service Agreement', icon: FileText, category: 'Business' },
+  // Employment & HR Documents
+  { id: 'employment', name: 'Employee Agreement', icon: Users, category: 'Employment & HR' },
+  { id: 'freelancer', name: 'Freelancer Agreement', icon: Users, category: 'Employment & HR' },
+  { id: 'consulting', name: 'Consulting Agreement', icon: Users, category: 'Employment & HR' },
+  { id: 'commission', name: 'Commission Agreement', icon: Users, category: 'Employment & HR' },
 
-  // Property & Real Estate
-  { id: 'lease', name: 'Lease Agreement', icon: Building2, category: 'Property' },
-  { id: 'sale-deed', name: 'Sale Deed', icon: Building2, category: 'Property' },
-  { id: 'rental', name: 'Rental Agreement', icon: Building2, category: 'Property' },
+  // Service Agreements
+  { id: 'service', name: 'Service Agreement', icon: FileCheck, category: 'Services' },
+  { id: 'software-development', name: 'Software Development Agreement', icon: Code, category: 'Services' },
+  { id: 'software-licensing', name: 'Software Licensing Agreement', icon: Code, category: 'Services' },
+  { id: 'marketing', name: 'Marketing/Advertising Agreement', icon: FileText, category: 'Services' },
+  { id: 'event-management', name: 'Event Management Agreement', icon: FileText, category: 'Services' },
+  { id: 'vendor', name: 'Vendor Agreement', icon: FileText, category: 'Services' },
+  { id: 'dpa', name: 'Data Processing Agreement (DPA)', icon: Shield, category: 'Services' },
 
-  // Financial Documents
-  { id: 'loan', name: 'Loan Agreement', icon: FileSpreadsheet, category: 'Financial' },
-  { id: 'investment', name: 'Investment Contract', icon: FileSpreadsheet, category: 'Financial' },
+  // Business & Commercial
+  { id: 'sales', name: 'Sales Agreement', icon: Briefcase, category: 'Business' },
+  { id: 'distribution', name: 'Distribution Agreement', icon: Briefcase, category: 'Business' },
+  { id: 'revenue-sharing', name: 'Revenue Sharing Agreement', icon: DollarSign, category: 'Business' },
+  { id: 'affiliate', name: 'Affiliate/Referral Agreement', icon: Users, category: 'Business' },
+  { id: 'event-management-business', name: 'Event Management Agreement', icon: FileText, category: 'Business' },
+  { id: 'commission-business', name: 'Commission Agreement', icon: DollarSign, category: 'Business' },
 
-  // Personal Legal Documents
-  { id: 'affidavit', name: 'Affidavit', icon: Scale, category: 'Personal' },
-  { id: 'will', name: 'Will', icon: Scale, category: 'Personal' },
-  { id: 'poa', name: 'Power of Attorney', icon: Shield, category: 'Personal' },
+  // Investment & Securities
+  { id: 'equity-crowdfunding', name: 'Equity Crowdfunding Agreement', icon: DollarSign, category: 'Investment' },
+  { id: 'voting-rights', name: 'Voting Rights Agreement', icon: FileText, category: 'Investment' },
+  { id: 'preferred-stock', name: 'Preferred Stock Agreement', icon: FileText, category: 'Investment' },
+  { id: 'founders', name: 'Founders Agreement', icon: Users, category: 'Investment' },
+  { id: 'side-letter', name: 'Side Letter Agreement', icon: FileText, category: 'Investment' },
+  { id: 'promissory-note', name: 'Promissory Note / Loan Agreement', icon: FileText, category: 'Investment' },
+  { id: 'loan', name: 'Loan Agreement', icon: DollarSign, category: 'Investment' },
+  { id: 'investment', name: 'Investment Agreement', icon: DollarSign, category: 'Investment' },
+  { id: 'kiss', name: 'KISS Agreement', icon: FileText, category: 'Investment' },
+  { id: 'safe', name: 'SAFE Agreement', icon: FileText, category: 'Investment' },
+  { id: 'convertible-note', name: 'Convertible Note Agreement', icon: FileText, category: 'Investment' },
+  { id: 'stock-purchase', name: 'Stock Purchase Agreement', icon: FileText, category: 'Investment' },
+  { id: 'subscription', name: 'Subscription Agreement', icon: FileText, category: 'Investment' },
+  { id: 'shareholders', name: 'Shareholders Agreement', icon: Users, category: 'Investment' }
 ];
 
 export default function AIDocuments() {
@@ -66,7 +85,7 @@ export default function AIDocuments() {
       {/* Document Categories */}
       {categories.map(category => (
         <div key={category}>
-          <h2 className="text-lg font-semibold mb-4">{category} Documents</h2>
+          <h2 className="text-lg font-semibold mb-4">{category}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredDocuments
               .filter(doc => doc.category === category)
