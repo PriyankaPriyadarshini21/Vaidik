@@ -60,13 +60,25 @@ const profileFormSchema = z.object({
   company: z.string().min(1, "Company name is required"),
 });
 
+const passwordFormSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 
 export default function Profile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [smsNotifications, setSmsNotifications] = useState(false);
 
-  // Fetch user data
   const { data: userInfo, isLoading, error } = useQuery<User>({
     queryKey: ["/api/user"],
     retry: 2,
@@ -90,7 +102,15 @@ export default function Profile() {
     },
   });
 
-  // Update form values when user data is loaded
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordFormSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
   useEffect(() => {
     if (userInfo) {
       form.reset({
@@ -126,6 +146,30 @@ export default function Profile() {
     },
   });
 
+  const updatePasswordMutation = useMutation({
+    mutationFn: async (data: PasswordFormValues) => {
+      const response = await apiRequest("POST", "/api/user/password", data);
+      if (!response.ok) {
+        throw new Error("Failed to update password");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Password Updated",
+        description: "Your password has been successfully updated.",
+      });
+      passwordForm.reset();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -150,6 +194,48 @@ export default function Profile() {
         });
       }
     }
+  };
+
+  const handleTwoFactorToggle = (checked: boolean) => {
+    setIsTwoFactorEnabled(checked);
+    toast({
+      title: checked ? "2FA Enabled" : "2FA Disabled",
+      description: checked
+        ? "Two-factor authentication has been enabled for your account."
+        : "Two-factor authentication has been disabled.",
+    });
+  };
+
+  const handleEmailNotificationsToggle = (checked: boolean) => {
+    setEmailNotifications(checked);
+    toast({
+      title: "Email Notifications " + (checked ? "Enabled" : "Disabled"),
+      description: "Your email notification preferences have been updated.",
+    });
+  };
+
+  const handleSMSNotificationsToggle = (checked: boolean) => {
+    setSmsNotifications(checked);
+    toast({
+      title: "SMS Notifications " + (checked ? "Enabled" : "Disabled"),
+      description: "Your SMS notification preferences have been updated.",
+    });
+  };
+
+  const startChat = () => {
+    toast({
+      title: "Chat Initiated",
+      description: "Connecting you with our support team...",
+    });
+    // Here you would typically initialize your chat widget/component
+  };
+
+  const sendEmail = () => {
+    window.location.href = "mailto:support@yourdomain.com";
+    toast({
+      title: "Email Client Opened",
+      description: "You can now compose your email to our support team.",
+    });
   };
 
   if (isLoading) {
@@ -205,12 +291,6 @@ export default function Profile() {
     },
   ]);
 
-  const handlePasswordChange = () => {
-    toast({
-      title: "Password Changed",
-      description: "Your password has been successfully updated.",
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -502,21 +582,55 @@ export default function Profile() {
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h4 className="font-medium">Change Password</h4>
-                <div className="grid gap-4 max-w-md">
-                  <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
-                    <Input id="current-password" type="password" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input id="new-password" type="password" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
-                    <Input id="confirm-password" type="password" />
-                  </div>
-                  <Button onClick={handlePasswordChange}>Update Password</Button>
-                </div>
+                <Form {...passwordForm}>
+                  <form onSubmit={passwordForm.handleSubmit(data => updatePasswordMutation.mutate(data))} className="space-y-4 max-w-md">
+                    <FormField
+                      control={passwordForm.control}
+                      name="currentPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Current Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={passwordForm.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={passwordForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      disabled={updatePasswordMutation.isPending}
+                    >
+                      {updatePasswordMutation.isPending ? "Updating..." : "Update Password"}
+                    </Button>
+                  </form>
+                </Form>
               </div>
 
               <Separator />
@@ -530,7 +644,10 @@ export default function Profile() {
                       Protect your account with an additional layer of security
                     </p>
                   </div>
-                  <Switch />
+                  <Switch
+                    checked={isTwoFactorEnabled}
+                    onCheckedChange={handleTwoFactorToggle}
+                  />
                 </div>
               </div>
 
@@ -546,7 +663,10 @@ export default function Profile() {
                         Receive updates about your documents and consultations
                       </p>
                     </div>
-                    <Switch />
+                    <Switch
+                      checked={emailNotifications}
+                      onCheckedChange={handleEmailNotificationsToggle}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
@@ -555,7 +675,10 @@ export default function Profile() {
                         Get important alerts on your phone
                       </p>
                     </div>
-                    <Switch />
+                    <Switch
+                      checked={smsNotifications}
+                      onCheckedChange={handleSMSNotificationsToggle}
+                    />
                   </div>
                 </div>
               </div>
@@ -581,7 +704,9 @@ export default function Profile() {
                         </p>
                       </div>
                     </div>
-                    <Button className="w-full mt-4">Start Chat</Button>
+                    <Button className="w-full mt-4" onClick={startChat}>
+                      Start Chat
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -596,7 +721,7 @@ export default function Profile() {
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" className="w-full mt-4">
+                    <Button variant="outline" className="w-full mt-4" onClick={sendEmail}>
                       Send Email
                     </Button>
                   </CardContent>
