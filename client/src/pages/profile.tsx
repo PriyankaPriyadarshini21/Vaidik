@@ -18,12 +18,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import { User } from "@shared/schema";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import {
   Upload,
@@ -42,6 +48,9 @@ import {
   Shield,
   HelpCircle
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { User } from "@shared/schema";
+
 
 const profileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -347,7 +356,45 @@ export default function Profile() {
                     Renewal on {subscription.renewalDate}
                   </p>
                 </div>
-                <Button>Upgrade Plan</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Upgrade Plan</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Upgrade Your Plan</DialogTitle>
+                      <DialogDescription>
+                        Choose from our available plans to upgrade your subscription.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium">Premium Plan</h4>
+                          <p className="text-sm text-muted-foreground">₹999/month</p>
+                        </div>
+                        <Button onClick={() => {
+                          toast({
+                            title: "Plan Upgrade Initiated",
+                            description: "You will be redirected to the payment page."
+                          });
+                        }}>Select</Button>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium">Enterprise Plan</h4>
+                          <p className="text-sm text-muted-foreground">₹1999/month</p>
+                        </div>
+                        <Button onClick={() => {
+                          toast({
+                            title: "Plan Upgrade Initiated",
+                            description: "You will be redirected to the payment page."
+                          });
+                        }}>Select</Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="space-y-2">
@@ -362,16 +409,52 @@ export default function Profile() {
 
               <div className="space-y-4">
                 <h4 className="font-medium">Payment Methods</h4>
-                <div className="flex items-center gap-4 p-4 border rounded-lg">
-                  <CreditCard className="h-6 w-6" />
-                  <div>
-                    <p className="font-medium">•••• •••• •••• 4242</p>
-                    <p className="text-sm text-muted-foreground">Expires 12/25</p>
-                  </div>
-                  <Button variant="ghost" size="sm" className="ml-auto">
-                    Edit
-                  </Button>
-                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-accent">
+                      <CreditCard className="h-6 w-6" />
+                      <div>
+                        <p className="font-medium">•••• •••• •••• 4242</p>
+                        <p className="text-sm text-muted-foreground">Expires 12/25</p>
+                      </div>
+                      <Button variant="ghost" size="sm" className="ml-auto">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Update Payment Method</DialogTitle>
+                      <DialogDescription>
+                        Enter your new card details below.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="card-number">Card Number</Label>
+                        <Input id="card-number" placeholder="**** **** **** ****" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="expiry">Expiry Date</Label>
+                          <Input id="expiry" placeholder="MM/YY" />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="cvc">CVC</Label>
+                          <Input id="cvc" placeholder="***" />
+                        </div>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" onClick={() => {
+                        toast({
+                          title: "Payment Method Updated",
+                          description: "Your card details have been successfully updated."
+                        });
+                      }}>Save Changes</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="space-y-4">
@@ -388,7 +471,17 @@ export default function Profile() {
                           Feb {i}, 2025
                         </p>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          // Simulate invoice download
+                          toast({
+                            title: "Invoice Downloaded",
+                            description: `Invoice #${2025001 + i} has been downloaded.`
+                          });
+                        }}
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Download
                       </Button>
