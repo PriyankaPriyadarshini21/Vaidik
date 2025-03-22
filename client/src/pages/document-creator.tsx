@@ -28,6 +28,26 @@ import { format } from "date-fns";
 
 // Update FormFields type to include DPA fields
 type FormFields = {
+  // Software Development Agreement Fields
+  softwareClientName?: string;
+  softwareClientAddress?: string;
+  developerName?: string;
+  developerAddress?: string;
+  projectRequirements?: string;
+  projectTimeline?: string;
+  projectCost?: string;
+  upfrontPayment?: string;
+  milestonePayment?: string;
+  milestoneName?: string;
+  finalPayment?: string;
+  softwarePaymentMethod?: string;
+  invoiceDeadline?: string;
+  warrantyPeriod?: string;
+  generalTerminationPeriod?: string;
+  breachNoticePeriod?: string;
+  softwareArbitrationVenue?: string;
+  noticeMethod?: string;
+
   // Event Management Agreement Fields
   eventClientName?: string;
   eventClientAddress?: string;
@@ -323,6 +343,30 @@ const getFormSchema = (type: string) => {
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
       });
+    case "software-development":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        softwareClientName: z.string().min(1, "Client Name is required"),
+        softwareClientAddress: z.string().min(1, "Client Address is required"),
+        developerName: z.string().min(1, "Developer Name is required"),
+        developerAddress: z.string().min(1, "Developer Address is required"),
+        projectRequirements: z.string().min(1, "Project Requirements are required"),
+        projectTimeline: z.string().min(1, "Project Timeline is required"), 
+        projectCost: z.string().min(1, "Project Cost is required"),
+        upfrontPayment: z.string().min(1, "Upfront Payment percentage is required"),
+        milestonePayment: z.string().min(1, "Milestone Payment percentage is required"),
+        milestoneName: z.string().min(1, "Milestone Name is required"),
+        finalPayment: z.string().min(1, "Final Payment percentage is required"),
+        softwarePaymentMethod: z.string().min(1, "Payment Method is required"),
+        invoiceDeadline: z.string().min(1, "Invoice Payment Deadline is required"),
+        warrantyPeriod: z.string().min(1, "Warranty Period is required"),
+        generalTerminationPeriod: z.string().min(1, "General Termination Period is required"),
+        breachNoticePeriod: z.string().min(1, "Breach Notice Period is required"),
+        nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
+        softwareArbitrationVenue: z.string().min(1, "Arbitration Venue is required"),
+        noticeMethod: z.string().min(1, "Notice Method is required"),
+      });
+
     case "dpa":
       return z.object({
         controllerName: z.string().min(1, "Controller Name is required"),
@@ -522,6 +566,28 @@ export default function DocumentCreator() {
         nonPaymentNoticePeriod: "15",
         arbitrationCity: "",
       }),
+      ...(type === "software-development" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        softwareClientName: "",
+        softwareClientAddress: "",
+        developerName: "",
+        developerAddress: "",
+        projectRequirements: "",
+        projectTimeline: "",
+        projectCost: "",
+        upfrontPayment: "30",
+        milestonePayment: "40",
+        milestoneName: "Beta Release",
+        finalPayment: "30",
+        softwarePaymentMethod: "",
+        invoiceDeadline: "30",
+        warrantyPeriod: "90",
+        generalTerminationPeriod: "30",
+        breachNoticePeriod: "15",
+        nonPaymentNoticePeriod: "15",
+        softwareArbitrationVenue: "",
+        noticeMethod: "",
+      }),
       ...(type === "dpa" && {
         controllerName: "",
         controllerAddress: "",
@@ -586,6 +652,8 @@ export default function DocumentCreator() {
         return "Commission Agreement";
       case "vendor":
         return "Vendor Agreement";
+      case "software-development":
+        return "Software Development Agreement";  
       case "dpa":
         return "Data Processing Agreement";
       default:
@@ -595,6 +663,310 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "software-development":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="softwareClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter client's full name/company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="developerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Developer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter developer's full name/company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="softwareClientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter client's principal place of business address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="developerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Developer Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter developer's principal place of business address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Project Scope</h3>
+              <FormField
+                control={form.control}
+                name="projectRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Requirements and Functionalities</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter detailed description of the project requirements and functionalities"
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="projectTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Timeline for Completion</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter specific timeline for various project phases"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <FormField
+                control={form.control}
+                name="projectCost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Project Cost (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="Enter total project cost" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="upfrontPayment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Upfront Payment (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter percentage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="milestonePayment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Milestone Payment (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter percentage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="finalPayment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Final Payment (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter percentage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="milestoneName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Milestone Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter milestone name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="softwarePaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., bank transfer, PayPal" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="invoiceDeadline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Invoice Payment Deadline (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="warrantyPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warranty Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="generalTerminationPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>General Termination Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="breachNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Material Breach Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nonPaymentNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Payment Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="softwareArbitrationVenue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Venue</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter city and state for arbitration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="noticeMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Method of Notices</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Email, Registered Post" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
+
       case "event-management":
         return (
           <>
