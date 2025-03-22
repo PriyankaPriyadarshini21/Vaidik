@@ -197,6 +197,32 @@ type FormFields = {
   agreementDuration?: string;
   licenseTerminationPeriod?: string;
   licenseArbitrationCity?: string;
+
+  // Marketing/Advertising Agreement Fields
+  marketingClientName?: string;
+  marketingClientAddress?: string;
+  agencyName?: string;
+  agencyAddress?: string;
+  marketingServices?: string;
+  additionalMarketingServices?: string;
+  marketingStartDate?: string;
+  marketingEndDate?: string;
+  marketingTotalFee?: string;
+  marketingPaymentSchedule?: string;
+  additionalCosts?: string;
+  applicableTaxes?: string;
+  marketingDeliverables?: string;
+  agencyResponsibilities?: string;
+  clientResponsibilities?: string;
+  ipOwnership?: string;
+  agencyUsageRights?: string;
+  performanceMetrics?: string;
+  terminationPeriod?: string;
+  nonPaymentPeriod?: string;
+  immediateTermination?: string;
+  marketingArbitrationVenue?: string;
+  clientNameTitle?: string;
+  agencyNameTitle?: string;
 };
 
 // Add vendor schema to getFormSchema function
@@ -410,6 +436,35 @@ const getFormSchema = (type: string) => {
         agreementDuration: z.string().min(1, "Agreement Duration is required"),
         licenseTerminationPeriod: z.string().min(1, "Termination Notice Period is required"),
         licenseArbitrationCity: z.string().min(1, "Arbitration City is required"),
+      });
+
+    case "marketing":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        marketingClientName: z.string().min(1, "Client Name is required"),
+        marketingClientAddress: z.string().min(1, "Client Address is required"),
+        agencyName: z.string().min(1, "Agency Name is required"),
+        agencyAddress: z.string().min(1, "Agency Address is required"),
+        marketingServices: z.string().min(1, "Scope of Services is required"),
+        additionalMarketingServices: z.string().optional(),
+        marketingStartDate: z.string().min(1, "Start Date is required"),
+        marketingEndDate: z.string().min(1, "End Date is required"),
+        marketingTotalFee: z.string().min(1, "Total Fee is required"),
+        marketingPaymentSchedule: z.string().min(1, "Payment Schedule is required"),
+        additionalCosts: z.string().optional(),
+        applicableTaxes: z.string().min(1, "Applicable Taxes is required"),
+        marketingDeliverables: z.string().min(1, "Deliverables are required"),
+        agencyResponsibilities: z.string().min(1, "Agency Responsibilities are required"),
+        clientResponsibilities: z.string().min(1, "Client Responsibilities are required"),
+        ipOwnership: z.string().min(1, "IP Ownership is required"),
+        agencyUsageRights: z.string().min(1, "Agency Usage Rights is required"),
+        performanceMetrics: z.string().min(1, "Performance Metrics are required"),
+        terminationPeriod: z.string().min(1, "Termination Notice Period is required"),
+        nonPaymentPeriod: z.string().min(1, "Non-Payment Notice Period is required"),
+        immediateTermination: z.string().min(1, "Immediate Termination terms are required"),
+        marketingArbitrationVenue: z.string().min(1, "Arbitration Venue is required"),
+        clientNameTitle: z.string().min(1, "Client Name and Title are required"),
+        agencyNameTitle: z.string().min(1, "Agency Name and Title are required"),
       });
 
     case "dpa":
@@ -684,6 +739,33 @@ export default function DocumentCreator() {
         breachNotificationPeriod: "",
         reportingFormat: "",
       }),
+      ...(type === "marketing" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        marketingClientName: "",
+        marketingClientAddress: "",
+        agencyName: "",
+        agencyAddress: "",
+        marketingServices: "",
+        additionalMarketingServices: "",
+        marketingStartDate: "",
+        marketingEndDate: "",
+        marketingTotalFee: "",
+        marketingPaymentSchedule: "",
+        additionalCosts: "",
+        applicableTaxes: "",
+        marketingDeliverables: "",
+        agencyResponsibilities: "",
+        clientResponsibilities: "",
+        ipOwnership: "",
+        agencyUsageRights: "",
+        performanceMetrics: "",
+        terminationPeriod: "30",
+        nonPaymentPeriod: "15",
+        immediateTermination: "",
+        marketingArbitrationVenue: "",
+        clientNameTitle: "",
+        agencyNameTitle: "",
+      }),
     },
   });
 
@@ -725,6 +807,8 @@ export default function DocumentCreator() {
         return "Software License Agreement";
       case "dpa":
         return "Data Processing Agreement";
+      case "marketing":
+        return "Marketing/Advertising Agreement";
       default:
         return "Document";
     }
@@ -732,6 +816,379 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "marketing":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client's Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter client's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="agencyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agency's Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter agency's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="clientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter client's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="agencyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agency's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter agency's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Scope of Services</h3>
+              <FormField
+                control={form.control}
+                name="marketingServices"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Marketing/Advertising Activities</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="e.g., social media marketing, print advertising, SEO services"
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="additionalMarketingServices"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Services (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List any additional services to be included" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Term and Fee</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="totalFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Fee (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="Enter total fee amount" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="paymentSchedule"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Schedule</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., upfront, milestone-based, monthly" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="additionalCosts"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Costs (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify any third-party expenses to be pre-approved" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="applicableTaxes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Applicable Taxes</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify taxes borne by client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Deliverables and Responsibilities</h3>
+              <FormField
+                control={form.control}
+                name="deliverables"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deliverables</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List deliverables with deadlines" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="agencyResponsibilities"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agency Responsibilities</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List professional services, meeting objectives, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="clientResponsibilities"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Responsibilities</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List materials, information, and approvals to be provided" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Intellectual Property and Performance</h3>
+              <FormField
+                control={form.control}
+                name="ipOwnership"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>IP Ownership</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify ownership of materials upon full payment" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="agencyUsageRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agency Usage Rights</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify portfolio use for non-commercial purposes" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="performanceMetrics"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Performance Metrics</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., ROI, engagement rates, lead generation metrics" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Termination Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="terminationPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nonPaymentPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Payment Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="immediateTermination"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Immediate Termination Terms</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify terms for unsatisfactory performance" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="marketingArbitrationVenue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Venue</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter city for arbitration in India" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Signatures</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="clientNameTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client's Name and Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter client's name and title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="agencyNameTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agency's Name and Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter agency's name and title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "software-licensing":
         return (
           <>
