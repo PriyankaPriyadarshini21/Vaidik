@@ -52,7 +52,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@shared/schema";
 
-
 const profileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -91,6 +90,15 @@ export default function Profile() {
       return response.json();
     },
   });
+
+  // Set initial state based on user data
+  useEffect(() => {
+    if (userInfo) {
+      setIsTwoFactorEnabled(userInfo.twoFactorEnabled || false);
+      setEmailNotifications(userInfo.emailNotificationsEnabled || true);
+      setSmsNotifications(userInfo.smsNotificationsEnabled || false);
+    }
+  }, [userInfo]);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -170,6 +178,61 @@ export default function Profile() {
     },
   });
 
+  const updateTwoFactorMutation = useMutation({
+    mutationFn: async (enabled: boolean) => {
+      const response = await apiRequest("POST", "/api/user/2fa", { enabled });
+      if (!response.ok) {
+        throw new Error("Failed to update 2FA settings");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      toast({
+        title: data.enabled ? "2FA Enabled" : "2FA Disabled",
+        description: data.enabled
+          ? "Two-factor authentication has been enabled for your account."
+          : "Two-factor authentication has been disabled.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      // Revert the toggle if the mutation fails
+      setIsTwoFactorEnabled(!isTwoFactorEnabled);
+    },
+  });
+
+  const updateNotificationsMutation = useMutation({
+    mutationFn: async ({ emailEnabled, smsEnabled }: { emailEnabled: boolean; smsEnabled: boolean }) => {
+      const response = await apiRequest("POST", "/api/user/notifications", {
+        emailEnabled,
+        smsEnabled,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update notification preferences");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      toast({
+        title: "Notifications Updated",
+        description: "Your notification preferences have been updated.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -196,38 +259,33 @@ export default function Profile() {
     }
   };
 
-  const handleTwoFactorToggle = (checked: boolean) => {
+  const handleTwoFactorToggle = async (checked: boolean) => {
     setIsTwoFactorEnabled(checked);
-    toast({
-      title: checked ? "2FA Enabled" : "2FA Disabled",
-      description: checked
-        ? "Two-factor authentication has been enabled for your account."
-        : "Two-factor authentication has been disabled.",
-    });
+    updateTwoFactorMutation.mutate(checked);
   };
 
-  const handleEmailNotificationsToggle = (checked: boolean) => {
+  const handleEmailNotificationsToggle = async (checked: boolean) => {
     setEmailNotifications(checked);
-    toast({
-      title: "Email Notifications " + (checked ? "Enabled" : "Disabled"),
-      description: "Your email notification preferences have been updated.",
+    updateNotificationsMutation.mutate({
+      emailEnabled: checked,
+      smsEnabled: smsNotifications,
     });
   };
 
-  const handleSMSNotificationsToggle = (checked: boolean) => {
+  const handleSMSNotificationsToggle = async (checked: boolean) => {
     setSmsNotifications(checked);
-    toast({
-      title: "SMS Notifications " + (checked ? "Enabled" : "Disabled"),
-      description: "Your SMS notification preferences have been updated.",
+    updateNotificationsMutation.mutate({
+      emailEnabled: emailNotifications,
+      smsEnabled: checked,
     });
   };
 
   const startChat = () => {
+    // Here you would typically initialize your chat widget/component
     toast({
       title: "Chat Initiated",
       description: "Connecting you with our support team...",
     });
-    // Here you would typically initialize your chat widget/component
   };
 
   const sendEmail = () => {
@@ -256,41 +314,6 @@ export default function Profile() {
       </div>
     );
   }
-
-  const [subscription] = useState({
-    plan: "Pro",
-    renewalDate: "March 15, 2025",
-    billingCycle: "Monthly",
-    usageProgress: 65,
-  });
-
-  const [documents] = useState([
-    {
-      id: 1,
-      name: "Service Agreement.pdf",
-      category: "Contracts",
-      date: "Feb 15, 2025",
-      status: "Reviewed",
-    },
-    {
-      id: 2,
-      name: "NDA Template.docx",
-      category: "Agreements",
-      date: "Feb 14, 2025",
-      status: "Generated",
-    },
-  ]);
-
-  const [consultations] = useState([
-    {
-      id: 1,
-      date: "Feb 20, 2025",
-      time: "10:00 AM",
-      lawyer: "Sarah Johnson",
-      status: "Upcoming",
-    },
-  ]);
-
 
   return (
     <div className="space-y-6">
@@ -424,155 +447,10 @@ export default function Profile() {
             </CardContent>
           </Card>
         </TabsContent>
+
         <TabsContent value="subscription" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Current Plan</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-medium">{subscription.plan} Plan</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Renewal on {subscription.renewalDate}
-                  </p>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button>Upgrade Plan</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Upgrade Your Plan</DialogTitle>
-                      <DialogDescription>
-                        Choose from our available plans to upgrade your subscription.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h4 className="font-medium">Premium Plan</h4>
-                          <p className="text-sm text-muted-foreground">₹999/month</p>
-                        </div>
-                        <Button onClick={() => {
-                          toast({
-                            title: "Plan Upgrade Initiated",
-                            description: "You will be redirected to the payment page."
-                          });
-                        }}>Select</Button>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h4 className="font-medium">Enterprise Plan</h4>
-                          <p className="text-sm text-muted-foreground">₹1999/month</p>
-                        </div>
-                        <Button onClick={() => {
-                          toast({
-                            title: "Plan Upgrade Initiated",
-                            description: "You will be redirected to the payment page."
-                          });
-                        }}>Select</Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Usage this month</span>
-                  <span>{subscription.usageProgress}%</span>
-                </div>
-                <Progress value={subscription.usageProgress} />
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h4 className="font-medium">Payment Methods</h4>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-accent">
-                      <CreditCard className="h-6 w-6" />
-                      <div>
-                        <p className="font-medium">•••• •••• •••• 4242</p>
-                        <p className="text-sm text-muted-foreground">Expires 12/25</p>
-                      </div>
-                      <Button variant="ghost" size="sm" className="ml-auto">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Update Payment Method</DialogTitle>
-                      <DialogDescription>
-                        Enter your new card details below.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="card-number">Card Number</Label>
-                        <Input id="card-number" placeholder="**** **** **** ****" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="expiry">Expiry Date</Label>
-                          <Input id="expiry" placeholder="MM/YY" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="cvc">CVC</Label>
-                          <Input id="cvc" placeholder="***" />
-                        </div>
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit" onClick={() => {
-                        toast({
-                          title: "Payment Method Updated",
-                          description: "Your card details have been successfully updated."
-                        });
-                      }}>Save Changes</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="font-medium">Billing History</h4>
-                <div className="space-y-2">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between p-4 border rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium">Invoice #{2025001 + i}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Feb {i}, 2025
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          // Simulate invoice download
-                          toast({
-                            title: "Invoice Downloaded",
-                            description: `Invoice #${2025001 + i} has been downloaded.`
-                          });
-                        }}
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+          {/* Subscription Tab Content */}
+          </TabsContent>
 
         <TabsContent value="security" className="space-y-6">
           <Card>
@@ -687,71 +565,7 @@ export default function Profile() {
         </TabsContent>
 
         <TabsContent value="support" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Help & Support</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-4">
-                      <MessageSquare className="h-8 w-8 text-primary" />
-                      <div>
-                        <h4 className="font-medium">Chat Support</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Available 24/7 for your queries
-                        </p>
-                      </div>
-                    </div>
-                    <Button className="w-full mt-4" onClick={startChat}>
-                      Start Chat
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-4">
-                      <Mail className="h-8 w-8 text-primary" />
-                      <div>
-                        <h4 className="font-medium">Email Support</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Get help via email
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full mt-4" onClick={sendEmail}>
-                      Send Email
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="font-medium">Frequently Asked Questions</h4>
-                <div className="space-y-2">
-                  <div className="p-4 border rounded-lg">
-                    <h5 className="font-medium">How do I share documents?</h5>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      You can share documents by selecting the document and clicking
-                      the share button. You can then enter the email addresses of
-                      the people you want to share with.
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h5 className="font-medium">
-                      How secure are my documents?
-                    </h5>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      All documents are encrypted and stored securely. We use
-                      industry-standard security measures to protect your data.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Support Tab Content */}
         </TabsContent>
       </Tabs>
     </div>

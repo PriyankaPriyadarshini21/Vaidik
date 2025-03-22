@@ -13,6 +13,9 @@ export const users = pgTable("users", {
   phone: text("phone"),
   isEmailVerified: boolean("is_email_verified").default(false),
   avatarUrl: text("avatar_url"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
+  emailNotificationsEnabled: boolean("email_notifications_enabled").default(true),
+  smsNotificationsEnabled: boolean("sms_notifications_enabled").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -77,10 +80,10 @@ export const consultations = pgTable("consultations", {
 });
 
 // Create insert schemas
-export const insertUserSchema = createInsertSchema(users).omit({ 
-  id: true, 
-  createdAt: true, 
-  updatedAt: true 
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({

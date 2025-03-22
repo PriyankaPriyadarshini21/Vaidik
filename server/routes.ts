@@ -4,7 +4,8 @@ import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
 import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema, insertUserSubscriptionSchema, updateProfileSchema } from "@shared/schema";
-import { setupAuth } from "./auth";
+import { setupAuth, comparePasswords, hashPassword } from "./auth";
+import * as z from 'zod';
 
 // Authentication middleware
 function isAuthenticated(req: Express.Request, res: Express.Response, next: Express.NextFunction) {
@@ -34,6 +35,16 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
   }
+});
+
+// Password update schema
+const updatePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 export function registerRoutes(app: Express): Server {
@@ -263,6 +274,82 @@ export function registerRoutes(app: Express): Server {
       res.json(subscription);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Password update endpoint
+  app.post("/api/user/password", isAuthenticated, async (req, res) => {
+    try {
+      const parsed = updatePasswordSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ 
+          message: "Invalid password data",
+          errors: parsed.error.errors 
+        });
+      }
+
+      const user = await storage.getUser(req.user!.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const isValidPassword = await comparePasswords(parsed.data.currentPassword, user.password);
+      if (!isValidPassword) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+
+      const hashedPassword = await hashPassword(parsed.data.newPassword);
+      const updatedUser = await storage.updateUser(req.user!.id, { 
+        password: hashedPassword,
+        updatedAt: new Date()
+      });
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to update password"
+      });
+    }
+  });
+
+  // 2FA settings endpoint
+  app.post("/api/user/2fa", isAuthenticated, async (req, res) => {
+    try {
+      const { enabled } = req.body;
+
+      const updatedUser = await storage.updateUser(req.user!.id, {
+        twoFactorEnabled: enabled,
+        updatedAt: new Date()
+      });
+
+      res.json({ message: "2FA settings updated successfully", enabled });
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to update 2FA settings"
+      });
+    }
+  });
+
+  // Notification preferences endpoint
+  app.post("/api/user/notifications", isAuthenticated, async (req, res) => {
+    try {
+      const { emailEnabled, smsEnabled } = req.body;
+
+      const updatedUser = await storage.updateUser(req.user!.id, {
+        emailNotificationsEnabled: emailEnabled,
+        smsNotificationsEnabled: smsEnabled,
+        updatedAt: new Date()
+      });
+
+      res.json({ 
+        message: "Notification preferences updated successfully",
+        emailEnabled,
+        smsEnabled
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to update notification preferences"
+      });
     }
   });
 
