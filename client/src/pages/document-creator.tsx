@@ -610,6 +610,29 @@ const getFormSchema = (type: string) => {
         agencyNameTitle: z.string().min(1, "Agency Name and Title are required"),
       });
 
+    case "commission":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        companyName: z.string().min(1, "Company Name is required"),
+        companyAddress: z.string().min(1, "Company Address is required"),
+        agentName: z.string().min(1, "Agent Name is required"),
+        agentAddress: z.string().min(1, "Agent Address is required"),
+        productsCovered: z.string().min(1, "Products/Services are required"),
+        territory: z.string().min(1, "Territory/Market is required"),
+        appointmentType: z.enum(["exclusive", "non-exclusive"]),
+        commissionRate: z.string().min(1, "Commission Rate is required"),
+        commissionBasis: z.string().min(1, "Commission Calculation Basis is required"),
+        tieredStructure: z.string(),
+        paymentDay: z.string().min(1, "Payment Day is required"),
+        paymentMethod: z.string().min(1, "Payment Method is required"),
+        confidentialityTerms: z.string(),
+        startDate: z.string().min(1, "Start Date is required"),
+        endDate: z.string().min(1, "End Date is required"),
+        noticePeriod: z.string().min(1, "Notice Period is required"),
+        arbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        jurisdiction: z.string().min(1, "Jurisdiction is required"),
+      });
+
     case "dpa":
       return z.object({
         controllerName: z.string().min(1, "Controller Name is required"),
@@ -1038,6 +1061,300 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "commission":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement" 
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="agentName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agent Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter agent's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="companyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter company's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="agentAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter agent's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Products and Territory</h3>
+              <FormField
+                control={form.control}
+                name="productsCovered"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Products/Services Covered</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter specific products or services the Agent will represent" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="territory"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Territory/Market</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter specified territory or market for sales activities" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="appointmentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent's Appointment Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select appointment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="exclusive">Exclusive</SelectItem>
+                        <SelectItem value="non-exclusive">Non-Exclusive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Commission Structure</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter percentage or fixed amount per sale" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionBasis"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Calculation Basis</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Gross/Net sales value" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="tieredStructure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tiered Commission Structure</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify structure if applicable or write N/A" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="paymentDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Day</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter specific day of each month" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Bank transfer, cheque" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="confidentialityTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality Terms</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter any special provisions or leave as provided in the draft" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Agreement Duration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="noticePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notice Period for Termination (Days)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="arbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city/location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city/region with legal jurisdiction" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+
       case "affiliate":
         return (
           <>
