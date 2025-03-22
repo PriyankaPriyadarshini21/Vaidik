@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
-import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema, insertUserSubscriptionSchema } from "@shared/schema";
+import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema, insertUserSubscriptionSchema, updateProfileSchema } from "@shared/schema";
 import { setupAuth } from "./auth";
 
 // Authentication middleware
@@ -17,18 +17,18 @@ function isAuthenticated(req: Express.Request, res: Express.Response, next: Expr
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.diskStorage({
-    destination: 'uploads/',
+    destination: 'uploads/avatars/',
     filename: function (req, file, cb) {
       cb(null, Date.now() + path.extname(file.originalname));
     }
   }),
   fileFilter: function (req, file, cb) {
-    const allowedTypes = ['.pdf', '.doc', '.docx'];
+    const allowedTypes = ['.jpg', '.jpeg', '.png'];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowedTypes.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only PDF and Word documents are allowed.'));
+      cb(new Error('Invalid file type. Only JPG and PNG images are allowed.'));
     }
   },
   limits: {
@@ -39,6 +39,50 @@ const upload = multer({
 export function registerRoutes(app: Express): Server {
   // Set up authentication routes
   setupAuth(app);
+
+  // Profile update endpoint
+  app.patch("/api/user/profile", isAuthenticated, async (req, res) => {
+    try {
+      const parsed = updateProfileSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ 
+          message: "Invalid profile data",
+          errors: parsed.error.errors 
+        });
+      }
+
+      const updatedUser = await storage.updateUser(req.user!.id, parsed.data);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(updatedUser);
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to update profile"
+      });
+    }
+  });
+
+  // Avatar upload endpoint
+  app.patch("/api/user/avatar", isAuthenticated, upload.single('avatar'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const user = await storage.updateUserAvatar(req.user!.id, req.file.filename);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to upload avatar"
+      });
+    }
+  });
 
   // Document upload endpoint - protected by auth
   app.post("/api/documents/upload", isAuthenticated, upload.single('file'), async (req, res) => {

@@ -26,6 +26,8 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, data: Partial<User>): Promise<User>;
+  updateUserAvatar(id: number, filename: string): Promise<User>;
 
   // Document operations
   getDocuments(userId: number): Promise<Document[]>;
@@ -73,6 +75,40 @@ export class DatabaseStorage implements IStorage {
   async createUser(user: InsertUser): Promise<User> {
     const [newUser] = await db.insert(users).values(user).returning();
     return newUser;
+  }
+
+  async updateUser(id: number, data: Partial<User>): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        ...data,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+
+    return updatedUser;
+  }
+
+  async updateUserAvatar(id: number, filename: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        avatarUrl: `/uploads/avatars/${filename}`,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+
+    return updatedUser;
   }
 
   // Document methods with user context

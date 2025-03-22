@@ -12,8 +12,17 @@ export const users = pgTable("users", {
   company: text("company"),
   phone: text("phone"),
   isEmailVerified: boolean("is_email_verified").default(false),
+  avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Create update profile schema
+export const updateProfileSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(1, "Phone number is required"),
+  company: z.string().min(1, "Company name is required"),
 });
 
 // Documents table with enhanced metadata

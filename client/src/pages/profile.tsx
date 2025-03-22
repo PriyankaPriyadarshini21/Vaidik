@@ -5,19 +5,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   User,
   Mail,
   Phone,
   Building2,
-  CreditCard,
   FileText,
   Shield,
-  HelpCircle,
   Upload,
+  CheckCircle,
   Bell,
   Download,
   Edit,
@@ -26,13 +35,23 @@ import {
   MessageSquare,
   Clock,
   AlertTriangle,
-  CheckCircle,
+
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 
+const profileFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(1, "Phone number is required"),
+  company: z.string().min(1, "Company name is required"),
+});
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
 export default function Profile() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [userInfo, setUserInfo] = useState({
     name: "Shaun Park",
     email: "shaun.park@example.com",
@@ -41,6 +60,69 @@ export default function Profile() {
     accountType: "Business",
     isEmailVerified: true,
   });
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      name: userInfo.name,
+      email: userInfo.email,
+      phone: userInfo.phone,
+      company: userInfo.company,
+    },
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: ProfileFormValues) => {
+      const response = await apiRequest("PATCH", "/api/user/profile", data);
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setUserInfo(prev => ({
+        ...prev,
+        ...data
+      }));
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      try {
+        const response = await apiRequest("PATCH", "/api/user/avatar", formData);
+        if (!response.ok) {
+          throw new Error("Failed to upload avatar");
+        }
+        toast({
+          title: "Profile Picture Updated",
+          description: "Your profile picture has been successfully updated.",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   const [subscription] = useState({
     plan: "Pro",
@@ -76,13 +158,6 @@ export default function Profile() {
     },
   ]);
 
-  const handleProfileUpdate = () => {
-    toast({
-      title: "Profile Updated",
-      description: "Your profile has been successfully updated.",
-    });
-  };
-
   const handlePasswordChange = () => {
     toast({
       title: "Password Changed",
@@ -90,15 +165,6 @@ export default function Profile() {
     });
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      toast({
-        title: "Profile Picture Updated",
-        description: "Your profile picture has been successfully updated.",
-      });
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -151,65 +217,86 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    value={userInfo.name}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, name: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="email"
-                      value={userInfo.email}
-                      onChange={(e) =>
-                        setUserInfo({ ...userInfo, email: e.target.value })
-                      }
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(data => updateProfileMutation.mutate(data))} className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                    {userInfo.isEmailVerified ? (
-                      <Badge variant="secondary" className="self-center">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Verified
-                      </Badge>
-                    ) : (
-                      <Button variant="outline" size="sm">
-                        Verify
-                      </Button>
-                    )}
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <div className="flex gap-2">
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            {userInfo.isEmailVerified ? (
+                              <Badge variant="secondary" className="self-center">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Button variant="outline" size="sm">
+                                Verify
+                              </Button>
+                            )}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    value={userInfo.phone}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, phone: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="company">Company Name</Label>
-                  <Input
-                    id="company"
-                    value={userInfo.company}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, company: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              <Button onClick={handleProfileUpdate}>Save Changes</Button>
+                  <Button 
+                    type="submit"
+                    disabled={updateProfileMutation.isPending}
+                  >
+                    {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                  </Button>
+                </form>
+              </Form>
             </CardContent>
           </Card>
         </TabsContent>
