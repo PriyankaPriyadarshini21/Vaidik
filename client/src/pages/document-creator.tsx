@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-// Update the FormFields type with new fields for all types
+// FormFields type update to fix duplicates
 type FormFields = {
   // Employment Agreement Fields
   dateOfAgreement?: string;
@@ -62,34 +62,33 @@ type FormFields = {
   paymentSchedule?: "installments" | "lumpsum";
   expenseReimbursement?: "yes" | "no";
   paymentMode?: string;
-  terminationNoticePeriod?: string;
-  nonPaymentNoticePeriod?: string;
-  arbitrationCity?: string;
-  //Freelancer Agreement Fields
+  // Freelancer Agreement Fields
   freelancerName?: string;
   freelancerAddress?: string;
-  endDate?: string;
-  compensationAmount?: string;
-  paymentTerms?: string;
   deliverables?: string;
   deliverableTimeline?: string;
-  // Consulting Agreement Fields
-  consultantName?: string;
-  consultantType?: "individual" | "entity";
-  consultantAddress?: string;
-  clientName?: string;
-  clientAddress?: string;
-  consultingServices?: string;
-  additionalServices?: string;
-  startDate?: string;
-  endDate?: string;
-  consultingFee?: string;
-  paymentTerms?: "installments" | "lumpsum";
-  expenseReimbursement?: "yes" | "no";
+  // Commission Agreement Fields
+  agentName?: string;
+  agentAddress?: string;
+  productsCovered?: string;
+  territory?: string;
+  appointmentType?: "exclusive" | "non-exclusive";
+  commissionRate?: string;
+  commissionBasis?: string;
+  tieredStructure?: string;
+  paymentDay?: string;
   paymentMethod?: string;
+  confidentialityTerms?: string;
+  noticePeriod?: string;
+  arbitrationLocation?: string;
+  jurisdiction?: string;
+  // Shared Fields
   terminationNoticePeriod?: string;
   nonPaymentNoticePeriod?: string;
   arbitrationCity?: string;
+  endDate?: string;
+  compensationAmount?: string;
+  paymentTerms?: string | "installments" | "lumpsum";
 };
 
 // Dynamic form schema based on document type
@@ -176,6 +175,28 @@ const getFormSchema = (type: string) => {
         terminationNoticePeriod: z.string().min(1, "Termination Notice Period is required"),
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
+      });
+    case "commission":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        companyName: z.string().min(1, "Company Name is required"),
+        companyAddress: z.string().min(1, "Company Address is required"),
+        agentName: z.string().min(1, "Agent Name is required"),
+        agentAddress: z.string().min(1, "Agent Address is required"),
+        productsCovered: z.string().min(1, "Products/Services are required"),
+        territory: z.string().min(1, "Territory/Market is required"),
+        appointmentType: z.enum(["exclusive", "non-exclusive"]),
+        commissionRate: z.string().min(1, "Commission Rate is required"),
+        commissionBasis: z.string().min(1, "Commission Calculation Basis is required"),
+        tieredStructure: z.string(),
+        paymentDay: z.string().min(1, "Payment Day is required"),
+        paymentMethod: z.string().min(1, "Payment Method is required"),
+        confidentialityTerms: z.string(),
+        startDate: z.string().min(1, "Start Date is required"),
+        endDate: z.string().min(1, "End Date is required"),
+        noticePeriod: z.string().min(1, "Notice Period is required"),
+        arbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        jurisdiction: z.string().min(1, "Jurisdiction is required"),
       });
     default:
       return z.object({});
@@ -269,6 +290,27 @@ export default function DocumentCreator() {
         nonPaymentNoticePeriod: "15",
         arbitrationCity: "",
       }),
+      ...(type === "commission" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        companyName: "",
+        companyAddress: "",
+        agentName: "",
+        agentAddress: "",
+        productsCovered: "",
+        territory: "",
+        appointmentType: "non-exclusive",
+        commissionRate: "",
+        commissionBasis: "",
+        tieredStructure: "N/A",
+        paymentDay: "",
+        paymentMethod: "",
+        confidentialityTerms: "",
+        startDate: "",
+        endDate: "",
+        noticePeriod: "30",
+        arbitrationLocation: "",
+        jurisdiction: "",
+      }),
     },
   });
 
@@ -298,6 +340,8 @@ export default function DocumentCreator() {
         return "Freelancer Agreement";
       case "consulting":
         return "Consulting Agreement";
+      case "commission":
+        return "Commission Agreement";
       default:
         return "Document";
     }
@@ -1025,7 +1069,8 @@ export default function DocumentCreator() {
                 <FormField
                   control={form.control}
                   name="paymentTerms"
-                  render={({ field }) => (                    <FormItem>
+                  render={({ field }) => (
+                    <FormItem>
                       <FormLabel>Payment Terms (Days)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="Number of days after invoice receipt" {...field} />
@@ -1403,6 +1448,293 @@ export default function DocumentCreator() {
                   </FormItem>
                 )}
               />
+            </div>
+          </>
+        );
+      case "commission":
+        return (
+          <>
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="agentName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agent Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter agent's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="companyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter company's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="agentAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter agent's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="productsCovered"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Products/Services Covered</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List specific products or services the Agent will represent" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="territory"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Territory/Market</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter specified territory or market for sales activities" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="appointmentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent's Appointment Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select appointment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="exclusive">Exclusive</SelectItem>
+                        <SelectItem value="non-exclusive">Non-Exclusive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter percentage or fixed amount per sale" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionBasis"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Calculation Basis</FormLabel>
+                      <FormControl>
+                        <Input placeholder="E.g., Gross/Net sales value" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="tieredStructure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tiered Commission Structure</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify structure if applicable or write N/A" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="paymentDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Day</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Specific day of each month" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="E.g., Bank transfer, cheque" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="confidentialityTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality Terms</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter any special provisions or leave as provided in the draft" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="noticePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notice Period for Termination (Days)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="arbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city/location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction (Governing Law)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city/region with legal jurisdiction" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </>
         );
