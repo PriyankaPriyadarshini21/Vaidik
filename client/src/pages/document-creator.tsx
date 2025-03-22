@@ -27,8 +27,6 @@ import { format } from "date-fns";
 
 // Update the FormFields type with new fields for both types
 type FormFields = {
-  title: string;
-  description?: string;
   // Employment Agreement Fields
   dateOfAgreement?: string;
   companyName?: string;
@@ -71,15 +69,9 @@ type FormFields = {
 
 // Dynamic form schema based on document type
 const getFormSchema = (type: string) => {
-  const baseSchema = {
-    title: z.string().min(1, "Title is required"),
-    description: z.string().optional(),
-  };
-
   switch (type) {
     case "employment":
       return z.object({
-        ...baseSchema,
         dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
         companyName: z.string().min(1, "Company Name is required"),
         employerAddress: z.string().min(1, "Employer's Address is required"),
@@ -102,7 +94,6 @@ const getFormSchema = (type: string) => {
       });
     case "service":
       return z.object({
-        ...baseSchema,
         serviceCompanyName: z.string().min(1, "Company Name is required"),
         companyType: z.enum(["company", "individual"]),
         companyAddress: z.string().min(1, "Company Address is required"),
@@ -122,7 +113,7 @@ const getFormSchema = (type: string) => {
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
       });
     default:
-      return z.object(baseSchema);
+      return z.object({});
   }
 };
 
@@ -135,8 +126,6 @@ export default function DocumentCreator() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
       ...(type === "employment" && {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         companyName: "",
@@ -795,39 +784,7 @@ export default function DocumentCreator() {
       <Card className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Document Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter document title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter document description"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {renderFormFields()}
-
             <Button
               type="submit"
               className="w-full"
