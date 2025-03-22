@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-// Update the FormFields type with new fields for both types
+// Update the FormFields type with new fields for all types
 type FormFields = {
   // Employment Agreement Fields
   dateOfAgreement?: string;
@@ -65,6 +65,15 @@ type FormFields = {
   terminationNoticePeriod?: string;
   nonPaymentNoticePeriod?: string;
   arbitrationCity?: string;
+  //Freelancer Agreement Fields
+  freelancerName?: string;
+  freelancerAddress?: string;
+  endDate?: string;
+  compensationAmount?: string;
+  paymentTerms?: string;
+  deliverables?: string;
+  deliverableTimeline?: string;
+
 };
 
 // Dynamic form schema based on document type
@@ -108,6 +117,26 @@ const getFormSchema = (type: string) => {
         paymentSchedule: z.enum(["installments", "lumpsum"]),
         expenseReimbursement: z.enum(["yes", "no"]),
         paymentMode: z.string().min(1, "Payment Mode is required"),
+        terminationNoticePeriod: z.string().min(1, "Termination Notice Period is required"),
+        nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
+        arbitrationCity: z.string().min(1, "Arbitration City is required"),
+      });
+    case "freelancer":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        clientName: z.string().min(1, "Client Name is required"),
+        clientType: z.enum(["company", "individual"]),
+        clientAddress: z.string().min(1, "Client Address is required"),
+        freelancerName: z.string().min(1, "Freelancer Name is required"),
+        freelancerAddress: z.string().min(1, "Freelancer Address is required"),
+        serviceDescription: z.string().min(1, "Service Description is required"),
+        startDate: z.string().min(1, "Start Date is required"),
+        endDate: z.string().min(1, "End Date is required"),
+        compensationAmount: z.string().min(1, "Compensation Amount is required"),
+        paymentTerms: z.string().min(1, "Payment Terms are required"),
+        expenseReimbursement: z.enum(["yes", "no"]),
+        deliverables: z.string().min(1, "Deliverables are required"),
+        deliverableTimeline: z.string().min(1, "Deliverable Timeline is required"),
         terminationNoticePeriod: z.string().min(1, "Termination Notice Period is required"),
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
@@ -166,6 +195,25 @@ export default function DocumentCreator() {
         nonPaymentNoticePeriod: "15",
         arbitrationCity: "",
       }),
+      ...(type === "freelancer" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        clientName: "",
+        clientType: "company",
+        clientAddress: "",
+        freelancerName: "",
+        freelancerAddress: "",
+        serviceDescription: "",
+        startDate: "",
+        endDate: "",
+        compensationAmount: "",
+        paymentTerms: "30",
+        expenseReimbursement: "no",
+        deliverables: "",
+        deliverableTimeline: "",
+        terminationNoticePeriod: "30",
+        nonPaymentNoticePeriod: "15",
+        arbitrationCity: "",
+      }),
     },
   });
 
@@ -191,6 +239,8 @@ export default function DocumentCreator() {
         return "Employee Agreement";
       case "service":
         return "Service Agreement";
+      case "freelancer":
+        return "Freelancer Agreement";
       default:
         return "Document";
     }
@@ -715,6 +765,272 @@ export default function DocumentCreator() {
                   )}
                 />
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="terminationNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nonPaymentNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Payment Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="arbitrationCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter arbitration city" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
+      case "freelancer":
+        return (
+          <>
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="clientType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select client type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="company">Company</SelectItem>
+                          <SelectItem value="individual">Individual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="clientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client's Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter client's full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="clientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter client's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="freelancerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer's Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter freelancer's full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="freelancerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter freelancer's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="serviceDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description of Services</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Detailed description of services to be provided" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="compensationAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compensation Amount (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter compensation amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Number of days after invoice receipt" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="expenseReimbursement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pre-Approved Expense Reimbursement</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="deliverables"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deliverables</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List all deliverables" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deliverableTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Timeline for Deliverables</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List deadlines for each deliverable" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
