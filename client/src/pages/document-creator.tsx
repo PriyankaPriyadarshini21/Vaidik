@@ -28,6 +28,21 @@ import { format } from "date-fns";
 
 // Update FormFields type to include DPA fields
 type FormFields = {
+  // Sales Agreement Fields
+  sellerName?: string;
+  sellerAddress?: string; 
+  buyerName?: string;
+  buyerAddress?: string;
+  salesGoodsDescription?: string;
+  deliveryLocation?: string;
+  deliveryTimeframe?: string;
+  purchasePrice?: string;
+  salesPaymentSchedule?: string;
+  salesPaymentMethod?: string;
+  inspectionPeriod?: string;
+  riskOfLoss?: string;
+  salesArbitrationCity?: string;
+
   // Software Development Agreement Fields
   softwareClientName?: string;
   softwareClientAddress?: string;
@@ -369,6 +384,23 @@ const getFormSchema = (type: string) => {
         arbitrationLocation: z.string().min(1, "Arbitration Location is required"),
         jurisdiction: z.string().min(1, "Jurisdiction is required"),
       });
+    case "sales":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        sellerName: z.string().min(1, "Seller Name is required"),
+        sellerAddress: z.string().min(1, "Seller Address is required"),
+        buyerName: z.string().min(1, "Buyer Name is required"),
+        buyerAddress: z.string().min(1, "Buyer Address is required"),
+        salesGoodsDescription: z.string().min(1, "Description of Goods is required"),
+        deliveryLocation: z.string().min(1, "Delivery Location is required"),
+        deliveryTimeframe: z.string().min(1, "Delivery Timeframe is required"),
+        purchasePrice: z.string().min(1, "Purchase Price is required"),
+        salesPaymentSchedule: z.string().min(1, "Payment Schedule is required"),
+        salesPaymentMethod: z.string().min(1, "Payment Method is required"),
+        inspectionPeriod: z.string().min(1, "Inspection Period is required"),
+        riskOfLoss: z.string().min(1, "Risk of Loss details are required"),
+        salesArbitrationCity: z.string().min(1, "Arbitration City is required"),
+      });
     case "vendor":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
@@ -646,6 +678,22 @@ export default function DocumentCreator() {
         arbitrationLocation: "",
         jurisdiction: "",
       }),
+      ...(type === "sales" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        sellerName: "",
+        sellerAddress: "",
+        buyerName: "",
+        buyerAddress: "",
+        salesGoodsDescription: "",
+        deliveryLocation: "",
+        deliveryTimeframe: "30",
+        purchasePrice: "",
+        salesPaymentSchedule: "",
+        salesPaymentMethod: "",
+        inspectionPeriod: "7",
+        riskOfLoss: "",
+        salesArbitrationCity: "",
+      }),
       ...(type === "vendor" && {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         vendorName: "",
@@ -787,6 +835,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (type) {
+      case "sales":
+        return "Sales Agreement";
       case "event-management":
         return "Event Management Agreement";
       case "employment":
@@ -816,6 +866,221 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "sales":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="sellerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seller Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter seller's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="buyerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter buyer's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="sellerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Seller Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter seller's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="buyerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Buyer Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter buyer's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Goods and Delivery</h3>
+              <FormField
+                control={form.control}
+                name="salesGoodsDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description of Goods</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter detailed description, including quantity, quality, and specifications"
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deliveryLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Location</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter address where goods should be delivered" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deliveryTimeframe"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Date/Time Frame</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter specific delivery date or timeframe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <FormField
+                control={form.control}
+                name="purchasePrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Purchase Price (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="Enter purchase price" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="salesPaymentSchedule"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Schedule</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify installments or lump sum, with dates" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="salesPaymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Bank Transfer, UPI, Cheque" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Terms and Conditions</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="inspectionPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Inspection Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="riskOfLoss"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Risk of Loss</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify whether risk transfers upon delivery or at another point" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="salesArbitrationCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter city where arbitration will take place" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       case "marketing":
         return (
           <>
