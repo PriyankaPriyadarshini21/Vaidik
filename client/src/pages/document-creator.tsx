@@ -28,6 +28,24 @@ import { format } from "date-fns";
 
 // Update FormFields type to include DPA fields
 type FormFields = {
+  // Revenue Sharing Agreement Fields
+  revenueCompanyName?: string;
+  revenueCompanyAddress?: string;
+  investorNames?: string;
+  investorAddress?: string;
+  investmentAmount?: string;
+  investmentPaymentMethod?: string;
+  investmentPurpose?: string;
+  revenueSharePercentage?: string;
+  repaymentTerm?: string;
+  revenuePaymentSchedule?: "monthly" | "quarterly" | "annual";
+  paymentStartDate?: string;
+  revenueCalculation?: string;
+  revenueAgreementTerm?: string;
+  revenueTerminationPeriod?: string;
+  revenueArbitrationLocation?: string;
+  revenueGoverningJurisdiction?: string;
+
   // Distribution Agreement Fields
   principalName?: string;
   principalAddress?: string;
@@ -264,6 +282,26 @@ type FormFields = {
 // Add vendor schema to getFormSchema function
 const getFormSchema = (type: string) => {
   switch (type) {
+    case "revenue-sharing":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        revenueCompanyName: z.string().min(1, "Company Name is required"),
+        revenueCompanyAddress: z.string().min(1, "Company Address is required"),
+        investorNames: z.string().min(1, "Investor Name(s) are required"),
+        investorAddress: z.string().min(1, "Investor Address is required"),
+        investmentAmount: z.string().min(1, "Investment Amount is required"),
+        investmentPaymentMethod: z.string().min(1, "Payment Method is required"),
+        investmentPurpose: z.string().min(1, "Investment Purpose is required"),
+        revenueSharePercentage: z.string().min(1, "Revenue Share Percentage is required"),
+        repaymentTerm: z.string().min(1, "Repayment Amount or Term is required"),
+        revenuePaymentSchedule: z.enum(["monthly", "quarterly", "annual"]),
+        paymentStartDate: z.string().min(1, "Payment Start Date is required"),
+        revenueCalculation: z.string().min(1, "Revenue Calculation details are required"),
+        revenueAgreementTerm: z.string().min(1, "Agreement Term is required"),
+        revenueTerminationPeriod: z.string().min(1, "Notice Period is required"),
+        revenueArbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        revenueGoverningJurisdiction: z.string().min(1, "Governing Jurisdiction is required"),
+      });
     case "event-management":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
@@ -588,6 +626,25 @@ export default function DocumentCreator() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      ...(type === "revenue-sharing" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        revenueCompanyName: "",
+        revenueCompanyAddress: "",
+        investorNames: "",
+        investorAddress: "",
+        investmentAmount: "",
+        investmentPaymentMethod: "",
+        investmentPurpose: "",
+        revenueSharePercentage: "",
+        repaymentTerm: "",
+        revenuePaymentSchedule: "monthly",
+        paymentStartDate: "",
+        revenueCalculation: "",
+        revenueAgreementTerm: "",
+        revenueTerminationPeriod: "30",
+        revenueArbitrationLocation: "",
+        revenueGoverningJurisdiction: "",
+      }),
       ...(type === "distribution" && {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         principalName: "",
@@ -902,6 +959,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (type) {
+      case "revenue-sharing":
+        return "Revenue Sharing Agreement";
       case "distribution":
         return "Distribution Agreement";
       case "sales":
@@ -935,6 +994,270 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "revenue-sharing":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="revenueCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investorNames" 
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name(s)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name(s) of investor(s)" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="revenueCompanyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter company's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="investorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter investor's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Investment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="investmentAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investment Amount (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter investment amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentPaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Bank Transfer, Cheque" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="investmentPurpose"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investment Purpose</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., expanding business operations" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Revenue Sharing Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="revenueSharePercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Revenue Share Percentage (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="revenuePaymentSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Schedule</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select payment frequency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                          <SelectItem value="quarterly">Quarterly</SelectItem>
+                          <SelectItem value="annual">Annual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="repaymentTerm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Repayment Amount or Term</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter total repayment amount or duration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="paymentStartDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Start Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="revenueCalculation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Revenue Calculation</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Gross Revenue minus taxes and operating costs" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Term and Termination</h3>
+              <FormField
+                control={form.control}
+                name="revenueAgreementTerm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agreement Term</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., until repayment amount is met" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="revenueTerminationPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notice Period for Termination (Days)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Dispute Resolution</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="revenueArbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="revenueGoverningJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter jurisdiction for governing laws" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "distribution":
         return (
           <>
