@@ -23,7 +23,6 @@ const documentTypes: DocumentType[] = [
   { id: 'software-development', name: 'Software Development Agreement', icon: Code, category: 'Services' },
   { id: 'software-licensing', name: 'Software Licensing Agreement', icon: Code, category: 'Services' },
   { id: 'marketing', name: 'Marketing/Advertising Agreement', icon: FileText, category: 'Services' },
-  { id: 'event-management', name: 'Event Management Agreement', icon: FileText, category: 'Services' },
   { id: 'vendor', name: 'Vendor Agreement', icon: FileText, category: 'Services' },
   { id: 'dpa', name: 'Data Processing Agreement (DPA)', icon: Shield, category: 'Services' },
 
@@ -32,7 +31,6 @@ const documentTypes: DocumentType[] = [
   { id: 'distribution', name: 'Distribution Agreement', icon: Briefcase, category: 'Business' },
   { id: 'revenue-sharing', name: 'Revenue Sharing Agreement', icon: DollarSign, category: 'Business' },
   { id: 'affiliate', name: 'Affiliate/Referral Agreement', icon: Users, category: 'Business' },
-  { id: 'event-management-business', name: 'Event Management Agreement', icon: FileText, category: 'Business' },
   { id: 'commission-business', name: 'Commission Agreement', icon: DollarSign, category: 'Business' },
 
   // Investment & Securities
@@ -55,7 +53,7 @@ const documentTypes: DocumentType[] = [
 export default function AIDocuments() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredDocuments = documentTypes.filter(doc => 
+  const filteredDocuments = documentTypes.filter(doc =>
     doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     doc.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -73,8 +71,8 @@ export default function AIDocuments() {
 
       {/* Search Bar */}
       <div className="relative">
-        <Input 
-          type="text" 
+        <Input
+          type="text"
           placeholder="Search document types..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
