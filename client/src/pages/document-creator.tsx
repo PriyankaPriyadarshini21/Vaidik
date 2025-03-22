@@ -10,6 +10,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,20 +23,31 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
-// Type to help with form fields based on document type
+// Update the FormFields type with new fields
 type FormFields = {
   title: string;
   description?: string;
-  partyOne?: string;
-  partyTwo?: string;
-  duration?: string;
-  confidentialityLevel?: "standard" | "strict" | "very-strict";
-  employerName?: string;
-  employeeName?: string;
-  position?: string;
-  startDate?: string;
-  compensation?: string;
+  dateOfAgreement: string;
+  companyName: string;
+  employerAddress: string;
+  employeeFullName: string;
+  employeeAddress: string;
+  jobTitle: string;
+  startDate: string;
+  baseSalary: string;
+  salaryFrequency: "monthly" | "yearly";
+  bonusDetails: string;
+  benefits: string;
+  workHoursPerWeek: string;
+  workStartTime: string;
+  workEndTime: string;
+  nonCompetePeriod: string;
+  nonSolicitationPeriod: string;
+  employerNoticePeriod: string;
+  employeeNoticePeriod: string;
+  governingLocation: string;
 };
 
 // Dynamic form schema based on document type
@@ -46,22 +58,28 @@ const getFormSchema = (type: string) => {
   };
 
   switch (type) {
-    case "nda":
-      return z.object({
-        ...baseSchema,
-        partyOne: z.string().min(1, "First party name is required"),
-        partyTwo: z.string().min(1, "Second party name is required"),
-        duration: z.string().min(1, "Duration is required"),
-        confidentialityLevel: z.enum(["standard", "strict", "very-strict"]),
-      });
     case "employment":
       return z.object({
         ...baseSchema,
-        employerName: z.string().min(1, "Employer name is required"),
-        employeeName: z.string().min(1, "Employee name is required"),
-        position: z.string().min(1, "Position is required"),
-        startDate: z.string().min(1, "Start date is required"),
-        compensation: z.string().min(1, "Compensation is required"),
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        companyName: z.string().min(1, "Company Name is required"),
+        employerAddress: z.string().min(1, "Employer's Address is required"),
+        employeeFullName: z.string().min(1, "Employee's Full Name is required"),
+        employeeAddress: z.string().min(1, "Employee's Address is required"),
+        jobTitle: z.string().min(1, "Job Title is required"),
+        startDate: z.string().min(1, "Start Date is required"),
+        baseSalary: z.string().min(1, "Base Salary is required"),
+        salaryFrequency: z.enum(["monthly", "yearly"]),
+        bonusDetails: z.string().optional(),
+        benefits: z.string().min(1, "Benefits information is required"),
+        workHoursPerWeek: z.string().min(1, "Work Hours Per Week is required"),
+        workStartTime: z.string().min(1, "Work Start Time is required"),
+        workEndTime: z.string().min(1, "Work End Time is required"),
+        nonCompetePeriod: z.string().min(1, "Non-Compete Period is required"),
+        nonSolicitationPeriod: z.string().min(1, "Non-Solicitation Period is required"),
+        employerNoticePeriod: z.string().min(1, "Employer Notice Period is required"),
+        employeeNoticePeriod: z.string().min(1, "Employee Notice Period is required"),
+        governingLocation: z.string().min(1, "Governing City/State is required"),
       });
     default:
       return z.object(baseSchema);
@@ -80,18 +98,26 @@ export default function DocumentCreator() {
     defaultValues: {
       title: "",
       description: "",
-      ...(type === "nda" && {
-        partyOne: "",
-        partyTwo: "",
-        duration: "",
-        confidentialityLevel: "standard",
-      }),
       ...(type === "employment" && {
-        employerName: "",
-        employeeName: "",
-        position: "",
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        companyName: "",
+        employerAddress: "",
+        employeeFullName: "",
+        employeeAddress: "",
+        jobTitle: "",
         startDate: "",
-        compensation: "",
+        baseSalary: "",
+        salaryFrequency: "monthly",
+        bonusDetails: "",
+        benefits: "",
+        workHoursPerWeek: "40",
+        workStartTime: "09:00",
+        workEndTime: "18:00",
+        nonCompetePeriod: "12",
+        nonSolicitationPeriod: "12",
+        employerNoticePeriod: "30",
+        employeeNoticePeriod: "30",
+        governingLocation: "",
       }),
     },
   });
@@ -114,143 +140,293 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
-      case "nda":
-        return (
-          <>
-            <FormField
-              control={form.control}
-              name="partyOne"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Party</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter first party name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="partyTwo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Second Party</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter second party name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter agreement duration" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confidentialityLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confidentiality Level</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select level" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="standard">Standard</SelectItem>
-                      <SelectItem value="strict">Strict</SelectItem>
-                      <SelectItem value="very-strict">Very Strict</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        );
       case "employment":
         return (
           <>
-            <FormField
-              control={form.control}
-              name="employerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Employer Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter employer name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="employeeName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Employee Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter employee name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="position"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Position</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter job position" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="compensation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Compensation</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter compensation details" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="employerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Employer's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter employer's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="employeeFullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employee's Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter employee's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jobTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Job Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter job title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="employeeAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Employee's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter employee's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date of Employment</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="baseSalary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Base Salary (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter base salary" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="salaryFrequency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salary Frequency</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select frequency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                          <SelectItem value="yearly">Yearly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bonusDetails"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bonus Details (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter bonus details" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="benefits"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Benefits</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="List benefits (e.g., health insurance, provident fund, gratuity)" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="workHoursPerWeek"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Hours Per Week</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="workStartTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Start Time</FormLabel>
+                      <FormControl>
+                        <Input type="time" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="workEndTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work End Time</FormLabel>
+                      <FormControl>
+                        <Input type="time" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="nonCompetePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Compete Period (months)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nonSolicitationPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Solicitation Period (months)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="employerNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employer Notice Period (days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employeeNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employee Notice Period (days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="governingLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Governing City/State</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter governing city/state" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </>
         );
       default:
@@ -263,13 +439,13 @@ export default function DocumentCreator() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Create {type.toUpperCase()} Document
+          Create {type.toUpperCase()} Agreement
         </h1>
         <p className="text-muted-foreground">
-          Fill in the details below to generate your document
+          Fill in the details below to generate your employment agreement
         </p>
       </div>
 
@@ -315,8 +491,8 @@ export default function DocumentCreator() {
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting
-                ? "Generating Document..."
-                : "Generate Document"}
+                ? "Generating Agreement..."
+                : "Generate Employment Agreement"}
             </Button>
           </form>
         </Form>
