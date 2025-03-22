@@ -28,6 +28,19 @@ import { format } from "date-fns";
 
 // Update FormFields type to include DPA fields
 type FormFields = {
+  // Affiliate/Referral Agreement Fields
+  affiliateCompanyName?: string;
+  affiliateCompanyAddress?: string;
+  affiliateName?: string;
+  affiliateAddress?: string;
+  referralFeeStructure?: string;
+  affiliatePaymentMethod?: string;
+  affiliatePaymentSchedule?: string;
+  affiliateNoticePeriod?: string;  
+  affiliateArbitrationLocation?: string;
+  affiliateJurisdiction?: string;
+  affiliateStartDate?: string;
+
   // Revenue Sharing Agreement Fields
   revenueCompanyName?: string;
   revenueCompanyAddress?: string;
@@ -282,6 +295,21 @@ type FormFields = {
 // Add vendor schema to getFormSchema function
 const getFormSchema = (type: string) => {
   switch (type) {
+    case "affiliate":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        affiliateCompanyName: z.string().min(1, "Company Name is required"),
+        affiliateCompanyAddress: z.string().min(1, "Company Address is required"),
+        affiliateName: z.string().min(1, "Affiliate/Referrer Name is required"),
+        affiliateAddress: z.string().min(1, "Affiliate/Referrer Address is required"),
+        referralFeeStructure: z.string().min(1, "Referral Fee/Commission Structure is required"),
+        affiliatePaymentMethod: z.string().min(1, "Payment Method is required"),
+        affiliatePaymentSchedule: z.string().min(1, "Payment Schedule is required"),
+        affiliateNoticePeriod: z.string().min(1, "Notice Period is required"),
+        affiliateArbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        affiliateJurisdiction: z.string().min(1, "Governing Jurisdiction is required"),
+        affiliateStartDate: z.string().min(1, "Start Date is required"),
+      });
     case "revenue-sharing":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
@@ -626,6 +654,20 @@ export default function DocumentCreator() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      ...(type === "affiliate" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        affiliateCompanyName: "",
+        affiliateCompanyAddress: "",
+        affiliateName: "",
+        affiliateAddress: "",
+        referralFeeStructure: "",
+        affiliatePaymentMethod: "",
+        affiliatePaymentSchedule: "",
+        affiliateNoticePeriod: "30",
+        affiliateArbitrationLocation: "",
+        affiliateJurisdiction: "",
+        affiliateStartDate: "",
+      }),
       ...(type === "revenue-sharing" && {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         revenueCompanyName: "",
@@ -959,6 +1001,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (type) {
+      case "affiliate":
+        return "Affiliate/Referral Agreement";
       case "revenue-sharing":
         return "Revenue Sharing Agreement";
       case "distribution":
@@ -994,6 +1038,194 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "affiliate":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="affiliateStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="affiliateCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="affiliateName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Affiliate/Referrer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter affiliate's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="affiliateCompanyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter company's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="affiliateAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Affiliate/Referrer Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter affiliate's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Commission Structure</h3>
+              <FormField
+                control={form.control}
+                name="referralFeeStructure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Referral Fee/Commission Structure</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter percentage or fixed amount, along with gross or net sales value exclusion details"
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="affiliatePaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Bank Transfer, Cheque" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="affiliatePaymentSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Schedule</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter specific day of the month for payments" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="affiliateNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Period for Termination (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="affiliateArbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="affiliateJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "revenue-sharing":
         return (
           <>
