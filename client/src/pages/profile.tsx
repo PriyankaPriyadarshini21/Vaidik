@@ -20,6 +20,17 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@shared/schema";
+import { Separator } from "@/components/ui/separator";
+import {
+  Upload,
+  CheckCircle,
+  Download,
+  Edit,
+  Trash,
+  Calendar,
+  MessageSquare,
+  Mail
+} from "lucide-react";
 
 const profileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
