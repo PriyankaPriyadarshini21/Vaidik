@@ -176,6 +176,27 @@ type FormFields = {
   subProcessorDetails?: string;
   breachNotificationPeriod?: string;
   reportingFormat?: string;
+
+  // Software License Agreement Fields
+  licensorName?: string;
+  licensorAddress?: string;
+  licenseeName?: string;
+  licenseeAddress?: string;
+  licenseType?: "exclusive" | "non-exclusive";
+  softwareName?: string;
+  softwareUse?: string;
+  licenseFee?: string;
+  initialPayment?: string;
+  subsequentPayments?: string;
+  deliveryTimeline?: string;  
+  installationAssistance?: "yes" | "no";
+  standardSupport?: string;
+  supportDuration?: string;
+  additionalSupportCharges?: string;
+  softwareWarrantyPeriod?: string;
+  agreementDuration?: string;
+  licenseTerminationPeriod?: string;
+  licenseArbitrationCity?: string;
 };
 
 // Add vendor schema to getFormSchema function
@@ -365,6 +386,30 @@ const getFormSchema = (type: string) => {
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         softwareArbitrationVenue: z.string().min(1, "Arbitration Venue is required"),
         noticeMethod: z.string().min(1, "Notice Method is required"),
+      });
+
+    case "software-licensing":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        licensorName: z.string().min(1, "Licensor Name is required"),
+        licensorAddress: z.string().min(1, "Licensor Address is required"),
+        licenseeName: z.string().min(1, "Licensee Name is required"),
+        licenseeAddress: z.string().min(1, "Licensee Address is required"),
+        licenseType: z.enum(["exclusive", "non-exclusive"]),
+        softwareName: z.string().min(1, "Software Name is required"),
+        softwareUse: z.string().min(1, "Purpose of Software Use is required"),
+        licenseFee: z.string().min(1, "License Fee is required"),
+        initialPayment: z.string().min(1, "Initial Payment is required"),
+        subsequentPayments: z.string().optional(),
+        deliveryTimeline: z.string().min(1, "Delivery Timeline is required"),
+        installationAssistance: z.enum(["yes", "no"]),
+        standardSupport: z.string().min(1, "Standard Support details are required"),
+        supportDuration: z.string().min(1, "Support Duration is required"),
+        additionalSupportCharges: z.string().optional(),
+        softwareWarrantyPeriod: z.string().min(1, "Warranty Period is required"),
+        agreementDuration: z.string().min(1, "Agreement Duration is required"),
+        licenseTerminationPeriod: z.string().min(1, "Termination Notice Period is required"),
+        licenseArbitrationCity: z.string().min(1, "Arbitration City is required"),
       });
 
     case "dpa":
@@ -588,6 +633,28 @@ export default function DocumentCreator() {
         softwareArbitrationVenue: "",
         noticeMethod: "",
       }),
+      ...(type === "software-licensing" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        licensorName: "",
+        licensorAddress: "",
+        licenseeName: "",
+        licenseeAddress: "",
+        licenseType: "non-exclusive",
+        softwareName: "",
+        softwareUse: "",
+        licenseFee: "",
+        initialPayment: "",
+        subsequentPayments: "",
+        deliveryTimeline: "30",
+        installationAssistance: "yes",
+        standardSupport: "",
+        supportDuration: "365",
+        additionalSupportCharges: "",
+        softwareWarrantyPeriod: "90",
+        agreementDuration: "365",
+        licenseTerminationPeriod: "30",
+        licenseArbitrationCity: "",
+      }),
       ...(type === "dpa" && {
         controllerName: "",
         controllerAddress: "",
@@ -654,6 +721,8 @@ export default function DocumentCreator() {
         return "Vendor Agreement";
       case "software-development":
         return "Software Development Agreement";  
+      case "software-licensing":
+        return "Software License Agreement";
       case "dpa":
         return "Data Processing Agreement";
       default:
@@ -663,6 +732,322 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "software-licensing":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="licensorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Licensor's Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter licensor's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="licenseeName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Licensee's Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter licensee's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="licensorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Licensor's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter licensor's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="licenseeAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Licensee's Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter licensee's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">License Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="licenseType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>License Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select license type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="exclusive">Exclusive</SelectItem>
+                          <SelectItem value="non-exclusive">Non-Exclusive</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="softwareName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Software Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name of the software" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="softwareUse"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Purpose of Software Use</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter specific purpose or industry for permitted use" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="licenseFee"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>License Fee (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter license fee amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="initialPayment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Initial Payment (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter initial payment amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="subsequentPayments"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subsequent Payment Schedule (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify payment schedule details" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Delivery and Support</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="deliveryTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Delivery Timeline (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="installationAssistance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Installation Assistance</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="standardSupport"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Standard Support</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter support details (e.g., email, phone, online)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="supportDuration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Support Duration (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="additionalSupportCharges"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Support Charges (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter additional support fees" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Terms and Conditions</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="softwareWarrantyPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warranty Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="agreementDuration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agreement Duration (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="licenseTerminationPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="licenseArbitrationCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter city name for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "software-development":
         return (
           <>
