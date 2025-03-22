@@ -1,0 +1,160 @@
+in the ai-written documents tab, we already create some type Agreement
+after clicking it, it shows the form open. i want to change the some fields
+
+here are new field add and remove the previous
+
+Under the Software Development Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Client Name: [Client's Full Name/Company Name]
+Client Address: [Client’s Principal Place of Business Address]
+Developer Name: [Developer's Full Name/Company Name]
+Developer Address: [Developer’s Principal Place of Business Address]
+Scope of Work (Schedule A):
+Project Requirements and Functionalities: [Detailed description of the project requirements and functionalities]
+Timeline for Completion: [Specific timeline for various project phases]
+Total Project Cost: [INR Amount]
+Payment Milestones:
+Upfront Payment: [Percentage]%
+Payment Upon Milestone Completion: [Percentage]% for [Milestone Name]
+Final Payment: [Percentage]% upon [Final Delivery and Approval]
+Payment Method: [Payment Method, e.g., bank transfer, PayPal, etc.]
+Invoice Payment Deadline: [Number of days]
+Warranty Period: [Number of days] from the delivery date.
+Termination Notice Period (General): [Number of days]
+Notice Period for Material Breach by the Developer (by Client): [Number of days]
+Notice Period for Non-Payment of Fees by the Client (by Developer): [Number of days]
+City and State for Arbitration Venue: [City, State]
+Method of Notices (e.g., Email/Registered Post): [Specify Method]
+
+Under the Software Licensing Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Licensor’s Name: [Full Name or Company Name of the Licensor]
+Licensor’s Address: [Address of the Licensor]
+Licensee’s Name: [Full Name or Company Name of the Licensee]
+Licensee’s Address: [Address of the Licensee]
+Type of License (Non-Exclusive/Exclusive): [Specify Non-Exclusive or Exclusive]
+Software Name: [Name of the Software]
+Purpose of Software Use: [Specific purpose or industry for permitted use]
+License Fee Amount: [₹Amount]
+Initial Payment Amount: [₹Amount]
+Subsequent Payment Schedule (if any): [Specify details]
+Delivery Timeline for Software: [Number of Days]
+Installation Assistance (if any): [Yes/No, and any conditions]
+Standard Support Provided: [Details, e.g., email, phone, or online]
+Support Duration: [Duration, e.g., one year]
+Additional Support Charges (if any): [Details of additional fees, if applicable]
+Warranty Period for Software: [Number of Days]
+Duration of Agreement: [Specify duration, e.g., one year]
+Termination Notice Period: [Number of Days]
+City for Arbitration Venue: [City Name]
+
+Under the Marketing/Advertising Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Client's Name: [Full Name or Company Name of Client]
+Client's Address: [Client's Address]
+Agency's Name: [Full Name or Company Name of Agency]
+Agency's Address: [Agency's Address]
+Scope of Services:
+[Specific marketing/advertising activities, e.g., social media marketing, print advertising, SEO services]
+[Any additional services to be included]
+Term:
+Start Date: [Start Date]
+End Date: [End Date]
+Fee:
+Total Amount: ₹[Amount]
+Payment Schedule: [e.g., upfront, milestone-based, or monthly]
+Additional Costs: [Any third-party expenses to be pre-approved by the Client]
+Taxes: [Applicable taxes borne by Client]
+Deliverables:
+[List of deliverables with deadlines, e.g., campaign materials, performance reports]
+Responsibilities of Agency: [Professional services, meeting objectives, etc.]
+Responsibilities of Client: [Provide materials, information, and approvals timely]
+Intellectual Property:
+Ownership: [Ownership of materials upon full payment]
+Usage Rights for Agency: [Portfolio use for non-commercial purposes]
+Performance Metrics:
+[Examples: ROI, engagement rates, lead generation metrics, etc.]
+Termination Notice Period:
+By Either Party: [Number of days for notice]
+By Agency for Non-Payment: [Number of days for notice]
+Immediate Effect: [For unsatisfactory performance by Client]
+Arbitration Venue: [City for arbitration in India]
+Signatures:
+Client's Name and Title: [Client's Name and Title]
+Agency's Name and Title: [Agency's Name and Title]
+
+Under the Data Processing Agreement (DPA)
+
+Customer Input Details
+
+Controller Details
+Name: [Controller Name]
+Address: [Controller Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Processor Details
+Name: [Processor Name]
+Address: [Processor Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Scope of Processing
+Purpose of Processing: [Specify Purpose, e.g., "Marketing Automation," "Customer Support," etc.]
+Nature of Processing: [E.g., Storage, Analysis, Data Export, etc.]
+Duration of Processing: [Specify Duration, e.g., "12 months" or "As per Service Agreement."]
+Data Categories
+Personal Data: [E.g., Name, Email Address, Phone Number, etc.]
+Sensitive Personal Data (if any): [E.g., Health Data, Financial Data, etc.]
+Other Data: [Specify any additional data, if applicable.]
+Categories of Data Subjects
+[E.g., Employees, Customers, End Users, etc.]
+Instructions for Processing
+[E.g., "Data must be anonymized for reporting purposes," "Email addresses must not be shared with third parties," etc.]
+Security Measures Required
+Encryption Standards: [E.g., AES 256-bit encryption]
+Access Control: [E.g., Role-based access control]
+Data Backup: [E.g., Weekly automated backups stored in secure locations]
+Additional Measures: [Specify, if applicable]
+Retention Period
+[Specify duration, e.g., "Data should be deleted 30 days after termination of the Service Agreement."]
+Sub-Processors
+Approval Status: [Yes/No]
+Details (if applicable): [Name of Sub-Processor, Purpose, Location, etc.]
+Reporting and Notifications
+Breach Notification Period: [E.g., "Notify within 24 hours of identifying a breach."]
+Reporting Format: [E.g., Incident report template]
+ 
+
+Vendor Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Vendor's Name: [Full Name of the Vendor]
+Vendor's Type (Company/Individual): [Select either Company or Individual]
+Vendor's Address: [Address of the Vendor]
+Vendor's Title: [Vendor's Title, e.g., CEO, Manager]
+Company's Name: [Name of the Company]
+Company's Address: [Registered Address of the Company]
+Company's Title: [Company Representative's Title, e.g., Director, Manager]
+Description of Goods/Services: [Details of Goods/Services to be Supplied]
+Start Date of Agreement: [DD/MM/YYYY]
+End Date of Agreement: [DD/MM/YYYY]
+Price per Unit/Service: [Amount in ₹]
+Payment Terms (Number of Days): [e.g., 30 days, 45 days]
+Mode of Payment: [e.g., Bank Transfer, UPI, Cheque]
+Delivery Address: [Delivery Address for Goods/Services]
+Termination Notice Period (Either Party): [Number of Days]
+Termination Notice Period (Vendor for Non-Payment): [Number of Days]
+Governing City (Arbitration Venue): [City for Arbitration]
+
+these section in the form customer add these details before generate
