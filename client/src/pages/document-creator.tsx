@@ -58,6 +58,51 @@ type FormFields = {
   founderSignatures?: string;
   investorRepName?: string;
   investorRepTitle?: string;
+
+  // Preferred Stock Agreement Fields
+  companyName?: string;
+  companyLocation?: string;
+  investorName?: string;
+  investorAddress?: string;
+  preferredShareCount?: string;
+  pricePerShare?: string;
+  totalPurchasePrice?: string;
+  liquidationPreference?: string;
+  antiDilutionClause?: string;
+  dividendRate?: string;
+  conversionRightsClause?: string;
+  votingPower?: string;
+  jurisdiction?: string;
+  disputeResolution?: string;
+  arbitrationRules?: string;
+  closingDate?: string;
+  closingLocation?: string;
+
+  //Equity Crowdfunding fields
+  ecfIssuerName?: string;
+  ecfIssuerAddress?: string;
+  ecfInvestorName?: string;
+  ecfInvestorAddress?: string;
+  ecfInvestmentAmount?: string;
+  ecfEquityAllocated?: string;
+  ecfTotalEquityPercentage?: string;
+  ecfShareClass?: string;
+  ecfUseOfFunds?: string;
+  ecfPlatformName?: string;
+  ecfPlatformFeesResponsibility?: "issuer" | "investor";
+  ecfVotingRights?: string;
+  ecfPeriodicUpdates?: string;
+  ecfDividendsEligibility?: "yes" | "no";
+  ecfInvestorAcknowledgments?: string;
+  ecfConfidentialityClause?: string;
+  ecfExitStrategySale?: "yes" | "no";
+  ecfExitStrategyMerger?: "yes" | "no";
+  ecfExitStrategyListing?: "yes" | "no";
+  ecfArbitrationCity?: string;
+  ecfGoverningLawCity?: string;
+  ecfIssuerRepName?: string;
+  ecfIssuerRepTitle?: string;
+  ecfInvestorSignatureName?: string;
 };
 
 interface RouteParams {
@@ -133,6 +178,27 @@ export default function DocumentCreator() {
         ecfIssuerRepTitle: "",
         ecfInvestorSignatureName: "",
       } as const;
+    } else if (params.type === "preferred-stock") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        companyName: "",
+        companyLocation: "",
+        investorName: "",
+        investorAddress: "",
+        preferredShareCount: "",
+        pricePerShare: "",
+        totalPurchasePrice: "",
+        liquidationPreference: "",
+        antiDilutionClause: "",
+        dividendRate: "",
+        conversionRightsClause: "",
+        votingPower: "",
+        jurisdiction: "",
+        disputeResolution: "",
+        arbitrationRules: "",
+        closingDate: format(new Date(), "yyyy-MM-dd"),
+        closingLocation: "",
+      } as const;
     }
     return {};
   }, [params.type]);
@@ -156,6 +222,8 @@ export default function DocumentCreator() {
         return "Voting Rights Agreement";
       case "equity-crowdfunding":
         return "Equity Crowdfunding Agreement";
+      case "preferred-stock":
+        return "Preferred Stock Agreement";
       case "affiliate":
         return "Affiliate Agreement";
       case "revenue-sharing":
@@ -816,6 +884,271 @@ export default function DocumentCreator() {
             </div>
           </>
         );
+      case "preferred-stock":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="closingDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Closing Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="companyName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter full name of the company" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="companyLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Location</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter address of principal office" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="investorName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter full name of investor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="investorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter investor's address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Share Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="preferredShareCount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Preferred Shares</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter total number of shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="pricePerShare"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price per Share (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter price per share" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="totalPurchasePrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Purchase Price (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter total amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Rights and Preferences</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="liquidationPreference"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liquidation Preference</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 1x, 2x" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dividendRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dividend Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Specify dividend rate" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="antiDilutionClause"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Anti-Dilution Protection Clause</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name of clause/document" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="conversionRightsClause"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Conversion Rights Clause</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name of clause/document" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="votingPower"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Voting Power</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 1 vote per share" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="jurisdiction"
+                  render={({ field }) => (                    <FormItem>
+                      <FormLabel>Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter applicable jurisdiction" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="disputeResolution"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution Mechanism</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Arbitration, Court Proceedings" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="arbitrationRules"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Rules/Act</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Arbitration and Conciliation Act, 1996" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="closingLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Closing Location</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter location or 'Remote'" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       default:
         return null;
     }
@@ -898,6 +1231,27 @@ const getFormSchema = (type: string) => {
         ecfIssuerRepName: z.string().min(1, "Issuer Representative Name is required"),
         ecfIssuerRepTitle: z.string().min(1, "Issuer Representative Title is required"),
         ecfInvestorSignatureName: z.string().min(1, "Investor Name for signature is required"),
+      });
+    case "preferred-stock":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        companyName: z.string().min(1, "Company Name is required"),
+        companyLocation: z.string().min(1, "Company Location is required"),
+        investorName: z.string().min(1, "Investor Name is required"),
+        investorAddress: z.string().min(1, "Investor Address is required"),
+        preferredShareCount: z.string().min(1, "Number of Preferred Shares is required"),
+        pricePerShare: z.string().min(1, "Price per Share is required"),
+        totalPurchasePrice: z.string().min(1, "Total Purchase Price is required"),
+        liquidationPreference: z.string().min(1, "Liquidation Preference is required"),
+        antiDilutionClause: z.string().min(1, "Anti-Dilution Protection Clause is required"),
+        dividendRate: z.string().min(1, "Dividend Rate is required"),
+        conversionRightsClause: z.string().min(1, "Conversion Rights Clause is required"),
+        votingPower: z.string().min(1, "Voting Power is required"),
+        jurisdiction: z.string().min(1, "Jurisdiction is required"),
+        disputeResolution: z.string().min(1, "Dispute Resolution Mechanism is required"),
+        arbitrationRules: z.string().min(1, "Arbitration Rules/Act is required"),
+        closingDate: z.string().min(1, "Closing Date is required"),
+        closingLocation: z.string().min(1, "Closing Location is required"),
       });
     default:
       return z.object({});
