@@ -9,12 +9,12 @@ import {
   Users,
   FolderOpen,
   HelpCircle,
-  BellRing,
   LogOut,
   User,
   Inbox,
   Lock,
   Settings,
+  Bell,
 } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -38,6 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 const NavLink = ({ href, icon: Icon, children }: {
   href: string;
@@ -73,12 +74,10 @@ export default function Navigation() {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { logoutMutation } = useAuth();
 
   const handleLogout = () => {
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account.",
-    });
+    logoutMutation.mutate();
   };
 
   const NavContent = () => (
@@ -92,16 +91,6 @@ export default function Navigation() {
         <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
         <NavLink href="/pricing" icon={FileText}>Pricing</NavLink>
         <NavLink href="/help" icon={HelpCircle}>Help & Support</NavLink>
-      </div>
-      <div className="p-2 mt-auto">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start gap-2 text-red-600 hover:text-red-600 hover:bg-red-100"
-          onClick={handleLogout}
-        >
-          <LogOut className="h-4 w-4" />
-          Logout
-        </Button>
       </div>
     </div>
   );
@@ -117,7 +106,7 @@ export default function Navigation() {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
-                <BellRing className="h-5 w-5" />
+                <Bell className="h-5 w-5" />
                 {notifications.length > 0 && (
                   <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600" />
                 )}
@@ -137,7 +126,7 @@ export default function Navigation() {
                   {notifications.length > 0 ? (
                     notifications.map(notification => (
                       <div key={notification.id} className="flex items-start gap-2 p-2 hover:bg-muted rounded-lg">
-                        <BellRing className="h-4 w-4 mt-1 text-muted-foreground" />
+                        <Bell className="h-4 w-4 mt-1 text-muted-foreground" />
                         <div>
                           <p className="text-sm">{notification.message}</p>
                           <p className="text-xs text-muted-foreground">{notification.timestamp}</p>
@@ -175,19 +164,26 @@ export default function Navigation() {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleMenuAction('profile')}>
+              <DropdownMenuItem onClick={() => setLocation('/profile')}>
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleMenuAction('inbox')}>
+              <DropdownMenuItem onClick={() => setShowInbox(true)}>
                 <Inbox className="mr-2 h-4 w-4" />
                 Inbox
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleMenuAction('lock')}>
+              <DropdownMenuItem>
                 <Lock className="mr-2 h-4 w-4" />
                 Lock Screen
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-red-600 focus:text-red-600 focus:bg-red-100"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -201,7 +197,7 @@ export default function Navigation() {
                 {notifications.length > 0 ? (
                   notifications.map(notification => (
                     <div key={notification.id} className="flex items-start gap-2 p-2 hover:bg-muted rounded-lg">
-                      <BellRing className="h-4 w-4 mt-1 text-muted-foreground" />
+                      <Bell className="h-4 w-4 mt-1 text-muted-foreground" />
                       <div>
                         <p className="text-sm">{notification.message}</p>
                         <p className="text-xs text-muted-foreground">{notification.timestamp}</p>
