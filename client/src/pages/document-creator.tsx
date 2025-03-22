@@ -28,6 +28,27 @@ import { format } from "date-fns";
 
 // Update FormFields type to include DPA fields
 type FormFields = {
+  // Distribution Agreement Fields
+  principalName?: string;
+  principalAddress?: string;
+  distributorName?: string;
+  distributorAddress?: string;
+  distributionAppointmentType?: "exclusive" | "non-exclusive";
+  distributionTerritory?: string;
+  productsDescription?: string;
+  productChangeNotice?: string;
+  pricingDetails?: string;
+  priceRevisionNotice?: string;
+  distributionPaymentTerms?: string;
+  distributionLatePaymentRate?: string;
+  paymentCurrency?: string;
+  agreementStartDate?: string;
+  distributionDuration?: string;
+  distributionTerminationNotice?: string;
+  distributionBreachNotice?: string;
+  distributionArbitrationLocation?: string;
+  governingJurisdiction?: string;
+
   // Sales Agreement Fields
   sellerName?: string;
   sellerAddress?: string; 
@@ -362,6 +383,30 @@ const getFormSchema = (type: string) => {
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
       });
+    case "distribution":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+        principalName: z.string().min(1, "Principal/Company Name is required"),
+        principalAddress: z.string().min(1, "Principal/Company Address is required"),
+        distributorName: z.string().min(1, "Distributor Name is required"),
+        distributorAddress: z.string().min(1, "Distributor Address is required"),
+        distributionAppointmentType: z.enum(["exclusive", "non-exclusive"]),
+        distributionTerritory: z.string().min(1, "Territory is required"),
+        productsDescription: z.string().min(1, "Products Description is required"),
+        productChangeNotice: z.string().min(1, "Product Change Notice Period is required"),
+        pricingDetails: z.string().min(1, "Pricing Details are required"),
+        priceRevisionNotice: z.string().min(1, "Price Revision Notice Period is required"),
+        distributionPaymentTerms: z.string().min(1, "Payment Terms are required"),
+        distributionLatePaymentRate: z.string().min(1, "Late Payment Interest Rate is required"),
+        paymentCurrency: z.string().min(1, "Payment Currency is required"),
+        agreementStartDate: z.string().min(1, "Agreement Start Date is required"),
+        distributionDuration: z.string().min(1, "Agreement Duration is required"),
+        distributionTerminationNotice: z.string().min(1, "Termination Notice Period is required"),
+        distributionBreachNotice: z.string().min(1, "Breach Notice Period is required"),
+        distributionArbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        governingJurisdiction: z.string().min(1, "Governing Jurisdiction is required"),
+      });
+
     case "commission":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
@@ -543,6 +588,28 @@ export default function DocumentCreator() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      ...(type === "distribution" && {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        principalName: "",
+        principalAddress: "",
+        distributorName: "",
+        distributorAddress: "",
+        distributionAppointmentType: "non-exclusive",
+        distributionTerritory: "",
+        productsDescription: "",
+        productChangeNotice: "30",
+        pricingDetails: "",
+        priceRevisionNotice: "30",
+        distributionPaymentTerms: "",
+        distributionLatePaymentRate: "",
+        paymentCurrency: "INR",
+        agreementStartDate: "",
+        distributionDuration: "",
+        distributionTerminationNotice: "30",
+        distributionBreachNotice: "15",
+        distributionArbitrationLocation: "",
+        governingJurisdiction: "",
+      }),
       ...(type === "event-management" && {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         eventClientName: "",
@@ -835,6 +902,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (type) {
+      case "distribution":
+        return "Distribution Agreement";
       case "sales":
         return "Sales Agreement";
       case "event-management":
@@ -866,6 +935,320 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (type) {
+      case "distribution":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="principalName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Principal/Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter principal's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Distributor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter distributor's full name or company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="principalAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Principal/Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter principal's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="distributorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Distributor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter distributor's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Appointment and Territory</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionAppointmentType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Appointment Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select appointment type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="exclusive">Exclusive</SelectItem>
+                          <SelectItem value="non-exclusive">Non-Exclusive</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionTerritory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Territory</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter territory where distribution rights apply" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Products and Pricing</h3>
+              <FormField
+                control={form.control}
+                name="productsDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Products Description (Schedule A)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter description of Products, including quantity, quality, etc."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="productChangeNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product Change Notice (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="priceRevisionNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price Revision Notice (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="pricingDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pricing Details (Schedule B)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter Product pricing details" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Payment Terms</h3>
+              <FormField
+                control={form.control}
+                name="distributionPaymentTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Terms (Schedule C)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter payment terms, including installments, timeline, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionLatePaymentRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Late Payment Interest Rate (%/month)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentCurrency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Currency</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Specify currency" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Agreement Duration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="agreementStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionDuration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter duration in months/years" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionTerminationNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionBreachNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Material Breach Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionArbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="governingJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter jurisdiction for governing laws" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+        
       case "sales":
         return (
           <>
