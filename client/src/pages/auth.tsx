@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "wouter";
+import { motion } from "framer-motion";
 
 export default function Auth() {
   const [, setLocation] = useLocation();
@@ -61,7 +62,13 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <motion.div 
+      className="min-h-screen flex items-center justify-center bg-background"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="flex w-full max-w-5xl p-4 gap-8">
         {/* Form Section */}
         <Card className="flex-1">
@@ -157,7 +164,12 @@ export default function Auth() {
         </Card>
 
         {/* Hero Section */}
-        <div className="hidden md:flex flex-1 flex-col justify-center space-y-6">
+        <motion.div 
+          className="hidden md:flex flex-1 flex-col justify-center space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
           <h1 className="text-4xl font-bold">Transform Your Legal Work with AI</h1>
           <p className="text-xl text-muted-foreground">
             Streamline document creation, get instant analysis, and collaborate seamlessly with our AI-powered legal platform.
@@ -168,8 +180,8 @@ export default function Auth() {
             <li>✓ Secure document management</li>
             <li>✓ Expert legal consultation</li>
           </ul>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
