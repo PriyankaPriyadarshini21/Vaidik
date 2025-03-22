@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
     onSuccess: () => {
-      // Clear all queries from the cache
+      // First, clear all queries from the cache
       queryClient.clear();
       // Set user to null
       queryClient.setQueryData(["/api/user"], null);
@@ -95,7 +95,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "You have been logged out of your account.",
       });
       // Add delay for the exit animation to complete
-      setTimeout(() => setLocation("/auth"), 300);
+      setTimeout(() => {
+        setLocation("/auth");
+        // Invalidate and refetch user query to ensure state is updated
+        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      }, 300);
     },
     onError: (error: Error) => {
       toast({
