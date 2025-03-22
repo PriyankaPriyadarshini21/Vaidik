@@ -21,6 +21,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@shared/schema";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import {
   Upload,
   CheckCircle,
@@ -29,7 +31,14 @@ import {
   Trash,
   Calendar,
   MessageSquare,
-  Mail
+  Mail,
+  CreditCard,
+  FileText,
+  Bell,
+  Clock,
+  AlertTriangle,
+  Shield,
+  HelpCircle
 } from "lucide-react";
 
 const profileFormSchema = z.object({
@@ -298,7 +307,7 @@ export default function Profile() {
                     />
                   </div>
 
-                  <Button 
+                  <Button
                     type="submit"
                     disabled={updateProfileMutation.isPending}
                   >
@@ -332,7 +341,7 @@ export default function Profile() {
                   <span>Usage this month</span>
                   <span>{subscription.usageProgress}%</span>
                 </div>
-                {/* Progress component is missing, needs to be imported and used here */}
+                <Progress value={subscription.usageProgress} />
               </div>
 
               <Separator />
@@ -340,7 +349,7 @@ export default function Profile() {
               <div className="space-y-4">
                 <h4 className="font-medium">Payment Methods</h4>
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
-                  {/* CreditCard component is missing, needs to be imported and used here */}
+                  <CreditCard className="h-6 w-6" />
                   <div>
                     <p className="font-medium">•••• •••• •••• 4242</p>
                     <p className="text-sm text-muted-foreground">Expires 12/25</p>
@@ -486,7 +495,7 @@ export default function Profile() {
                       Protect your account with an additional layer of security
                     </p>
                   </div>
-                  {/* Switch component is missing, needs to be imported and used here */}
+                  <Switch />
                 </div>
               </div>
 
@@ -502,7 +511,7 @@ export default function Profile() {
                         Receive updates about your documents and consultations
                       </p>
                     </div>
-                    {/* Switch component is missing, needs to be imported and used here */}
+                    <Switch />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
@@ -511,7 +520,7 @@ export default function Profile() {
                         Get important alerts on your phone
                       </p>
                     </div>
-                    {/* Switch component is missing, needs to be imported and used here */}
+                    <Switch />
                   </div>
                 </div>
               </div>
