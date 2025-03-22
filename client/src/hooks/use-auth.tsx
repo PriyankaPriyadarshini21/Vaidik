@@ -80,24 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/logout");
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Logout failed");
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Logout failed");
       }
     },
     onSuccess: () => {
-      // First, clear all queries from the cache
       queryClient.clear();
-      // Set user to null
       queryClient.setQueryData(["/api/user"], null);
-      // Show success message
-      toast({
-        title: "Logged out successfully",
-        description: "You have been logged out of your account.",
-      });
-      // Add delay for the exit animation to complete
       setTimeout(() => {
         setLocation("/auth");
-        // Invalidate and refetch user query to ensure state is updated
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       }, 300);
     },
