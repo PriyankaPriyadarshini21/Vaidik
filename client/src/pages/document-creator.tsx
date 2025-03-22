@@ -303,9 +303,9 @@ export default function DocumentCreator() {
                   <FormItem>
                     <FormLabel>Benefits</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="List benefits (e.g., health insurance, provident fund, gratuity)" 
-                        {...field} 
+                      <Textarea
+                        placeholder="List benefits (e.g., health insurance, provident fund, gratuity)"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -442,10 +442,10 @@ export default function DocumentCreator() {
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Create {type.toUpperCase()} Agreement
+          Create Employee Agreement
         </h1>
         <p className="text-muted-foreground">
-          Fill in the details below to generate your employment agreement
+          Fill in the details below to generate your employee agreement
         </p>
       </div>
 
@@ -492,7 +492,7 @@ export default function DocumentCreator() {
             >
               {form.formState.isSubmitting
                 ? "Generating Agreement..."
-                : "Generate Employment Agreement"}
+                : "Generate Employee Agreement"}
             </Button>
           </form>
         </Form>
