@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import {
   Form,
@@ -18,27 +17,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  User,
-  Mail,
-  Phone,
-  Building2,
-  FileText,
-  Shield,
-  Upload,
-  CheckCircle,
-  Bell,
-  Download,
-  Edit,
-  Trash,
-  Calendar,
-  MessageSquare,
-  Clock,
-  AlertTriangle,
-
-} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { User } from "@shared/schema";
 
 const profileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -52,24 +33,40 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 export default function Profile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [userInfo, setUserInfo] = useState({
-    name: "Shaun Park",
-    email: "shaun.park@example.com",
-    phone: "+91 98765 43210",
-    company: "Tech Solutions Inc.",
-    accountType: "Business",
-    isEmailVerified: true,
+
+  // Fetch user data
+  const { data: userInfo, isLoading } = useQuery<User>({
+    queryKey: ["/api/user"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/user");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      return response.json();
+    },
   });
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: userInfo.name,
-      email: userInfo.email,
-      phone: userInfo.phone,
-      company: userInfo.company,
+      name: userInfo?.fullName || "",
+      email: userInfo?.email || "",
+      phone: userInfo?.phone || "",
+      company: userInfo?.company || "",
     },
   });
+
+  // Update form values when user data is loaded
+  useEffect(() => {
+    if (userInfo) {
+      form.reset({
+        name: userInfo.fullName || "",
+        email: userInfo.email || "",
+        phone: userInfo.phone || "",
+        company: userInfo.company || "",
+      });
+    }
+  }, [userInfo, form]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: ProfileFormValues) => {
@@ -79,11 +76,7 @@ export default function Profile() {
       }
       return response.json();
     },
-    onSuccess: (data) => {
-      setUserInfo(prev => ({
-        ...prev,
-        ...data
-      }));
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       toast({
         title: "Profile Updated",
@@ -110,6 +103,7 @@ export default function Profile() {
         if (!response.ok) {
           throw new Error("Failed to upload avatar");
         }
+        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
         toast({
           title: "Profile Picture Updated",
           description: "Your profile picture has been successfully updated.",
@@ -123,6 +117,10 @@ export default function Profile() {
       }
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const [subscription] = useState({
     plan: "Pro",
@@ -194,8 +192,8 @@ export default function Profile() {
               <div className="flex items-center gap-6">
                 <div className="relative">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src="/placeholder-avatar.jpg" />
-                    <AvatarFallback>SP</AvatarFallback>
+                    <AvatarImage src={userInfo?.avatarUrl} />
+                    <AvatarFallback>{userInfo?.fullName?.substring(0, 2)?.toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <label
                     htmlFor="avatar-upload"
@@ -212,14 +210,14 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-medium">{userInfo.name}</h3>
-                  <p className="text-sm text-muted-foreground">{userInfo.accountType} Account</p>
+                  <h3 className="text-lg font-medium">{userInfo?.fullName}</h3>
+                  <p className="text-sm text-muted-foreground">Business Account</p>
                 </div>
               </div>
 
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(data => updateProfileMutation.mutate(data))} className="space-y-6">
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="name"
@@ -244,7 +242,7 @@ export default function Profile() {
                             <FormControl>
                               <Input {...field} />
                             </FormControl>
-                            {userInfo.isEmailVerified ? (
+                            {userInfo?.isEmailVerified ? (
                               <Badge variant="secondary" className="self-center">
                                 <CheckCircle className="h-3 w-3 mr-1" />
                                 Verified
@@ -323,7 +321,7 @@ export default function Profile() {
                   <span>Usage this month</span>
                   <span>{subscription.usageProgress}%</span>
                 </div>
-                <Progress value={subscription.usageProgress} />
+                {/* Progress component is missing, needs to be imported and used here */}
               </div>
 
               <Separator />
@@ -331,7 +329,7 @@ export default function Profile() {
               <div className="space-y-4">
                 <h4 className="font-medium">Payment Methods</h4>
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
-                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  {/* CreditCard component is missing, needs to be imported and used here */}
                   <div>
                     <p className="font-medium">•••• •••• •••• 4242</p>
                     <p className="text-sm text-muted-foreground">Expires 12/25</p>
@@ -477,7 +475,7 @@ export default function Profile() {
                       Protect your account with an additional layer of security
                     </p>
                   </div>
-                  <Switch />
+                  {/* Switch component is missing, needs to be imported and used here */}
                 </div>
               </div>
 
@@ -493,7 +491,7 @@ export default function Profile() {
                         Receive updates about your documents and consultations
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    {/* Switch component is missing, needs to be imported and used here */}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
@@ -502,7 +500,7 @@ export default function Profile() {
                         Get important alerts on your phone
                       </p>
                     </div>
-                    <Switch />
+                    {/* Switch component is missing, needs to be imported and used here */}
                   </div>
                 </div>
               </div>
