@@ -1,0 +1,46 @@
+in the ai-written documents tab, we create a Data Processing Agreement (DPA) after click it show form. i want to change the fields
+
+here are new field add and remove the previous
+
+Customer Input Details
+
+
+Controller Details
+Name: [Controller Name]
+Address: [Controller Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Processor Details
+Name: [Processor Name]
+Address: [Processor Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Scope of Processing
+Purpose of Processing: [Specify Purpose, e.g., "Marketing Automation," "Customer Support," etc.]
+Nature of Processing: [E.g., Storage, Analysis, Data Export, etc.]
+Duration of Processing: [Specify Duration, e.g., "12 months" or "As per Service Agreement."]
+Data Categories
+Personal Data: [E.g., Name, Email Address, Phone Number, etc.]
+Sensitive Personal Data (if any): [E.g., Health Data, Financial Data, etc.]
+Other Data: [Specify any additional data, if applicable.]
+Categories of Data Subjects
+[E.g., Employees, Customers, End Users, etc.]
+Instructions for Processing
+[E.g., "Data must be anonymized for reporting purposes," "Email addresses must not be shared with third parties," etc.]
+Security Measures Required
+Encryption Standards: [E.g., AES 256-bit encryption]
+Access Control: [E.g., Role-based access control]
+Data Backup: [E.g., Weekly automated backups stored in secure locations]
+Additional Measures: [Specify, if applicable]
+Retention Period
+[Specify duration, e.g., "Data should be deleted 30 days after termination of the Service Agreement."]
+Sub-Processors
+Approval Status: [Yes/No]
+Details (if applicable): [Name of Sub-Processor, Purpose, Location, etc.]
+Reporting and Notifications
+Breach Notification Period: [E.g., "Notify within 24 hours of identifying a breach."]
+Reporting Format: [E.g., Incident report template]
+
+add these section in the form customer add thse details before generate

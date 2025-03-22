@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-// Update FormFields type to include Vendor Agreement fields
+// Update FormFields type to include DPA fields
 type FormFields = {
   // Employment Agreement Fields
   dateOfAgreement?: string;
@@ -97,6 +97,34 @@ type FormFields = {
   goodsDescription?: string;
   pricePerUnit?: string;
   deliveryAddress?: string;
+  // DPA Fields
+  controllerName?: string;
+  controllerAddress?: string;
+  controllerContact?: string;
+  controllerEmail?: string;
+  controllerPhone?: string;
+  processorName?: string;
+  processorAddress?: string;
+  processorContact?: string;
+  processorEmail?: string;
+  processorPhone?: string;
+  processingPurpose?: string;
+  processingNature?: string;
+  processingDuration?: string;
+  personalData?: string;
+  sensitiveData?: string;
+  otherData?: string;
+  dataSubjects?: string;
+  processingInstructions?: string;
+  encryptionStandards?: string;
+  accessControl?: string;
+  dataBackup?: string;
+  additionalMeasures?: string;
+  retentionPeriod?: string;
+  subProcessorApproval?: "yes" | "no";
+  subProcessorDetails?: string;
+  breachNotificationPeriod?: string;
+  reportingFormat?: string;
 };
 
 // Add vendor schema to getFormSchema function
@@ -226,6 +254,36 @@ const getFormSchema = (type: string) => {
         terminationNoticePeriod: z.string().min(1, "Termination Notice Period is required"),
         nonPaymentNoticePeriod: z.string().min(1, "Non-Payment Notice Period is required"),
         arbitrationCity: z.string().min(1, "Arbitration City is required"),
+      });
+    case "dpa":
+      return z.object({
+        controllerName: z.string().min(1, "Controller Name is required"),
+        controllerAddress: z.string().min(1, "Controller Address is required"),
+        controllerContact: z.string().min(1, "Controller Contact is required"),
+        controllerEmail: z.string().email("Invalid email format"),
+        controllerPhone: z.string().min(1, "Controller Phone is required"),
+        processorName: z.string().min(1, "Processor Name is required"),
+        processorAddress: z.string().min(1, "Processor Address is required"),
+        processorContact: z.string().min(1, "Processor Contact is required"),
+        processorEmail: z.string().email("Invalid email format"),
+        processorPhone: z.string().min(1, "Processor Phone is required"),
+        processingPurpose: z.string().min(1, "Processing Purpose is required"),
+        processingNature: z.string().min(1, "Nature of Processing is required"),
+        processingDuration: z.string().min(1, "Duration of Processing is required"),
+        personalData: z.string().min(1, "Personal Data Categories are required"),
+        sensitiveData: z.string().min(1, "Sensitive Data Categories are required"),
+        otherData: z.string().optional(),
+        dataSubjects: z.string().min(1, "Data Subjects Categories are required"),
+        processingInstructions: z.string().min(1, "Processing Instructions are required"),
+        encryptionStandards: z.string().min(1, "Encryption Standards are required"),
+        accessControl: z.string().min(1, "Access Control measures are required"),
+        dataBackup: z.string().min(1, "Data Backup details are required"),
+        additionalMeasures: z.string().optional(),
+        retentionPeriod: z.string().min(1, "Retention Period is required"),
+        subProcessorApproval: z.enum(["yes", "no"]),
+        subProcessorDetails: z.string().optional(),
+        breachNotificationPeriod: z.string().min(1, "Breach Notification Period is required"),
+        reportingFormat: z.string().min(1, "Reporting Format is required"),
       });
     default:
       return z.object({});
@@ -360,6 +418,35 @@ export default function DocumentCreator() {
         nonPaymentNoticePeriod: "15",
         arbitrationCity: "",
       }),
+      ...(type === "dpa" && {
+        controllerName: "",
+        controllerAddress: "",
+        controllerContact: "",
+        controllerEmail: "",
+        controllerPhone: "",
+        processorName: "",
+        processorAddress: "",
+        processorContact: "",
+        processorEmail: "",
+        processorPhone: "",
+        processingPurpose: "",
+        processingNature: "",
+        processingDuration: "",
+        personalData: "",
+        sensitiveData: "",
+        otherData: "",
+        dataSubjects: "",
+        processingInstructions: "",
+        encryptionStandards: "",
+        accessControl: "",
+        dataBackup: "",
+        additionalMeasures: "",
+        retentionPeriod: "",
+        subProcessorApproval: "no",
+        subProcessorDetails: "",
+        breachNotificationPeriod: "",
+        reportingFormat: "",
+      }),
     },
   });
 
@@ -393,6 +480,8 @@ export default function DocumentCreator() {
         return "Commission Agreement";
       case "vendor":
         return "Vendor Agreement";
+      case "dpa":
+        return "Data Processing Agreement";
       default:
         return "Document";
     }
@@ -2054,6 +2143,411 @@ export default function DocumentCreator() {
                     <FormLabel>Arbitration City</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter city for arbitration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
+      case "dpa":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Controller Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="controllerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Controller Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter controller name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="controllerContact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Person</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name and designation" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="controllerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Controller Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter controller's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="controllerEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter email address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="controllerPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Processor Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="processorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Processor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter processor name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="processorContact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Person</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter name and designation" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="processorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Processor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter processor's complete address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="processorEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter email address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="processorPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Scope of Processing</h3>
+              <FormField
+                control={form.control}
+                name="processingPurpose"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Purpose of Processing</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Marketing Automation, Customer Support" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="processingNature"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nature of Processing</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Storage, Analysis, Data Export" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="processingDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration of Processing</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 12 months or As per Service Agreement" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Data Categories</h3>
+              <FormField
+                control={form.control}
+                name="personalData"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Personal Data</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Name, Email Address, Phone Number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sensitiveData"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sensitive Personal Data</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Health Data, Financial Data" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="otherData"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Other Data (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify any additional data" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dataSubjects"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categories of Data Subjects</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Employees, Customers, End Users" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="processingInstructions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Instructions for Processing</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Data must be anonymized for reporting purposes" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Security Measures</h3>
+              <FormField
+                control={form.control}
+                name="encryptionStandards"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Encryption Standards</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., AES 256-bit encryption" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="accessControl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Access Control</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Role-based access control" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dataBackup"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Backup</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Weekly automated backups" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="additionalMeasures"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Measures (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify any additional security measures" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="retentionPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Retention Period</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 30 days after service termination" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Sub-Processors</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="subProcessorApproval"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sub-Processor Approval Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="subProcessorDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sub-Processor Details (if applicable)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Name of Sub-Processor, Purpose, Location, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Reporting and Notifications</h3>
+              <FormField
+                control={form.control}
+                name="breachNotificationPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Breach Notification Period</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Notify within 24 hours" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="reportingFormat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reporting Format</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Incident report template" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
