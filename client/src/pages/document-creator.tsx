@@ -219,72 +219,952 @@ const getDefaultValues = (type: string) => {
   };
 };
 
-const renderFormFields = (type: string, form: any) => {
+const renderFormFields = (type: string, form: any): ReactNode => {
+  const commonDateField = (
+    <FormField
+      control={form.control}
+      name="dateOfAgreement"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Date of Agreement</FormLabel>
+          <FormControl>
+            <Input type="date" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
   switch (type) {
-    case "freelancer":
-      return (
-        <>
-          <FormField
-            control={form.control}
-            name="freelancerName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Freelancer Name</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* Add other freelancer fields here */}
-        </>
-      );
-    case "marketing":
-      return (
-        <>
-          <FormField
-            control={form.control}
-            name="marketingServiceProvider"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Marketing Service Provider</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* Add other marketing fields here */}
-        </>
-      );
     case "dpa":
       return (
-        <>
-          <FormField
-            control={form.control}
-            name="dpaProcessorName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Data Processor Name</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* Add other DPA fields here */}
-        </>
+        <div className="space-y-8">
+          {commonDateField}
+
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Data Processor Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="dpaProcessorName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Processor Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of data processor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaProcessorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Processor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of data processor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Data Controller Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="dpaControllerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Controller Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of data controller" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaControllerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Controller Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of data controller" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Data Processing Details</h3>
+            <div className="grid gap-4">
+              {/* Add all DPA specific fields */}
+              <FormField
+                control={form.control}
+                name="dpaDataTypes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Types of Personal Data</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of personal data types to be processed" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaDataSubjects"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Subjects</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of data subjects" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaProcessingPurpose"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Processing Purpose</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Purpose of data processing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaProcessingDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Processing Duration</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Duration of data processing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaSecurityMeasures"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Security Measures</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of security measures" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaSubProcessors"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sub-Processors</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of sub-processors involved" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaSubProcessorRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sub-Processor Requirements</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Requirements for sub-processors" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaDataBreachNotification"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Breach Notification</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Procedure for notifying data breaches" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaBreachTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Breach Notification Timeline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Timeline for breach notification" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaDataTransfers"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Transfers</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Details of data transfers" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaDataProtectionImpact"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Protection Impact Assessment</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of data protection impact assessment" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaAudits"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Audits</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of audit procedures" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaConfidentiality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Confidentiality obligations" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaDataDeletion"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data Deletion</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Procedure for data deletion" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaTermination"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Termination clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaGoverningLaw"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Governing Law</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Governing law" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaLiability"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Liability</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Liability clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dpaComplianceRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Compliance Requirements</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Compliance requirements" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
       );
+
+    case "freelancer":
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Freelancer Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="freelancerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of freelancer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of freelancer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerContactInfo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer Contact Information</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email address or phone number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerExpertise"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Freelancer Expertise</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Describe freelancer's skills and experience" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerClientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerClientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerProjectScope"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Scope</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Detailed description of the project" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerDeliverables"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deliverables</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of deliverables" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Timeline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Project start and end dates" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerMilestones"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Milestones</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of project milestones" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerPaymentRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Rate</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Hourly rate or project fee" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerPaymentTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Terms</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Payment schedule and terms" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerExpenses"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expenses</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Terms regarding expenses" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerEquipment"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Equipment</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Equipment to be provided" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerWorkHours"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Work Hours</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Expected work hours per week/month" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Work Location</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Work location details" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerIntellectualProperty"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Intellectual Property</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Intellectual property rights" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerConfidentiality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Confidentiality agreement" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerNonCompete"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Non-Compete</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Non-compete clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerIndependentStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Independent Contractor Status</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Confirmation of independent contractor status" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerTermination"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Termination clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerModification"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Modification</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Modification clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerGoverningLaw"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Governing Law</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Governing law" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="freelancerDispute"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dispute Resolution</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Dispute resolution clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "marketing":
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Service Provider Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="marketingServiceProvider"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Marketing Service Provider</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of service provider" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingServiceProviderAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Service Provider Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of service provider" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingClientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full legal name of client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingClientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingServicesScope"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Services Scope</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Detailed description of services" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingCampaignObjectives"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Campaign Objectives</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Objectives of the marketing campaign" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingTargetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Audience</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description of the target audience" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingChannels"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Marketing Channels</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of marketing channels to be used" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingDeliverables"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deliverables</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of deliverables" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Timeline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Campaign start and end dates" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingKPIs"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>KPIs</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List of KPIs" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingReportingFrequency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reporting Frequency</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Reporting frequency" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingBudget"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Budget</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Marketing budget" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingPaymentTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Terms</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Payment schedule and terms" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingIntellectualProperty"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Intellectual Property</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Intellectual property rights" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingContentRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content Rights</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Content ownership and usage rights" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingConfidentiality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Confidentiality agreement" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingTermination"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Termination clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingIndemnification"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Indemnification</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Indemnification clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingGoverningLaw"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Governing Law</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Governing law" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="marketingDispute"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dispute Resolution</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Dispute resolution clause" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      );
+
     default:
-      return null;
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+        </div>
+      );
   }
 };
 
-
-// Main component
 export default function DocumentCreator() {
   const params = useParams<RouteParams>();
   const { toast } = useToast();
@@ -337,7 +1217,6 @@ export default function DocumentCreator() {
       await createDocumentMutation.mutateAsync(data);
     } catch (error) {
       console.error("Form submission error:", error);
-      // Error will be handled by mutation error handler
     }
   };
 
@@ -359,24 +1238,7 @@ export default function DocumentCreator() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid gap-6">
-            <FormField
-              control={form.control}
-              name="dateOfAgreement"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of Agreement</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Form fields based on agreement type */}
-            {renderFormFields(params.type, form)}
-          </div>
+          {renderFormFields(params.type, form)}
 
           <div className="flex justify-end gap-4">
             <Button
@@ -393,9 +1255,7 @@ export default function DocumentCreator() {
               className="min-w-[120px]"
             >
               {createDocumentMutation.isPending ? (
-                <>
-                  <span className="animate-pulse">Creating...</span>
-                </>
+                <span className="animate-pulse">Creating...</span>
               ) : (
                 "Create Agreement"
               )}
