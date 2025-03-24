@@ -28,6 +28,28 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Sales Agreement Fields
+  salesSellerName?: string;
+  salesSellerAddress?: string;
+  salesBuyerName?: string;
+  salesBuyerAddress?: string;
+  salesProductDescription?: string;
+  salesQuantity?: string;
+  salesUnitPrice?: string;
+  salesTotalPrice?: string;
+  salesDeliveryTerms?: string;
+  salesDeliveryDate?: string;
+  salesPaymentTerms?: string;
+  salesWarranty?: string;
+  salesInspectionPeriod?: string;
+  salesQualityStandards?: string;
+  salesReturnPolicy?: string;
+  salesLiabilityTerms?: string;
+  salesForceTerms?: string;
+  salesGoverningLaw?: string;
+  salesArbitrationVenue?: string;
+  salesNoticesPeriod?: string;
+
   // Service Agreement Fields
   serviceProviderName?: string;
   serviceProviderAddress?: string;
@@ -356,6 +378,30 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "sales":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          salesSellerName: z.string().min(1, "Seller name is required"),
+          salesSellerAddress: z.string().min(1, "Seller address is required"),
+          salesBuyerName: z.string().min(1, "Buyer name is required"),
+          salesBuyerAddress: z.string().min(1, "Buyer address is required"),
+          salesProductDescription: z.string().min(1, "Product description is required"),
+          salesQuantity: z.string().min(1, "Quantity is required"),
+          salesUnitPrice: z.string().min(1, "Unit price is required"),
+          salesTotalPrice: z.string().min(1, "Total price is required"),
+          salesDeliveryTerms: z.string().min(1, "Delivery terms are required"),
+          salesDeliveryDate: z.string().min(1, "Delivery date is required"),
+          salesPaymentTerms: z.string().min(1, "Payment terms are required"),
+          salesWarranty: z.string().min(1, "Warranty terms are required"),
+          salesInspectionPeriod: z.string().min(1, "Inspection period is required"),
+          salesQualityStandards: z.string().min(1, "Quality standards are required"),
+          salesReturnPolicy: z.string().min(1, "Return policy is required"),
+          salesLiabilityTerms: z.string().min(1, "Liability terms are required"), 
+          salesForceTerms: z.string().min(1, "Force majeure terms are required"),
+          salesGoverningLaw: z.string().min(1, "Governing law is required"),
+          salesArbitrationVenue: z.string().min(1, "Arbitration venue is required"),
+          salesNoticesPeriod: z.string().min(1, "Notices period is required"),
+        });
       case "service":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -576,6 +622,31 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
+    if (params.type === "sales") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        salesSellerName: "",
+        salesSellerAddress: "",
+        salesBuyerName: "",
+        salesBuyerAddress: "",
+        salesProductDescription: "",
+        salesQuantity: "",
+        salesUnitPrice: "",
+        salesTotalPrice: "",
+        salesDeliveryTerms: "",
+        salesDeliveryDate: format(new Date(), "yyyy-MM-dd"),
+        salesPaymentTerms: "",
+        salesWarranty: "",
+        salesInspectionPeriod: "",
+        salesQualityStandards: "",
+        salesReturnPolicy: "",
+        salesLiabilityTerms: "",
+        salesForceTerms: "",
+        salesGoverningLaw: "",
+        salesArbitrationVenue: "",
+        salesNoticesPeriod: "",
+      } as const;
+    }
     if (params.type === "service") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -1025,6 +1096,310 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "sales":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="salesSellerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seller Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of seller" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesSellerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seller Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of seller" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesBuyerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of buyer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesBuyerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyer Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of buyer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Product Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="salesProductDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of products" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="salesQuantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Number of units" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="salesUnitPrice"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unit Price</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Price per unit" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="salesTotalPrice"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total Price</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Total price" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Delivery and Payment</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="salesDeliveryTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Delivery Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms and conditions of delivery" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesDeliveryDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Delivery Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesPaymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment schedule and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Quality and Warranty</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="salesWarranty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warranty Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Warranty coverage and duration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesInspectionPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Inspection Period</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Duration for inspection" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesQualityStandards"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quality Standards</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required quality standards" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesReturnPolicy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Return Policy</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for returns and refunds" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="salesLiabilityTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liability Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Liability limitations and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesForceTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Force Majeure Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Force majeure conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesArbitrationVenue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Venue</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="salesNoticesPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notices Period</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Period for notices" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "service":
         return (
           <>
