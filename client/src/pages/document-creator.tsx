@@ -100,28 +100,23 @@ type FormFields = {
   hrPolicyAmendments?: string;
 
   // Vendor Agreement Fields
-  vendorCompanyName?: string;
-  vendorCompanyAddress?: string;
-  vendorContactName?: string;
-  vendorContactDetails?: string;
-  clientCompanyName?: string;
-  clientCompanyAddress?: string;
-  servicesDescription?: string;
-  deliverySchedule?: string;
-  qualityStandards?: string;
-  pricingTerms?: string;
-  paymentSchedule?: string;
-  performanceMetrics?: string;
-  warrantyTerms?: string;
-  liabilityTerms?: string;
-  insuranceRequirements?: string;
-  terminationConditions?: string;
-  confidentialityTerms?: string;
-  intellectualPropertyRights?: string;
-  complianceRequirements?: string;
-  disputeResolutionProcess?: string;
-  governingLawJurisdiction?: string;
-  amendmentTerms?: string;
+  vendorName?: string;
+  vendorType?: string;
+  vendorAddress?: string;
+  vendorTitle?: string;
+  companyName?: string;
+  companyAddress?: string;
+  companyTitle?: string;
+  goodsServicesDescription?: string;
+  agreementStartDate?: string;
+  agreementEndDate?: string;
+  pricePerUnit?: string;
+  paymentTermsDays?: string;
+  paymentMode?: string;
+  deliveryAddress?: string;
+  terminationNoticePeriod?: string;
+  terminationNoticePeriodNonPayment?: string;
+  arbitrationCity?: string;
 
   // Freelancer Agreement Fields
   freelancerName?: string;
@@ -341,28 +336,23 @@ const getFormSchema = (type: string) => {
     case "vendor":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
-        vendorCompanyName: z.string().min(1, "Vendor company name is required"),
-        vendorCompanyAddress: z.string().min(1, "Vendor company address is required"),
-        vendorContactName: z.string().min(1, "Vendor contact name is required"),
-        vendorContactDetails: z.string().min(1, "Vendor contact details are required"),
-        clientCompanyName: z.string().min(1, "Client company name is required"),
-        clientCompanyAddress: z.string().min(1, "Client company address is required"),
-        servicesDescription: z.string().min(1, "Services description is required"),
-        deliverySchedule: z.string().min(1, "Delivery schedule is required"),
-        qualityStandards: z.string().min(1, "Quality standards are required"),
-        pricingTerms: z.string().min(1, "Pricing terms are required"),
-        paymentSchedule: z.string().min(1, "Payment schedule is required"),
-        performanceMetrics: z.string().min(1, "Performance metrics are required"),
-        warrantyTerms: z.string().min(1, "Warranty terms are required"),
-        liabilityTerms: z.string().min(1, "Liability terms are required"),
-        insuranceRequirements: z.string().min(1, "Insurance requirements are required"),
-        terminationConditions: z.string().min(1, "Termination conditions are required"),
-        confidentialityTerms: z.string().min(1, "Confidentiality terms are required"),
-        intellectualPropertyRights: z.string().min(1, "IP rights are required"),
-        complianceRequirements: z.string().min(1, "Compliance requirements are required"),
-        disputeResolutionProcess: z.string().min(1, "Dispute resolution process is required"),
-        governingLawJurisdiction: z.string().min(1, "Governing law is required"),
-        amendmentTerms: z.string().min(1, "Amendment terms are required"),
+        vendorName: z.string().min(1, "Vendor's name is required"),
+        vendorType: z.string().min(1, "Vendor's type is required"),
+        vendorAddress: z.string().min(1, "Vendor's address is required"),
+        vendorTitle: z.string().min(1, "Vendor's title is required"),
+        companyName: z.string().min(1, "Company's name is required"),
+        companyAddress: z.string().min(1, "Company's address is required"),
+        companyTitle: z.string().min(1, "Company representative's title is required"),
+        goodsServicesDescription: z.string().min(1, "Description of goods/services is required"),
+        agreementStartDate: z.string().min(1, "Start date is required"),
+        agreementEndDate: z.string().min(1, "End date is required"),
+        pricePerUnit: z.string().min(1, "Price per unit/service is required"),
+        paymentTermsDays: z.string().min(1, "Payment terms are required"),
+        paymentMode: z.string().min(1, "Mode of payment is required"),
+        deliveryAddress: z.string().min(1, "Delivery address is required"),
+        terminationNoticePeriod: z.string().min(1, "Termination notice period is required"),
+        terminationNoticePeriodNonPayment: z.string().min(1, "Termination notice period for non-payment is required"),
+        arbitrationCity: z.string().min(1, "Arbitration city is required"),
       });
     case "freelancer":
       return z.object({
@@ -467,32 +457,7 @@ const getFormSchema = (type: string) => {
         serviceGoverningLaw: z.string().min(1, "Governing law is required"),
         serviceDisputeResolution: z.string().min(1, "Dispute resolution terms are required"),
       });
-    case "vendor":
-      return z.object({
-        dateOfAgreement: z.string().min(1, "Date is required"),
-        vendorCompanyName: z.string().min(1, "Vendor company name is required"),
-        vendorCompanyAddress: z.string().min(1, "Vendor company address is required"),
-        vendorContactName: z.string().min(1, "Vendor contact name is required"),
-        vendorContactDetails: z.string().min(1, "Vendor contact details are required"),
-        clientCompanyName: z.string().min(1, "Client company name is required"),
-        clientCompanyAddress: z.string().min(1, "Client company address is required"),
-        servicesDescription: z.string().min(1, "Services description is required"),
-        deliverySchedule: z.string().min(1, "Delivery schedule is required"),
-        qualityStandards: z.string().min(1, "Quality standards are required"),
-        pricingTerms: z.string().min(1, "Pricing terms are required"),
-        paymentSchedule: z.string().min(1, "Payment schedule is required"),
-        performanceMetrics: z.string().min(1, "Performance metrics are required"),
-        warrantyTerms: z.string().min(1, "Warranty terms are required"),
-        liabilityTerms: z.string().min(1, "Liability terms are required"),
-        insuranceRequirements: z.string().min(1, "Insurance requirements are required"),
-        terminationConditions: z.string().min(1, "Termination conditions are required"),
-        confidentialityTerms: z.string().min(1, "Confidentiality terms are required"),
-        intellectualPropertyRights: z.string().min(1, "IP rights are required"),
-        complianceRequirements: z.string().min(1, "Compliance requirements are required"),
-        disputeResolutionProcess: z.string().min(1, "Dispute resolution process is required"),
-        governingLawJurisdiction: z.string().min(1, "Governing law is required"),
-        amendmentTerms: z.string().min(1, "Amendment terms are required"),
-      });
+
     case "software-license":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
