@@ -133,6 +133,18 @@ type FormFields = {
   equityValuationMethod?: string;
   involuntaryExitCauses?: string;
   arbitrationVenue?: string;
+
+  // Side Letter Agreement Fields
+  sideLetterInvestorName?: string;
+  sideLetterInvestorAddress?: string;
+  sideLetterCompanyName?: string;
+  sideLetterCompanyAddress?: string;
+  primaryInvestmentDate?: string;
+  informationRights?: string;
+  observerRights?: "yes" | "no";
+  consentRights?: string;
+  terminationClause?: string;
+  disputeResolutionCity?: string;
 };
 
 interface RouteParams {
@@ -263,6 +275,20 @@ export default function DocumentCreator() {
         arbitrationVenue: "",
         jurisdiction: "",
       } as const;
+    } else if (params.type === "side-letter") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        sideLetterInvestorName: "",
+        sideLetterInvestorAddress: "",
+        sideLetterCompanyName: "",
+        sideLetterCompanyAddress: "",
+        primaryInvestmentDate: format(new Date(), "yyyy-MM-dd"),
+        informationRights: "",
+        observerRights: "no",
+        consentRights: "",
+        terminationClause: "",
+        disputeResolutionCity: "",
+      } as const;
     }
     return {};
   }, [params.type]);
@@ -318,6 +344,8 @@ export default function DocumentCreator() {
         return "Data Processing Agreement";
       case "founders":
         return "Founders Agreement";
+      case "side-letter":
+        return "Side Letter Agreement";
       default:
         return "Document";
     }
@@ -1544,6 +1572,187 @@ export default function DocumentCreator() {
             </div>
           </>
         );
+      case "side-letter":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="primaryInvestmentDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Primary Investment Agreement Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="investorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="investorAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of the Investor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="companyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Complete address of the Company" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Investor Rights</h3>
+              <FormField
+                control={form.control}
+                name="informationRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Information Rights</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="E.g., Quarterly financial statements, board meeting summaries, material business developments" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="observerRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Observer Rights</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select option" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="consentRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Consent Rights</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="E.g., Issuing new shares, selling assets, amending primary agreement" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="terminationClause"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination Clause</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="E.g., Termination of Primary Investment Agreement, Mutual Agreement, or other conditions" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="disputeResolutionCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dispute Resolution City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       default:
         return null;
     }
@@ -1562,7 +1771,7 @@ export default function DocumentCreator() {
   );
 }
 
-const getFormSchema = (type: string) => {
+function getFormSchema(type: string): z.ZodType<any> {
   switch (type) {
     case "voting-rights":
       return z.object({
@@ -1650,7 +1859,54 @@ const getFormSchema = (type: string) => {
       });
     case "founders":
       return foundersFormSchema;
+    case "side-letter":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        investorName: z.string().min(1, "Investor name is required"),
+        investorAddress: z.string().min(1, "Investor address is required"),
+        companyName: z.string().min(1, "Company name is required"),
+        companyAddress: z.string().min(1, "Company address is required"),
+        primaryInvestmentDate: z.string().min(1, "Primary investment date is required"),
+        informationRights: z.string().min(1, "Information rights are required"),
+        observerRights: z.enum(["yes", "no"]),
+        consentRights: z.string().min(1, "Consent rights are required"),
+        terminationClause: z.string().min(1, "Termination clause is required"),
+        disputeResolutionCity: z.string().min(1, "Dispute resolution city is required"),
+      });
     default:
       return z.object({});
   }
-};
+}
+const foundersFormSchema = z.object({
+  dateOfAgreement: z.string().min(1, "Date of Agreement is required"),
+  companyName: z.string().min(1, "Company Name is required"),
+  companyDescription: z.string().min(1, "Company Description is required"),
+  founder1Name: z.string().min(1, "Founder 1 Name is required"),
+  founder1Address: z.string().min(1, "Founder 1 Address is required"),
+  founder1EquityPercentage: z.string().min(1, "Founder 1 Equity Percentage is required"),
+  founder1Responsibilities: z.string().min(1, "Founder 1 Responsibilities are required"),
+  founder2Name: z.string().min(1, "Founder 2 Name is required"),
+  founder2Address: z.string().min(1, "Founder 2 Address is required"),
+  founder2EquityPercentage: z.string().min(1, "Founder 2 Equity Percentage is required"),
+  founder2Responsibilities: z.string().min(1, "Founder 2 Responsibilities are required"),
+  founder3Name: z.string().optional(),
+  founder3Address: z.string().optional(),
+  founder3EquityPercentage: z.string().optional(),
+  founder3Responsibilities: z.string().optional(),
+  vestingPeriod: z.string().min(1, "Vesting Period is required"),
+  cliffPeriod: z.string().min(1, "Cliff Period is required"),
+  accelerationConditions: z.string().min(1, "Acceleration Conditions are required"),
+  unvestingTerms: z.string().min(1, "Unvesting Terms are required"),
+  votingRightsStructure: z.string().min(1, "Voting Rights Structure is required"),
+  boardMembersCount: z.string().min(1, "Board Members Count is required"),
+  boardMembersNames: z.string().min(1, "Board Members Names are required"),
+  ipAssignmentTerms: z.string().min(1, "IP Assignment Terms are required"),
+  confidentialityTerms: z.string().min(1, "Confidentiality Terms are required"),
+  nonCompeteDuration: z.string().min(1, "Non-Compete Duration is required"),
+  nonSolicitationDuration: z.string().min(1, "Non-Solicitation Duration is required"),
+  exitNoticePeriod: z.string().min(1, "Exit Notice Period is required"),
+  equityValuationMethod: z.string().min(1, "Equity Valuation Method is required"),
+  involuntaryExitCauses: z.string().min(1, "Involuntary Exit Causes are required"),
+  arbitrationVenue: z.string().min(1, "Arbitration Venue is required"),
+  jurisdiction: z.string().min(1, "Jurisdiction is required"),
+});
