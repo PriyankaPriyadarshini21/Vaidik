@@ -1,0 +1,838 @@
+Employment Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of the Employer's Company]
+Employer's Address: [Address of the Employer]
+Employee's Full Name: [Full Name of the Employee]
+Employee's Address: [Address of the Employee]
+Job Title: [Job Title for the Employee]
+Start Date of Employment: [DD/MM/YYYY]
+Base Salary: [Amount in ₹]
+Salary Frequency: [Monthly/Yearly]
+Bonus Details (if any): [Details of any bonus, if applicable]
+Benefits: [List of benefits provided, e.g., health insurance, provident fund, gratuity, etc.]
+Work Hours Per Week: [Number of hours, e.g., 40]
+Work Start Time: [Start Time, e.g., 9:00 AM]
+Work End Time: [End Time, e.g., 6:00 PM]
+Non-Compete Time Period (Post-Termination): [Duration, e.g., 12 months]
+Non-Solicitation Time Period (Post-Termination): [Duration, e.g., 12 months]
+Notice Period (Employer Termination): [Notice Period, e.g., 30 days]
+Notice Period (Employee Resignation): [Notice Period, e.g., 30 days]
+Governing City/State: [City or State for legal jurisdiction]
+
+
+Service Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company’s Name: [Full Name of the Company]
+Company’s Type (Company/Individual): [Select either Company or Individual]
+Company’s Address: [Address of the Company]
+Company’s Title: [Title, e.g., CEO, Manager]
+Client’s Name: [Full Name of the Client]
+Client’s Address: [Address of the Client]
+Client’s Title: [Client’s Title, e.g., Owner, Manager]
+Description of Services to be Provided: [Details of Services]
+Start Date of Agreement: [DD/MM/YYYY]
+End Date of Agreement: [DD/MM/YYYY]
+Service Fee (₹): [Amount]
+Payment Schedule (Installments/Lump Sum): [Details of Payment Schedule]
+Reimbursement for Pre-Approved Expenses (Yes/No): [Yes/No]
+Mode of Payment: [e.g., Bank Transfer, UPI, Cheque]
+Termination Notice Period (Either Party): [Number of Days]
+Termination Notice Period (Company for Non-Payment): [Number of Days]
+Governing City (Arbitration Venue): [City for Arbitration]
+
+
+Sales Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Seller Name: [Full Name of Seller]
+Seller Address: [Seller’s Address]
+Buyer Name: [Full Name of Buyer]
+Buyer Address: [Buyer’s Address]
+Description of Goods: [Detailed description, including quantity, quality, and specifications]
+Delivery Location: [Address where goods should be delivered]
+Delivery Date/Time Frame: [Specific delivery date or timeframe]
+Purchase Price: [₹Amount]
+Payment Schedule: [Installments or lump sum, with dates]
+Payment Method: [Bank Transfer/UPI/Cheque]
+Inspection Period (Number of Days): [Number of days allowed for inspection]
+Risk of Loss (Delivery or Alternate Arrangement): [Specify whether risk transfers upon delivery or at another point]
+Arbitration City (for Dispute Resolution): [City where arbitration will take place]
+
+
+Partnership Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Partner 1 Name: [Full Name of Partner 1]
+Partner 1 Address: [Partner 1 Address]
+Partner 2 Name: [Full Name of Partner 2]
+Partner 2 Address: [Partner 2 Address]
+Additional Partners (if any): [Full Name(s) and Address(es) of Additional Partners]
+Business Activities of the Partnership: [Describe the business activities]
+Partnership Name: [Partnership Name]
+Principal Office Address: [Principal Office Address]
+Partner 1 Contribution (Monetary/Non-Monetary): [₹Amount or description]
+Partner 2 Contribution (Monetary/Non-Monetary): [₹Amount or description]
+Other Partners’ Contributions (Monetary/Non-Monetary): [Description of contributions]
+Profit and Loss Sharing Proportion (Partner 1): [Percentage or Ratio]
+Profit and Loss Sharing Proportion (Partner 2): [Percentage or Ratio]
+Profit and Loss Sharing Proportion (Additional Partners, if any): [Percentage or Ratio]
+Management and Decision-Making Process (Unanimous/Majority Vote): [Specify]
+Bank Name for Partnership Account: [Bank Name]
+Authorized Signatories for Bank Account: [Names of Partners]
+Notice Period for Withdrawal of a Partner: [Notice Period in Days]
+City for Arbitration Venue: [City for Arbitration]
+
+Freelancer/Independent Freelancer Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Client’s Name: [Full Name of the Client]
+Client’s Type (Company/Individual): [Select either Company or Individual]
+Client’s Address: [Client’s Address]
+Freelancer’s Name: [Full Name of the Freelancer]
+Freelancer’s Address: [Freelancer’s Address]
+Description of Services to be Provided: [Details of Services]
+Start Date of Agreement: [DD/MM/YYYY]
+End Date of Agreement: [DD/MM/YYYY]
+Compensation Amount (₹): [Amount]
+Payment Terms (Number of Days after Invoice Receipt): [Number of Days]
+Reimbursement for Pre-Approved Expenses (Yes/No): [Yes/No]
+Deliverables: [List of Deliverables]
+Timeline for Deliverables: [List of Deadlines]
+Termination Notice Period (Either Party): [Number of Days]
+Termination Notice Period (Freelancer for Non-Payment): [Number of Days]
+Governing City (Arbitration Venue): [City for Arbitration]
+
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Consultant’s Name: [Full Name of the Consultant]
+Consultant’s Type (Individual/Entity): [Select either Individual or Entity]
+Consultant’s Address: [Consultant’s Address]
+Client’s Name: [Full Name of the Client]
+Client’s Address: [Client’s Address]
+Description of Consulting Services to be Provided: [Details of Consulting Services]
+Additional Consulting Services (If Any): [Additional Services]
+Start Date of Agreement: [DD/MM/YYYY]
+End Date of Agreement: [DD/MM/YYYY]
+Consulting Fee (₹): [Amount]
+Payment Terms (Installments or Lump Sum): [Payment Schedule]
+Reimbursement for Pre-Approved Expenses (Yes/No): [Yes/No]
+Payment Method (Bank Transfer/UPI/Cheque): [Select Payment Method]
+Termination Notice Period (Either Party): [Notice Period in Days]
+Termination Notice Period (Consultant for Non-Payment): [Notice Period in Days]
+Governing City (Arbitration Venue): [City for Arbitration]
+
+
+Distribution Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Principal/Company Name: [Full Name of Principal/Company]
+Principal/Company Address: [Principal’s Address]
+Distributor Name: [Full Name of Distributor]
+Distributor Address: [Distributor’s Address]
+Appointment Type: [Exclusive/Non-Exclusive]
+Territory: [Territory where distribution rights apply]
+Products:
+Listed in Schedule A. [Attach description of Products, including quantity, quality, etc.]
+Notice Period for Product Changes: [Number of days for prior written notice of modification, discontinuation, or addition of Products]
+Pricing:
+As per Schedule B. [Attach Product pricing details.]
+Revision Notice Period: [Number of days required for price revision notice]
+Payment Terms:
+As per Schedule C. [Attach payment terms, including installments, timeline, etc.]
+Late Payment Interest Rate: [Rate]% per month
+Payment Currency: [Specify currency]
+Agreement Start Date: [Start Date]
+Agreement Duration: [Duration in months/years]
+Notice Period for Termination for Convenience: [Number of days for termination notice]
+Notice Period for Termination for Cause: [Number of days to remedy material breach]
+Arbitration Location: [Location for arbitration]
+Governing Jurisdiction: [Jurisdiction for governing laws]
+
+
+Revenue Sharing Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of Company]
+Company Address: [Company’s Address]
+Investor Name(s): [Name(s) of Investor(s)]
+Investor Address: [Investor’s Address]
+Investment Details
+Investment Amount: INR [Amount]
+Payment Method: [Bank Transfer/Cheque/Other Method]
+Investment Purpose: [Purpose, e.g., "expanding business operations"]
+Revenue Sharing Terms
+Revenue Share Percentage: [Percentage]%
+Repayment Amount or Term: [Total repayment amount or duration]
+Payment Schedule: [Monthly/Quarterly/Annual]
+Payment Start Date: [Start Date]
+Revenue Calculation: Gross Revenue minus [Deductions, e.g., "taxes and operating costs"]
+Term and Termination
+Agreement Term: [Duration or condition for termination, e.g., "until repayment amount is met"]
+Notice Period for Termination: [Number of days]
+Dispute Resolution
+Arbitration Location: [Location for arbitration]
+Governing Jurisdiction: [Jurisdiction for governing laws]
+
+
+Equity Crowdfunding Agreement
+
+Equity Crowdfunding Agreement Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Issuer Name: [Name of the Company]
+Issuer Address: [Issuer’s Address]
+Investor Name: [Name of the Investor]
+Investor Address: [Investor’s Address]
+Investment Amount: [Investment Amount in INR/USD]
+Equity Allocated (Number or Percentage): [Number of Shares or Percentage of Total Equity]
+Total Equity Percentage: [Percentage of Issuer’s Total Equity]
+Class of Shares: [e.g., Common Shares or Preferred Shares]
+Use of Funds: [Specific purposes, e.g., product development, marketing, operational expenses]
+Platform Name: [Name of the Crowdfunding Platform]
+Platform Fees Responsibility: [Issuer/Investor]
+Voting Rights: [Specify if applicable]
+Periodic Updates (Frequency/Details): [e.g., Quarterly financial reports]
+Dividends Eligibility: [Yes/No, Proportionate to Shares]
+Investor Legal Acknowledgments: [Acknowledgment of Risks]
+Confidentiality Clause: [Specify any additional confidentiality details if required]
+Exit Strategy Mechanisms:
+Sale of shares in future funding round: [Yes/No]
+Exit through acquisition/merger: [Yes/No]
+Public listing: [Yes/No]
+Dispute Resolution Arbitration City/State: [City, State]
+Governing Law City/State: [City, State]
+Issuer Representative Name: [Issuer Representative’s Full Name]
+Issuer Representative Title: [Title, e.g., CEO, Founder]
+Investor Name (for signature): [Name of Investor]
+
+
+Voting Rights Agreement
+
+Voting Rights Agreement Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of the Company]
+Company Address: [Company’s Address]
+Founder Names: [Names of Founders]
+Founder Addresses: [Addresses of Founders]
+Investor Names: [Names of Investors]
+Investor Addresses: [Addresses of Investors]
+Specific Provisions
+Allocation of Voting Rights:
+Based on share ownership: [Yes/No]
+Specific voting rights for preferred shareholders: [e.g., 1 vote per share]
+Reserved Matters Voting Threshold: [e.g., 75% of voting power]
+Changes to charter/articles of association: [Yes/No]
+Issuance of new shares/securities: [Yes/No]
+Mergers/acquisitions or asset sales exceeding [specific threshold]: [Yes/No]
+Appointment/removal of directors: [Yes/No]
+Liquidation/dissolution: [Yes/No]
+Board Representation:
+Number of directors nominated by Investors: [Number]
+Number of directors nominated by Founders: [Number]
+Changes to board composition: [Require mutual agreement]
+Voting Procedures:
+Proxies allowed: [Yes/No]
+Written notice requirement for proxies: [Yes/No]
+Dispute resolution timeframe for deadlocks: [Specific timeframe]
+Confidentiality Clause: [Specify additional details if necessary]
+Agreement Term:
+Effective while Investors hold [specific percentage] of shares or until mutual termination.
+Termination upon liquidation or mutual agreement: [Yes/No]
+Arbitration Venue: [City, India]
+Governing Law Jurisdiction: [City, India]
+Authorized Signatories:
+Company Representative: [Name and Title]
+Founder(s): [Name(s)]
+Investor Representative: [Name and Title]
+
+
+Preferred Stock Agreement
+
+Customer Input Details for the Agreement
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of the Company]
+Company Location: [Address of Principal Office]
+Investor Name: [Full Name of Investor]
+Investor Address: [Investor’s Address]
+Number of Preferred Shares: [Total Number of Shares]
+Price per Share: [₹Price per Share]
+Total Purchase Price: [₹Total Amount]
+Liquidation Preference (e.g., 1x, 2x): [Specify Preference Amount]
+Anti-Dilution Protection Clause: [Name of Clause/Document]
+Dividend Rate: [Specify Dividend Rate]
+Conversion Rights Clause: [Name of Clause/Document]
+Voting Power (e.g., 1 vote per share): [Specify Voting Rights]
+Jurisdiction: [Applicable Jurisdiction]
+Dispute Resolution Mechanism: [E.g., Arbitration, Court Proceedings]
+Arbitration Rules/Act (if applicable): [E.g., Arbitration and Conciliation Act, 1996]
+Closing Date: [DD/MM/YYYY for Closing]
+Closing Location: [Location or 'Remote']
+
+
+Founders' Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of the Company]
+Company Business Description: [Brief description of the Company's business]
+Founders' Details
+Founder 1 Name: [Full Name]
+Founder 1 Address: [Residential Address]
+Founder 1 Equity Percentage: [Percentage]%
+Founder 1 Role & Responsibilities: [Specific roles and key responsibilities]
+Founder 2 Name: [Full Name]
+Founder 2 Address: [Residential Address]
+Founder 2 Equity Percentage: [Percentage]%
+Founder 2 Role & Responsibilities: [Specific roles and key responsibilities]
+Founder 3 Name (if applicable): [Full Name]
+Founder 3 Address: [Residential Address]
+Founder 3 Equity Percentage: [Percentage]%
+Founder 3 Role & Responsibilities: [Specific roles and key responsibilities]
+Equity Ownership & Vesting
+Vesting Period: [e.g., 4 years]
+Cliff Period: [e.g., 1 year]
+Acceleration Conditions: [e.g., upon acquisition, other specific triggers]
+Unvested Equity Forfeiture Terms: [Terms for redistribution of unvested equity]
+Governance & Decision-Making
+Voting Rights Structure: [Proportional to equity or other structure]
+Board of Directors:
+Number of Initial Board Members: [Number]
+Names of Appointed Board Members: [Names of individuals or investors]
+Intellectual Property
+IP Assignment Terms: [Confirm if all IP created by Founders belongs to the Company]
+Confidentiality, Non-Compete, and Non-Solicitation
+Confidentiality Terms: [Specific clauses or conditions, if any]
+Non-Compete Duration: [e.g., 2 years after exit]
+Non-Solicitation Duration: [e.g., 2 years after exit]
+Exit Provisions
+Notice Period for Voluntary Exit: [e.g., 60 days]
+Valuation Method for Vested Equity: [Mutually agreed method for buyback]
+Causes for Involuntary Exit: [Specify, e.g., gross misconduct, breach of agreement]
+Dispute Resolution
+Arbitration Venue: [City, India]
+Governing Law
+Jurisdiction for Legal Matters: [City, India]
+
+
+
+Side Letter Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Investor Name: [Full Name of Investor]
+Investor Address: [Investor’s Address]
+Company Name: [Full Name of Company]
+Company Address: [Company’s Address]
+Primary Investment Agreement Date: [Date of Primary Investment Agreement]
+Investor Rights:
+Information Rights (Updates to be provided to Investor): [Quarterly financial statements, board meeting summaries, material business developments]
+Observer Rights (Appointment of Non-voting Observer): [Yes/No]
+Consent Rights (Actions requiring Investor’s prior written consent): [Issuing new shares, selling assets, amending primary agreement]
+Termination Clause (Event of Termination): [Termination of Primary Investment Agreement, Mutual Agreement, or other conditions]
+Dispute Resolution (City for Dispute Resolution): [City]
+
+
+Promissory Note / Loan Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Loan Amount: [Insert Loan Amount in words and figures]
+Borrower Name: [Full Legal Name of Borrower]
+Borrower Address: [Borrower’s Address]
+Lender Name: [Full Legal Name of Lender]
+Lender Address: [Lender’s Address]
+Interest Rate: [Insert Interest Rate]% per annum
+Repayment Date: [Insert Final Repayment Date]
+Repayment Installments:
+Number of Installments: [Insert Number]
+Installment Amount: [Insert Amount]
+First Payment Date: [Insert Date]
+Payment Schedule: [e.g., "First of every month"]
+Payment Method: [Insert Payment Method, e.g., bank transfer, cheque]
+Payment Details: [Insert Payment Details]
+Jurisdiction (for Dispute Resolution): [City/Region for jurisdiction]
+
+
+Loan Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Lender Name: [Lender’s Full Name/Company Name]
+Lender Address: [Lender’s Address]
+Borrower Name: [Borrower’s Full Name/Company Name]
+Borrower Address: [Borrower’s Address]
+Loan Amount:
+Figures: [₹Amount in Figures]
+Words: [Amount in Words]
+Loan Purpose: [Specific purpose, e.g., "to finance the business operations of the Borrower"]
+Loan Term:
+Start Date: [Start Date]
+End Date: [End Date]
+Interest Rate: [Interest Rate]
+Interest Basis: [Simple/Compound]
+Interest Payment Dates: [Specific dates, e.g., "the first day of each month"]
+Repayment Terms:
+Number of Installments: [Number]
+Installment Amount: [₹Amount per installment]
+First Installment Date: [DD/MM/YYYY]
+Lender’s Bank Account Details: [Account Details/Address for Payments]
+Prepayment Option: [Yes/No]
+Jurisdiction for Disputes: [City/State in India]
+Notices and Communication Address: [Address for each Party]
+Signatory Details:
+Lender’s Representative Name & Title: [Name/Title]
+Borrower’s Representative Name & Title: [Name/Title]
+
+
+Revenue Sharing Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of Company]
+Company Address: [Company’s Address]
+Investor Name(s): [Name(s) of Investor(s)]
+Investor Address: [Investor’s Address]
+Investment Details
+Investment Amount: INR [Amount]
+Payment Method: [Bank Transfer/Cheque/Other Method]
+Investment Purpose: [Purpose, e.g., "expanding business operations"]
+Revenue Sharing Terms
+Revenue Share Percentage: [Percentage]%
+Repayment Amount or Term: [Total repayment amount or duration]
+Payment Schedule: [Monthly/Quarterly/Annual]
+Payment Start Date: [Start Date]
+Revenue Calculation: Gross Revenue minus [Deductions, e.g., "taxes and operating costs"]
+Term and Termination
+Agreement Term: [Duration or condition for termination, e.g., "until repayment amount is met"]
+Notice Period for Termination: [Number of days]
+Dispute Resolution
+Arbitration Location: [Location for arbitration]
+Governing Jurisdiction: [Jurisdiction for governing laws]
+
+
+Investment Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Investor Name: [Full Name of the Investor]
+Investor Address: [Investor’s Address]
+Company Name: [Name of the Company]
+Company Address: [Registered Office Address]
+Investment Amount: [₹Amount]
+Type of Investment: [Number of shares or financial instruments, class of equity, percentage of total shareholding]
+Payment Timeline: [Number of days for payment after signing]
+Purpose of Investment Funds: [Specific use, e.g., operational growth, product development, marketing, etc.]
+Voting Rights: [Specify voting rights for the Investor, if any]
+Board Representation: [Specify board representation rights, if applicable]
+Information Rights: [Access to reports or updates, as needed]
+Exit Mechanisms:
+Buyback Option Terms: [Specify buyback terms]
+IPO/Strategic Sale Rights: [Exit rights in case of IPO or company sale]
+Confidentiality Terms: [Specify exceptions, if any, to confidentiality]
+Termination Terms: [Number of days' notice for breach rectification]
+Arbitration City: [City for arbitration venue]
+
+
+
+KISS (Keep It Simple Security) Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of Company]
+Type of Entity: [Private Limited Company, LLP, etc.]
+Company Address: [Registered Address of the Company]
+Investor Name: [Full Name of Investor]
+Investor Address: [Investor's Residential/Principal Office Address]
+Investment Amount: [₹ or other currency amount]
+Maturity Date: [DD/MM/YYYY]
+Interest Rate (if applicable): [Rate of interest, e.g., 8%]
+Compounding Frequency: [Annually, quarterly, etc.]
+Qualified Financing Minimum Amount: [₹ or other currency minimum amount]
+Discount Percentage: [e.g., 20%]
+Valuation Cap: [₹ or other currency valuation cap]
+Liquidity Event Multiplier: [e.g., 2x]
+Financial Reporting Frequency: [Quarterly, annually, etc.]
+Observer Rights (Yes/No): [Whether the Investor can attend board meetings as a non-voting observer]
+Jurisdiction for Governing Law: [State/Country]
+Arbitration Rules: [Specific rules, e.g., Arbitration and Conciliation Act, 1996]
+Arbitration City: [City where arbitration will take place]
+
+
+SAFE (Simple Agreement for Future Equity)
+
+Customer Input Details
+
+Effective Date: [DD/MM/YYYY]
+Company Name: [Full Name of the Company]
+Jurisdiction (Company Incorporation): [Country/State of Incorporation]
+Company Address: [Principal office address of the Company]
+Investor Name: [Full Name of the Investor]
+Investor Address: [Address of the Investor]
+Investment Amount (INR): [Investment Amount in Rupees]
+Usage of Funds: [Specify purpose or general corporate purposes]
+Qualified Financing Threshold Amount (INR): [Threshold Amount for Equity Financing]
+Valuation Cap Amount (INR): [Maximum Valuation Cap for Equity Calculation]
+Discount Rate (%): [Percentage Discount for Qualified Financing]
+Arbitration Location (Dispute Resolution): [City/Location for Arbitration]
+
+
+
+Convertible Note Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of Company]
+Company Address: [Principal Office Address]
+Investor Name: [Full Name of Investor]
+Investor Address: [Investor's Address]
+Principal Amount: [INR Amount]
+Interest Rate: [Rate in % per annum]
+Maturity Date: [DD/MM/YYYY]
+Qualified Financing Amount: [INR Amount]
+Discount Percentage: [Percentage]%
+Valuation Cap: [INR Amount]
+Type of Security: [Type of Security, e.g., Preferred Shares]
+Number of Days for Default Payment: [Number of days]
+Arbitration City (for Dispute Resolution): [City in India]
+
+
+Stock Purchase Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Seller Name: [Full Name of Seller]
+Seller Address: [Seller’s Address]
+Buyer Name: [Full Name of Buyer]
+Buyer Address: [Buyer’s Address]
+Number of Shares: [Number of shares being sold]
+Company Name: [Name of the company issuing the shares]
+Purchase Price (INR): [₹Amount]
+Payment Method: [Bank Transfer/Cheque/Other Method]
+Payment Deadline: [Number of days after Agreement execution]
+Closing Date: [Date of the transaction closing]
+Closing Location: [Location where the transaction will take place]
+Jurisdiction (for Governing Law): [Jurisdiction where disputes will be resolved]
+
+
+Subscription Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Issuer Name: [Full Name of Issuer Company]
+Issuer Address: [Registered Address of Issuer]
+Subscriber Name: [Full Name of Subscriber]
+Subscriber Address: [Address of Subscriber]
+Number of Shares Subscribed: [Number of Shares]
+Class and Type of Shares: [Class/Type of Shares, e.g., Equity Shares]
+Price Per Share: [INR Amount per Share]
+Total Subscription Amount: [INR Total Amount]
+Payment Method: [Bank Transfer/Cheque/Other]
+Payment Due Date: [Specific Date]
+Conditions Precedent:
+[Issuer’s Board Approval Date]
+[Compliance Status with Companies Act, 2013]
+[Filings with Registrar of Companies (RoC)]
+Share Allotment Timeline: [Number of Days from Payment Receipt]
+Arbitration City (for Dispute Resolution): [City Name]
+
+
+Shareholders' Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of the Company]
+Company Address: [Registered Address of the Company]
+Shareholders’ Names:
+Shareholder A: [Name of Shareholder A]
+Shareholder B: [Name of Shareholder B]
+[Add other Shareholders as necessary]
+Shareholders’ Addresses:
+Shareholder A: [Address of Shareholder A]
+Shareholder B: [Address of Shareholder B]
+[Add other Shareholders' addresses as necessary]
+Shareholding Structure:
+Shareholder A: [Percentage/Number of Shares]
+Shareholder B: [Percentage/Number of Shares]
+[Add additional Shareholders and their shares]
+Number of Directors on the Board: [Number of Directors]
+Director Nomination Threshold: [Shareholding percentage required for nomination]
+Quorum for Board Meetings: [Number of Directors required for quorum]
+Matters Requiring Special Approval: [List specific matters, e.g., mergers, acquisitions, issuing new shares]
+Type of Approval for Special Matters: [Majority/Supermajority/Unanimous]
+Restrictions on Share Transfers: [Yes/No]
+Right of First Refusal (ROFR): [Yes/No]
+Tag-Along Rights: [Yes/No]
+Drag-Along Rights: [Yes/No]
+Dividend Approval Threshold: [Majority/Supermajority]
+Non-Compete Period: [Duration after ceasing to be a Shareholder, e.g., 1 year]
+Arbitration Location: [City/Location where arbitration proceedings will take place]
+Language of Arbitration: [Language to be used during arbitration, e.g., English]
+Jurisdiction for Governing Law: [Jurisdiction, e.g., Courts in Delhi, India]
+Notice Address for the Company: [Company's official address for receiving notices]
+Notice Address for Shareholders:
+Shareholder A: [Address for Shareholder A]
+Shareholder B: [Address for Shareholder B]
+[Add additional notice addresses for other Shareholders as necessary]
+Amendment Procedure: [Specify whether amendments require unanimous consent or other conditions]
+Confidential Information Definition: [Define what constitutes confidential information, if any additional details are necessary]
+Dividend Distribution Policy: [Details about how dividends will be distributed, e.g., annually, proportionate to shareholding]
+Additional Provisions (if any): [Any other specific provisions requested by the customer]
+
+
+
+Affiliate/Referral Agreement
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of Company]
+Company Address: [Company’s Address]
+Affiliate/Referrer Name: [Full Name of Affiliate/Referrer]
+Affiliate/Referrer Address: [Affiliate/Referrer’s Address]
+Referral Fee/Commission Structure: [Percentage or fixed amount, along with gross or net sales value exclusion details]
+Payment Method: [Bank Transfer/Cheque/Other Payment Method]
+Payment Schedule: [Specific day of the month for payments]
+Notice Period for Termination: [Number of days for termination notice]
+Arbitration Location (for Dispute Resolution): [City where arbitration will occur]
+Governing Jurisdiction: [Jurisdiction/Courts for legal matters]
+Start Date: [Agreement Start Date]
+
+
+Event Management Agreement
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Client Name: [Full Name of Client]
+Client Address: [Client’s Address]
+Event Manager Name: [Name of Event Manager/Company]
+Event Manager Address: [Event Manager’s Address]
+Event Name/Description: [Name/Description of the Event]
+Event Date(s): [Date(s) of the Event]
+Services to be Provided:
+Planning and coordination of [Event Name/Description]
+Venue selection and booking
+Vendor management (e.g., catering, decoration, entertainment)
+Event promotion and marketing (if applicable)
+On-site event management on [Event Date(s)]
+Post-event services (cleanup, feedback collection)
+Other: [Any additional services]
+Term of Agreement: [Start Date and Termination Date]
+Total Fee (INR): [Amount]
+Payment Schedule:
+[Percentage]% upon signing of the Agreement
+[Percentage]% upon completion of planning phase
+[Percentage]% upon completion of the event
+Payment Method: [e.g., bank transfer, cheque]
+Late Payment Interest Rate: [Rate]% per month
+Cancellation Policy:
+Cancellation Notice Period: [Number of days]
+Refund Policy:
+[Percentage]% refund before [specific date]
+No refund after [specific date]
+Arbitration Location (for Disputes): [City]
+Termination Notice Period: [Number of days]
+
+
+
+Commission Agreement
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Full Name of Company]
+Company Address: [Company’s Address]
+Agent Name: [Full Name of Agent]
+Agent Address: [Agent’s Address]
+Products/Services Covered: [Specific products or services the Agent will represent]
+Territory/Market: [Specified territory or market for sales activities]
+Agent’s Appointment Type: [Exclusive or Non-Exclusive]
+Commission Rate: [Percentage or fixed amount per sale]
+Commission Calculation Basis: [Gross/Net sales value, excluding any deductions like taxes or shipping]
+Tiered Commission Structure: [Specify structure if applicable or write N/A]
+Payment Day: [Specific day of each month when commissions will be paid]
+Payment Method: [Bank transfer, cheque, or other method]
+Confidentiality Terms: [Any special provisions or leave as provided in the draft]
+Start Date: [Start Date of the Agreement]
+End Date: [End Date or write “Ongoing” if no fixed end date]
+Notice Period for Termination: [Number of days required for termination notice]
+Arbitration Location (Dispute Resolution): [City/Location for arbitration]
+Jurisdiction (Governing Law): [City/Region with legal jurisdiction]
+
+
+Software Development Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Client Name: [Client's Full Name/Company Name]
+Client Address: [Client’s Principal Place of Business Address]
+Developer Name: [Developer's Full Name/Company Name]
+Developer Address: [Developer’s Principal Place of Business Address]
+Scope of Work (Schedule A):
+Project Requirements and Functionalities: [Detailed description of the project requirements and functionalities]
+Timeline for Completion: [Specific timeline for various project phases]
+Total Project Cost: [INR Amount]
+Payment Milestones:
+Upfront Payment: [Percentage]%
+Payment Upon Milestone Completion: [Percentage]% for [Milestone Name]
+Final Payment: [Percentage]% upon [Final Delivery and Approval]
+Payment Method: [Payment Method, e.g., bank transfer, PayPal, etc.]
+Invoice Payment Deadline: [Number of days]
+Warranty Period: [Number of days] from the delivery date.
+Termination Notice Period (General): [Number of days]
+Notice Period for Material Breach by the Developer (by Client): [Number of days]
+Notice Period for Non-Payment of Fees by the Client (by Developer): [Number of days]
+City and State for Arbitration Venue: [City, State]
+Method of Notices (e.g., Email/Registered Post): [Specify Method]
+
+
+Software Licensing Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Licensor’s Name: [Full Name or Company Name of the Licensor]
+Licensor’s Address: [Address of the Licensor]
+Licensee’s Name: [Full Name or Company Name of the Licensee]
+Licensee’s Address: [Address of the Licensee]
+Type of License (Non-Exclusive/Exclusive): [Specify Non-Exclusive or Exclusive]
+Software Name: [Name of the Software]
+Purpose of Software Use: [Specific purpose or industry for permitted use]
+License Fee Amount: [₹Amount]
+Initial Payment Amount: [₹Amount]
+Subsequent Payment Schedule (if any): [Specify details]
+Delivery Timeline for Software: [Number of Days]
+Installation Assistance (if any): [Yes/No, and any conditions]
+Standard Support Provided: [Details, e.g., email, phone, or online]
+Support Duration: [Duration, e.g., one year]
+Additional Support Charges (if any): [Details of additional fees, if applicable]
+Warranty Period for Software: [Number of Days]
+Duration of Agreement: [Specify duration, e.g., one year]
+Termination Notice Period: [Number of Days]
+City for Arbitration Venue: [City Name]
+
+
+Marketing/Advertising Agreement
+
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Client's Name: [Full Name or Company Name of Client]
+Client's Address: [Client's Address]
+Agency's Name: [Full Name or Company Name of Agency]
+Agency's Address: [Agency's Address]
+Scope of Services:
+[Specific marketing/advertising activities, e.g., social media marketing, print advertising, SEO services]
+[Any additional services to be included]
+Term:
+Start Date: [Start Date]
+End Date: [End Date]
+Fee:
+Total Amount: ₹[Amount]
+Payment Schedule: [e.g., upfront, milestone-based, or monthly]
+Additional Costs: [Any third-party expenses to be pre-approved by the Client]
+Taxes: [Applicable taxes borne by Client]
+Deliverables:
+[List of deliverables with deadlines, e.g., campaign materials, performance reports]
+Responsibilities of Agency: [Professional services, meeting objectives, etc.]
+Responsibilities of Client: [Provide materials, information, and approvals timely]
+Intellectual Property:
+Ownership: [Ownership of materials upon full payment]
+Usage Rights for Agency: [Portfolio use for non-commercial purposes]
+Performance Metrics:
+[Examples: ROI, engagement rates, lead generation metrics, etc.]
+Termination Notice Period:
+By Either Party: [Number of days for notice]
+By Agency for Non-Payment: [Number of days for notice]
+Immediate Effect: [For unsatisfactory performance by Client]
+Arbitration Venue: [City for arbitration in India]
+Signatures:
+Client's Name and Title: [Client's Name and Title]
+Agency's Name and Title: [Agency's Name and Title]
+
+
+Data Processing Agreement (DPA)
+
+Customer Input Details
+
+Controller Details
+Name: [Controller Name]
+Address: [Controller Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Processor Details
+Name: [Processor Name]
+Address: [Processor Address]
+Contact Person: [Name and Designation]
+Email Address: [Email Address]
+Phone Number: [Phone Number]
+Scope of Processing
+Purpose of Processing: [Specify Purpose, e.g., "Marketing Automation," "Customer Support," etc.]
+Nature of Processing: [E.g., Storage, Analysis, Data Export, etc.]
+Duration of Processing: [Specify Duration, e.g., "12 months" or "As per Service Agreement."]
+Data Categories
+Personal Data: [E.g., Name, Email Address, Phone Number, etc.]
+Sensitive Personal Data (if any): [E.g., Health Data, Financial Data, etc.]
+Other Data: [Specify any additional data, if applicable.]
+Categories of Data Subjects
+[E.g., Employees, Customers, End Users, etc.]
+Instructions for Processing
+[E.g., "Data must be anonymized for reporting purposes," "Email addresses must not be shared with third parties," etc.]
+Security Measures Required
+Encryption Standards: [E.g., AES 256-bit encryption]
+Access Control: [E.g., Role-based access control]
+Data Backup: [E.g., Weekly automated backups stored in secure locations]
+Additional Measures: [Specify, if applicable]
+Retention Period
+[Specify duration, e.g., "Data should be deleted 30 days after termination of the Service Agreement."]
+Sub-Processors
+Approval Status: [Yes/No]
+Details (if applicable): [Name of Sub-Processor, Purpose, Location, etc.]
+Reporting and Notifications
+Breach Notification Period: [E.g., "Notify within 24 hours of identifying a breach."]
+Reporting Format: [E.g., Incident report template]
+ 
+Vendor Agreement
+Customer Input Details
+Date of Agreement: [DD/MM/YYYY]
+Vendor's Name: [Full Name of the Vendor]
+Vendor's Type (Company/Individual): [Select either Company or Individual]
+Vendor's Address: [Address of the Vendor]
+Vendor's Title: [Vendor's Title, e.g., CEO, Manager]
+Company's Name: [Name of the Company]
+Company's Address: [Registered Address of the Company]
+Company's Title: [Company Representative's Title, e.g., Director, Manager]
+Description of Goods/Services: [Details of Goods/Services to be Supplied]
+Start Date of Agreement: [DD/MM/YYYY]
+End Date of Agreement: [DD/MM/YYYY]
+Price per Unit/Service: [Amount in ₹]
+Payment Terms (Number of Days): [e.g., 30 days, 45 days]
+Mode of Payment: [e.g., Bank Transfer, UPI, Cheque]
+Delivery Address: [Delivery Address for Goods/Services]
+Termination Notice Period (Either Party): [Number of Days]
+Termination Notice Period (Vendor for Non-Payment): [Number of Days]
+Governing City (Arbitration Venue): [City for Arbitration]

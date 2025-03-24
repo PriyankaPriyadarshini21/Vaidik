@@ -13,7 +13,7 @@ interface DocumentType {
 
 const documentTypes: DocumentType[] = [
   // Employment & HR Documents
-  { id: 'employment', name: 'Employee Agreement', icon: Users, category: 'Employment & HR' },
+  { id: 'employment', name: 'Employment Agreement', icon: Users, category: 'Employment & HR' },
   { id: 'freelancer', name: 'Freelancer Agreement', icon: Users, category: 'Employment & HR' },
   { id: 'consulting', name: 'Consulting Agreement', icon: Users, category: 'Employment & HR' },
   { id: 'commission', name: 'Commission Agreement', icon: Users, category: 'Employment & HR' },
@@ -31,7 +31,7 @@ const documentTypes: DocumentType[] = [
   { id: 'distribution', name: 'Distribution Agreement', icon: Briefcase, category: 'Business' },
   { id: 'revenue-sharing', name: 'Revenue Sharing Agreement', icon: DollarSign, category: 'Business' },
   { id: 'affiliate', name: 'Affiliate/Referral Agreement', icon: Users, category: 'Business' },
-  { id: 'commission-business', name: 'Commission Agreement', icon: DollarSign, category: 'Business' },
+  { id: 'partnership', name: 'Partnership Agreement', icon: Users, category: 'Business' },
 
   // Investment & Securities
   { id: 'equity-crowdfunding', name: 'Equity Crowdfunding Agreement', icon: DollarSign, category: 'Investment' },

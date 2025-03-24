@@ -28,6 +28,30 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Employment Agreement Fields
+  employmentCompanyName?: string;
+  employmentCompanyAddress?: string;
+  employmentEmployeeName?: string;
+  employmentEmployeeAddress?: string;
+  employmentJobTitle?: string;
+  employmentStartDate?: string;
+  employmentProbationPeriod?: string;
+  employmentWorkingHours?: string;
+  employmentPlaceOfWork?: string;
+  employmentSalary?: string;
+  employmentSalaryPaymentDate?: string;
+  employmentBenefits?: string;
+  employmentLeavePolicy?: string;
+  employmentNoticePeriod?: string;
+  employmentTerminationConditions?: string;
+  employmentIntellectualProperty?: string;
+  employmentConfidentiality?: string;
+  employmentNonCompete?: string;
+  employmentJurisdiction?: string;
+  employmentWorkPolicy?: string;
+  employmentPerformanceReview?: string;
+  employmentBonusStructure?: string;
+
   // Shareholders Agreement Fields
   shareholderCompanyName?: string;
   shareholderCompanyAddress?: string;
@@ -310,6 +334,32 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "employment":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          employmentCompanyName: z.string().min(1, "Company name is required"),
+          employmentCompanyAddress: z.string().min(1, "Company address is required"),
+          employmentEmployeeName: z.string().min(1, "Employee name is required"),
+          employmentEmployeeAddress: z.string().min(1, "Employee address is required"),
+          employmentJobTitle: z.string().min(1, "Job title is required"),
+          employmentStartDate: z.string().min(1, "Start date is required"),
+          employmentProbationPeriod: z.string().min(1, "Probation period is required"),
+          employmentWorkingHours: z.string().min(1, "Working hours are required"),
+          employmentPlaceOfWork: z.string().min(1, "Place of work is required"),
+          employmentSalary: z.string().min(1, "Salary is required"),
+          employmentSalaryPaymentDate: z.string().min(1, "Salary payment date is required"),
+          employmentBenefits: z.string().min(1, "Benefits information is required"),
+          employmentLeavePolicy: z.string().min(1, "Leave policy is required"),
+          employmentNoticePeriod: z.string().min(1, "Notice period is required"),
+          employmentTerminationConditions: z.string().min(1, "Termination conditions are required"),
+          employmentIntellectualProperty: z.string().min(1, "IP clause is required"),
+          employmentConfidentiality: z.string().min(1, "Confidentiality clause is required"), 
+          employmentNonCompete: z.string().min(1, "Non-compete clause is required"),
+          employmentJurisdiction: z.string().min(1, "Jurisdiction is required"),
+          employmentWorkPolicy: z.string().min(1, "Work policy is required"),
+          employmentPerformanceReview: z.string().min(1, "Performance review details are required"),
+          employmentBonusStructure: z.string().min(1, "Bonus structure is required"),
+        });
       case "shareholders":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -480,7 +530,33 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "shareholders") {
+    if (params.type === "employment") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        employmentCompanyName: "",
+        employmentCompanyAddress: "",
+        employmentEmployeeName: "",
+        employmentEmployeeAddress: "",
+        employmentJobTitle: "",
+        employmentStartDate: format(new Date(), "yyyy-MM-dd"),
+        employmentProbationPeriod: "",
+        employmentWorkingHours: "",
+        employmentPlaceOfWork: "",
+        employmentSalary: "",
+        employmentSalaryPaymentDate: "",
+        employmentBenefits: "",
+        employmentLeavePolicy: "",
+        employmentNoticePeriod: "",
+        employmentTerminationConditions: "",
+        employmentIntellectualProperty: "",
+        employmentConfidentiality: "",
+        employmentNonCompete: "",
+        employmentJurisdiction: "",
+        employmentWorkPolicy: "",
+        employmentPerformanceReview: "",
+        employmentBonusStructure: "",
+      } as const;
+    } else if (params.type === "shareholders") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         shareholderCompanyName: "",
@@ -879,6 +955,346 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "employment":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employment Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Legal name of the company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Registered address of the company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentEmployeeName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employee Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of the employee" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentEmployeeAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employee Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Current residential address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Employment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentJobTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Job Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Position/Designation" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentProbationPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Probation Period</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 3 months" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentWorkingHours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Working Hours</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 9:00 AM to 6:00 PM" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentPlaceOfWork"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Place of Work</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Office location or remote work" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Compensation</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentSalary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salary Details</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Monthly/Annual salary breakdown" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentSalaryPaymentDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salary Payment Date</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Last working day of each month" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentBonusStructure"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bonus Structure</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Details of performance bonus, annual bonus, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Benefits and Policies</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentBenefits"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Benefits</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Health insurance, retirement benefits, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentLeavePolicy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Leave Policy</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Annual leave, sick leave, other leave entitlements" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentWorkPolicy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Policy</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Remote work, office policies, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Performance and Reviews</h3>
+              <FormField
+                control={form.control}
+                name="employmentPerformanceReview"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Performance Review Process</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Frequency and criteria for performance reviews" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Termination and Notice</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentNoticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Period</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 30 days" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentTerminationConditions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Conditions</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Grounds for termination and process" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="employmentIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Agreement</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality terms and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentNonCompete"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Compete Clause</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Non-compete terms and duration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="employmentJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "shareholders":
         return (
           <>
