@@ -24,6 +24,81 @@ type FormFields = {
   // Common Fields
   dateOfAgreement?: string;
 
+  // Employment Agreement Fields
+  employmentCompanyName?: string;
+  employmentCompanyAddress?: string;
+  employmentEmployeeName?: string;
+  employmentEmployeeAddress?: string;
+  employmentJobTitle?: string;
+  employmentStartDate?: string;
+  employmentProbationPeriod?: string;
+  employmentWorkingHours?: string;
+  employmentPlaceOfWork?: string;
+  employmentSalary?: string;
+  employmentSalaryPaymentDate?: string;
+  employmentBenefits?: string;
+  employmentLeavePolicy?: string;
+  employmentNoticePeriod?: string;
+  employmentTerminationConditions?: string;
+  employmentIntellectualProperty?: string;
+  employmentConfidentiality?: string;
+  employmentNonCompete?: string;
+  employmentJurisdiction?: string;
+  employmentWorkPolicy?: string;
+  employmentPerformanceReview?: string;
+  employmentBonusStructure?: string;
+
+  // NDA Fields  
+  ndaCompanyName?: string;
+  ndaCompanyAddress?: string;
+  ndaEmployeeName?: string;
+  ndaEmployeeAddress?: string;
+  ndaConfidentialInfo?: string;
+  ndaPermittedUse?: string;
+  ndaExcludedInfo?: string;
+  ndaReturnOfInfo?: string;
+  ndaDuration?: string;
+  ndaSurvivalTerms?: string;
+  ndaRemedies?: string;
+  ndaGoverningLaw?: string;
+  ndaSignatureDate?: string;
+
+  // Employee Handbook Fields
+  handbookCompanyName?: string;
+  handbookVersion?: string;
+  handbookEffectiveDate?: string;
+  handbookPurpose?: string;
+  handbookScope?: string;
+  handbookWorkingHours?: string;
+  handbookAttendancePolicy?: string;
+  handbookLeavePolicy?: string;
+  handbookDressCode?: string;
+  handbookCodeOfConduct?: string;
+  handbookGrievanceProcess?: string;
+  handbookDisciplinaryProcess?: string;
+  handbookITPolicy?: string;
+  handbookSafetyPolicy?: string;
+  handbookConfidentialityPolicy?: string;
+  handbookAcknowledgement?: string;
+
+  // HR Policy Fields
+  hrPolicyCompanyName?: string;
+  hrPolicyVersion?: string;
+  hrPolicyEffectiveDate?: string;
+  hrPolicyScope?: string;
+  hrPolicyEqualOpportunity?: string;
+  hrPolicyRecruitment?: string;
+  hrPolicyCompensation?: string;
+  hrPolicyPerformanceManagement?: string;
+  hrPolicyTraining?: string;
+  hrPolicyWorkplace?: string;
+  hrPolicyHealth?: string;
+  hrPolicySafety?: string;
+  hrPolicyGrievance?: string;
+  hrPolicyDisciplinary?: string;
+  hrPolicyTermination?: string;
+  hrPolicyAmendments?: string;
+
   // Vendor Agreement Fields
   vendorCompanyName?: string;
   vendorCompanyAddress?: string;
@@ -426,6 +501,89 @@ const getFormSchema = (type: string) => {
         softwareLicenseGoverningLaw: z.string().min(1, "Governing law is required"),
         softwareLicenseDispute: z.string().min(1, "Dispute resolution terms are required"),
       });
+    case "employment":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        employmentCompanyName: z.string().min(1, "Company name is required"),
+        employmentCompanyAddress: z.string().min(1, "Company address is required"),
+        employmentEmployeeName: z.string().min(1, "Employee name is required"),
+        employmentEmployeeAddress: z.string().min(1, "Employee address is required"),
+        employmentJobTitle: z.string().min(1, "Job title is required"),
+        employmentStartDate: z.string().min(1, "Start date is required"),
+        employmentProbationPeriod: z.string().min(1, "Probation period is required"),
+        employmentWorkingHours: z.string().min(1, "Working hours are required"),
+        employmentPlaceOfWork: z.string().min(1, "Place of work is required"),
+        employmentSalary: z.string().min(1, "Salary is required"),
+        employmentSalaryPaymentDate: z.string().min(1, "Salary payment date is required"),
+        employmentBenefits: z.string().min(1, "Benefits are required"),
+        employmentLeavePolicy: z.string().min(1, "Leave policy is required"),
+        employmentNoticePeriod: z.string().min(1, "Notice period is required"),
+        employmentTerminationConditions: z.string().min(1, "Termination conditions are required"),
+        employmentIntellectualProperty: z.string().min(1, "IP terms are required"),
+        employmentConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+        employmentNonCompete: z.string().min(1, "Non-compete terms are required"),
+        employmentJurisdiction: z.string().min(1, "Jurisdiction is required"),
+        employmentWorkPolicy: z.string().min(1, "Work policy is required"),
+        employmentPerformanceReview: z.string().min(1, "Performance review terms are required"),
+        employmentBonusStructure: z.string().min(1, "Bonus structure is required"),
+      });
+    case "nda":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        ndaCompanyName: z.string().min(1, "Company name is required"),
+        ndaCompanyAddress: z.string().min(1, "Company address is required"), 
+        ndaEmployeeName: z.string().min(1, "Employee name is required"),
+        ndaEmployeeAddress: z.string().min(1, "Employee address is required"),
+        ndaConfidentialInfo: z.string().min(1, "Confidential information description is required"),
+        ndaPermittedUse: z.string().min(1, "Permitted use terms are required"),
+        ndaExcludedInfo: z.string().min(1, "Excluded information is required"),
+        ndaReturnOfInfo: z.string().min(1, "Return of information terms are required"),
+        ndaDuration: z.string().min(1, "Duration is required"),
+        ndaSurvivalTerms: z.string().min(1, "Survival terms are required"),
+        ndaRemedies: z.string().min(1, "Remedies are required"),
+        ndaGoverningLaw: z.string().min(1, "Governing law is required"),
+        ndaSignatureDate: z.string().min(1, "Signature date is required"),
+      });
+    case "handbook":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        handbookCompanyName: z.string().min(1, "Company name is required"),
+        handbookVersion: z.string().min(1, "Version number is required"),
+        handbookEffectiveDate: z.string().min(1, "Effective date is required"),
+        handbookPurpose: z.string().min(1, "Purpose is required"),
+        handbookScope: z.string().min(1, "Scope is required"),
+        handbookWorkingHours: z.string().min(1, "Working hours policy is required"),
+        handbookAttendancePolicy: z.string().min(1, "Attendance policy is required"),
+        handbookLeavePolicy: z.string().min(1, "Leave policy is required"),
+        handbookDressCode: z.string().min(1, "Dress code is required"),
+        handbookCodeOfConduct: z.string().min(1, "Code of conduct is required"),
+        handbookGrievanceProcess: z.string().min(1, "Grievance process is required"),
+        handbookDisciplinaryProcess: z.string().min(1, "Disciplinary process is required"),
+        handbookITPolicy: z.string().min(1, "IT policy is required"),
+        handbookSafetyPolicy: z.string().min(1, "Safety policy is required"),
+        handbookConfidentialityPolicy: z.string().min(1, "Confidentiality policy is required"),
+        handbookAcknowledgement: z.string().min(1, "Acknowledgement is required"),
+      });
+    case "hr-policy":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        hrPolicyCompanyName: z.string().min(1, "Company name is required"),
+        hrPolicyVersion: z.string().min(1, "Version number is required"),
+        hrPolicyEffectiveDate: z.string().min(1, "Effective date is required"),
+        hrPolicyScope: z.string().min(1, "Policy scope is required"),
+        hrPolicyEqualOpportunity: z.string().min(1, "Equal opportunity policy is required"),
+        hrPolicyRecruitment: z.string().min(1, "Recruitment policy is required"),
+        hrPolicyCompensation: z.string().min(1, "Compensation policy is required"),
+        hrPolicyPerformanceManagement: z.string().min(1, "Performance management policy is required"),
+        hrPolicyTraining: z.string().min(1, "Training policy is required"),
+        hrPolicyWorkplace: z.string().min(1, "Workplace policy is required"),
+        hrPolicyHealth: z.string().min(1, "Health policy is required"),
+        hrPolicySafety: z.string().min(1, "Safety policy is required"),
+        hrPolicyGrievance: z.string().min(1, "Grievance policy is required"),
+        hrPolicyDisciplinary: z.string().min(1, "Disciplinary policy is required"),
+        hrPolicyTermination: z.string().min(1, "Termination policy is required"),
+        hrPolicyAmendments: z.string().min(1, "Amendments policy is required"),
+      });
     case "software-development":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
@@ -525,6 +683,14 @@ const getFormTitle = (type: string) => {
       return "Sales Agreement";
     case "subscription":
       return "Subscription Agreement";
+    case "employment":
+      return "Employment Agreement";
+    case "nda":
+      return "Non-Disclosure Agreement";
+    case "handbook":
+      return "Employee Handbook";
+    case "hr-policy":
+      return "HR Policy Agreement";
     default:
       return "Create Agreement";
   }
