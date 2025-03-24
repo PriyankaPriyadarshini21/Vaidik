@@ -28,6 +28,21 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Convertible Note Agreement Fields
+  convertibleCompanyName?: string;
+  convertibleCompanyAddress?: string;
+  convertibleInvestorName?: string;
+  convertibleInvestorAddress?: string;
+  convertiblePrincipalAmount?: string;
+  convertibleInterestRate?: string;
+  convertibleMaturityDate?: string;
+  convertibleQualifiedAmount?: string;
+  convertibleDiscountPercent?: string;
+  convertibleValuationCap?: string;
+  convertibleSecurityType?: string;
+  convertibleDefaultDays?: string;
+  convertibleArbitrationCity?: string;
+
   // SAFE Agreement Fields
   safeEffectiveDate?: string;
   safeCompanyName?: string;
@@ -237,6 +252,22 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "convertible-note":
+        return z.object({
+          convertibleCompanyName: z.string().min(1, "Company name is required"),
+          convertibleCompanyAddress: z.string().min(1, "Company address is required"),
+          convertibleInvestorName: z.string().min(1, "Investor name is required"),
+          convertibleInvestorAddress: z.string().min(1, "Investor address is required"),
+          convertiblePrincipalAmount: z.string().min(1, "Principal amount is required"),
+          convertibleInterestRate: z.string().min(1, "Interest rate is required"),
+          convertibleMaturityDate: z.string().min(1, "Maturity date is required"),
+          convertibleQualifiedAmount: z.string().min(1, "Qualified financing amount is required"),
+          convertibleDiscountPercent: z.string().min(1, "Discount percentage is required"),
+          convertibleValuationCap: z.string().min(1, "Valuation cap is required"),
+          convertibleSecurityType: z.string().min(1, "Security type is required"),
+          convertibleDefaultDays: z.string().min(1, "Default payment days is required"),
+          convertibleArbitrationCity: z.string().min(1, "Arbitration city is required"),
+        });
       case "safe":
         return z.object({
           safeEffectiveDate: z.string().min(1, "Effective date is required"),
@@ -327,7 +358,24 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "safe") {
+    if (params.type === "convertible-note") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        convertibleCompanyName: "",
+        convertibleCompanyAddress: "",
+        convertibleInvestorName: "",
+        convertibleInvestorAddress: "",
+        convertiblePrincipalAmount: "",
+        convertibleInterestRate: "",
+        convertibleMaturityDate: format(new Date(), "yyyy-MM-dd"),
+        convertibleQualifiedAmount: "",
+        convertibleDiscountPercent: "",
+        convertibleValuationCap: "",
+        convertibleSecurityType: "",
+        convertibleDefaultDays: "",
+        convertibleArbitrationCity: "",
+      } as const;
+    } else if (params.type === "safe") {
       return {
         safeEffectiveDate: format(new Date(), "yyyy-MM-dd"),
         safeCompanyName: "",
@@ -586,6 +634,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "convertible-note":
+        return "Convertible Note Agreement";
       case "safe":
         return "SAFE Agreement";
       case "investment":
@@ -637,6 +687,217 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "convertible-note":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="convertibleCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Principal Office Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleInvestorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleInvestorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Investor's Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Investment Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="convertiblePrincipalAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Principal Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="INR Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleInterestRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interest Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Rate in % per annum" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="convertibleMaturityDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maturity Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleQualifiedAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Qualified Financing Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="INR Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Financial Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="convertibleDiscountPercent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Discount Percentage</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Percentage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleValuationCap"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valuation Cap</FormLabel>
+                      <FormControl>
+                        <Input placeholder="INR Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="convertibleSecurityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type of Security</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Preferred Shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convertibleDefaultDays"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Days for Default Payment</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Number of days" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <FormField
+                control={form.control}
+                name="convertibleArbitrationCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City in India" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       case "safe":
         return (
           <>
