@@ -308,6 +308,27 @@ type FormFields = {
   subscriptionRocFilings?: string;
   subscriptionAllotmentTimeline?: string;
   subscriptionArbitrationCity?: string;
+
+  // Commission Agreement Fields
+  commissionDateOfAgreement?: string;
+  commissionCompanyName?: string;
+  commissionCompanyAddress?: string;
+  commissionAgentName?: string;
+  commissionAgentAddress?: string;
+  commissionProductsServices?: string;
+  commissionTerritory?: string;
+  commissionAppointmentType?: string;
+  commissionRate?: string;
+  commissionCalculationBasis?: string;
+  commissionTieredStructure?: string;
+  commissionPaymentDay?: string;
+  commissionPaymentMethod?: string;
+  commissionConfidentialityTerms?: string;
+  commissionStartDate?: string;
+  commissionEndDate?: string;
+  commissionNoticePeriod?: string;
+  commissionArbitrationLocation?: string;
+  commissionJurisdiction?: string;
 };
 
 interface RouteParams {
@@ -501,6 +522,28 @@ const getFormSchema = (type: string) => {
         softwareLicenseGoverningLaw: z.string().min(1, "Governing law is required"),
         softwareLicenseDispute: z.string().min(1, "Dispute resolution terms are required"),
       });
+    case "commission":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        commissionCompanyName: z.string().min(1, "Company Name is required"),
+        commissionCompanyAddress: z.string().min(1, "Company Address is required"),
+        commissionAgentName: z.string().min(1, "Agent Name is required"),
+        commissionAgentAddress: z.string().min(1, "Agent Address is required"),
+        commissionProductsServices: z.string().min(1, "Products/Services are required"),
+        commissionTerritory: z.string().min(1, "Territory/Market is required"),
+        commissionAppointmentType: z.string().min(1, "Appointment Type is required"),
+        commissionRate: z.string().min(1, "Commission Rate is required"),
+        commissionCalculationBasis: z.string().min(1, "Calculation Basis is required"),
+        commissionTieredStructure: z.string().min(1, "Tiered Structure information is required"),
+        commissionPaymentDay: z.string().min(1, "Payment Day is required"),
+        commissionPaymentMethod: z.string().min(1, "Payment Method is required"),
+        commissionConfidentialityTerms: z.string().min(1, "Confidentiality Terms are required"),
+        commissionStartDate: z.string().min(1, "Start Date is required"),
+        commissionEndDate: z.string().min(1, "End Date is required"),
+        commissionNoticePeriod: z.string().min(1, "Notice Period is required"),
+        commissionArbitrationLocation: z.string().min(1, "Arbitration Location is required"),
+        commissionJurisdiction: z.string().min(1, "Jurisdiction is required"),
+      });
     case "employment":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
@@ -691,6 +734,8 @@ const getFormTitle = (type: string) => {
       return "Employee Handbook";
     case "hr-policy":
       return "HR Policy Agreement";
+    case "commission":
+      return "Commission Agreement";
     default:
       return "Create Agreement";
   }
@@ -721,6 +766,266 @@ const renderFormFields = (type: string, form: any): ReactNode => {
   );
 
   switch (type) {
+    case "commission":
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+          
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Basic Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="commissionCompanyName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full Name of Company" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionCompanyAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Company's Address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionAgentName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full Name of Agent" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionAgentAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Agent's Address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Commission Details</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="commissionProductsServices"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Products/Services Covered</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specific products or services the Agent will represent" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionTerritory"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Territory/Market</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specified territory or market for sales activities" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionAppointmentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agent's Appointment Type</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Exclusive or Non-Exclusive" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Commission Rate</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage or fixed amount per sale" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionCalculationBasis"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Commission Calculation Basis</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Gross/Net sales value, excluding any deductions like taxes or shipping" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionTieredStructure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tiered Commission Structure</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify structure if applicable or write N/A" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Payment Details</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="commissionPaymentDay"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Day</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specific day of each month when commissions will be paid" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionPaymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Bank transfer, cheque, or other method" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Terms and Conditions</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="commissionConfidentialityTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality Terms</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Any special provisions or leave as provided in the draft" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionEndDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" placeholder="Leave blank if ongoing" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="commissionNoticePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notice Period for Termination</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of days required for termination notice" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionArbitrationLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Location</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City/Location for arbitration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="commissionJurisdiction"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Jurisdiction (Governing Law)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City/Region with legal jurisdiction" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      );
     case "vendor":
       return (
         <div className="space-y-8">
