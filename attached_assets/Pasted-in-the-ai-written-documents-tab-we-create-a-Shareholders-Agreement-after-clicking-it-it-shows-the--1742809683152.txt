@@ -1,0 +1,47 @@
+in the ai-written documents tab, we create a Shareholders Agreement after clicking it, it shows the form. i want to change the fields
+
+here are new field add and remove the previous
+
+Customer Input Details
+
+Date of Agreement: [DD/MM/YYYY]
+Company Name: [Name of the Company]
+Company Address: [Registered Address of the Company]
+Shareholders’ Names:
+Shareholder A: [Name of Shareholder A]
+Shareholder B: [Name of Shareholder B]
+[Add other Shareholders as necessary]
+Shareholders’ Addresses:
+Shareholder A: [Address of Shareholder A]
+Shareholder B: [Address of Shareholder B]
+[Add other Shareholders' addresses as necessary]
+Shareholding Structure:
+Shareholder A: [Percentage/Number of Shares]
+Shareholder B: [Percentage/Number of Shares]
+[Add additional Shareholders and their shares]
+Number of Directors on the Board: [Number of Directors]
+Director Nomination Threshold: [Shareholding percentage required for nomination]
+Quorum for Board Meetings: [Number of Directors required for quorum]
+Matters Requiring Special Approval: [List specific matters, e.g., mergers, acquisitions, issuing new shares]
+Type of Approval for Special Matters: [Majority/Supermajority/Unanimous]
+Restrictions on Share Transfers: [Yes/No]
+Right of First Refusal (ROFR): [Yes/No]
+Tag-Along Rights: [Yes/No]
+Drag-Along Rights: [Yes/No]
+Dividend Approval Threshold: [Majority/Supermajority]
+Non-Compete Period: [Duration after ceasing to be a Shareholder, e.g., 1 year]
+Arbitration Location: [City/Location where arbitration proceedings will take place]
+Language of Arbitration: [Language to be used during arbitration, e.g., English]
+Jurisdiction for Governing Law: [Jurisdiction, e.g., Courts in Delhi, India]
+Notice Address for the Company: [Company's official address for receiving notices]
+Notice Address for Shareholders:
+Shareholder A: [Address for Shareholder A]
+Shareholder B: [Address for Shareholder B]
+[Add additional notice addresses for other Shareholders as necessary]
+Amendment Procedure: [Specify whether amendments require unanimous consent or other conditions]
+Confidential Information Definition: [Define what constitutes confidential information, if any additional details are necessary]
+Dividend Distribution Policy: [Details about how dividends will be distributed, e.g., annually, proportionate to shareholding]
+Additional Provisions (if any): [Any other specific provisions requested by the customer]
+
+
+add these section in the form customer add these details before generate

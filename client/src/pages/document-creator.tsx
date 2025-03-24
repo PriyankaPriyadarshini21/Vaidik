@@ -28,6 +28,33 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Shareholders Agreement Fields
+  shareholderCompanyName?: string;
+  shareholderCompanyAddress?: string;
+  shareholderNames?: string;
+  shareholderAddresses?: string;
+  shareholderShares?: string;
+  numberOfDirectors?: string;
+  directorNominationThreshold?: string;
+  boardQuorum?: string;
+  mattersRequiringApproval?: string;
+  approvalType?: "majority" | "supermajority" | "unanimous";
+  shareTransferRestrictions?: "yes" | "no";
+  rightOfFirstRefusal?: "yes" | "no";
+  tagAlongRights?: "yes" | "no";
+  dragAlongRights?: "yes" | "no";
+  dividendThreshold?: string;
+  nonCompetePeriod?: string;
+  arbitrationLocation?: string;
+  arbitrationLanguage?: string;
+  governingLawJurisdiction?: string;
+  noticeAddress?: string;
+  shareholderNoticeAddresses?: string;
+  amendmentProcedure?: string;
+  confidentialityDefinition?: string;
+  dividendDistributionPolicy?: string;
+  additionalProvisions?: string;
+
   // Subscription Agreement Fields
   subscriptionIssuerName?: string;
   subscriptionIssuerAddress?: string;
@@ -283,6 +310,35 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "shareholders":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          shareholderCompanyName: z.string().min(1, "Company name is required"),
+          shareholderCompanyAddress: z.string().min(1, "Company address is required"),
+          shareholderNames: z.string().min(1, "Shareholder names are required"),
+          shareholderAddresses: z.string().min(1, "Shareholder addresses are required"),
+          shareholderShares: z.string().min(1, "Shareholding details are required"),
+          numberOfDirectors: z.string().min(1, "Number of directors is required"),
+          directorNominationThreshold: z.string().min(1, "Nomination threshold is required"),
+          boardQuorum: z.string().min(1, "Board quorum is required"),
+          mattersRequiringApproval: z.string().min(1, "Matters requiring approval are required"),
+          approvalType: z.enum(["majority", "supermajority", "unanimous"]),
+          shareTransferRestrictions: z.enum(["yes", "no"]),
+          rightOfFirstRefusal: z.enum(["yes", "no"]),
+          tagAlongRights: z.enum(["yes", "no"]),
+          dragAlongRights: z.enum(["yes", "no"]),
+          dividendThreshold: z.string().min(1, "Dividend threshold is required"),
+          nonCompetePeriod: z.string().min(1, "Non-compete period is required"),
+          arbitrationLocation: z.string().min(1, "Arbitration location is required"),
+          arbitrationLanguage: z.string().min(1, "Arbitration language is required"),
+          governingLawJurisdiction: z.string().min(1, "Jurisdiction is required"),
+          noticeAddress: z.string().min(1, "Company notice address is required"),
+          shareholderNoticeAddresses: z.string().min(1, "Shareholder notice addresses are required"),
+          amendmentProcedure: z.string().min(1, "Amendment procedure is required"),
+          confidentialityDefinition: z.string().min(1, "Confidentiality definition is required"),
+          dividendDistributionPolicy: z.string().min(1, "Dividend distribution policy is required"),
+          additionalProvisions: z.string().optional(),
+        });
       case "subscription":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -424,7 +480,36 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "subscription") {
+    if (params.type === "shareholders") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        shareholderCompanyName: "",
+        shareholderCompanyAddress: "",
+        shareholderNames: "",
+        shareholderAddresses: "",
+        shareholderShares: "",
+        numberOfDirectors: "",
+        directorNominationThreshold: "",
+        boardQuorum: "",
+        mattersRequiringApproval: "",
+        approvalType: "majority",
+        shareTransferRestrictions: "no",
+        rightOfFirstRefusal: "no",
+        tagAlongRights: "no",
+        dragAlongRights: "no",
+        dividendThreshold: "",
+        nonCompetePeriod: "",
+        arbitrationLocation: "",
+        arbitrationLanguage: "",
+        governingLawJurisdiction: "",
+        noticeAddress: "",
+        shareholderNoticeAddresses: "",
+        amendmentProcedure: "",
+        confidentialityDefinition: "",
+        dividendDistributionPolicy: "",
+        additionalProvisions: "",
+      } as const;
+    } else if (params.type === "subscription") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         subscriptionIssuerName: "",
@@ -735,6 +820,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "shareholders":
+        return "Shareholders Agreement";
       case "subscription":
         return "Subscription Agreement";
       case "stock-purchase":
@@ -792,6 +879,448 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "shareholders":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="shareholderCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="shareholderCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Registered Address of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Shareholders Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="shareholderNames"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shareholders' Names</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter each shareholder's name on a new line&#10;Example:&#10;Shareholder A: John Doe&#10;Shareholder B: Jane Smith" 
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="shareholderAddresses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shareholders' Addresses</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter each shareholder's address on a new line&#10;Example:&#10;Shareholder A: [Address]&#10;Shareholder B: [Address]" 
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="shareholderShares"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shareholding Structure</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter each shareholder's shares/percentage on a new line&#10;Example:&#10;Shareholder A: 60%&#10;Shareholder B: 40%" 
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Board Structure</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="numberOfDirectors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Directors</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Number of Directors" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="directorNominationThreshold"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Director Nomination Threshold</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Shareholding percentage required" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="boardQuorum"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quorum for Board Meetings</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of Directors required" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Special Matters</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="mattersRequiringApproval"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Matters Requiring Special Approval</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="List specific matters, e.g., mergers, acquisitions, issuing new shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="approvalType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type of Approval</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select approval type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="majority">Majority</SelectItem>
+                          <SelectItem value="supermajority">Supermajority</SelectItem>
+                          <SelectItem value="unanimous">Unanimous</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Rights and Restrictions</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="shareTransferRestrictions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Share Transfer Restrictions</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="rightOfFirstRefusal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Right of First Refusal (ROFR)</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tagAlongRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tag-Along Rights</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dragAlongRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Drag-Along Rights</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="dividendThreshold"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dividend Approval Threshold</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select threshold" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="majority">Majority</SelectItem>
+                        <SelectItem value="supermajority">Supermajority</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nonCompetePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Non-Compete Period</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Duration after ceasing to be a Shareholder, e.g., 1 year" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="arbitrationLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City/Location for arbitration" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="arbitrationLanguage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Language of Arbitration</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., English" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="governingLawJurisdiction"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Jurisdiction for Governing Law</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Courts in Delhi, India" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="noticeAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Address for the Company</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Company's official address for receiving notices" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="shareholderNoticeAddresses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Address for Shareholders</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter each shareholder's notice address&#10;Example:&#10;Shareholder A: [Address]&#10;Shareholder B: [Address]" 
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="amendmentProcedure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amendment Procedure</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify whether amendments require unanimous consent or other conditions" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="confidentialityDefinition"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidential Information Definition</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Define what constitutes confidential information" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dividendDistributionPolicy"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dividend Distribution Policy</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Details about how dividends will be distributed, e.g., annually, proportionate to shareholding" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="additionalProvisions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Provisions</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Any other specific provisions requested by the customer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       case "subscription":
         return (
           <>
