@@ -28,6 +28,29 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Marketing Agreement Fields
+  marketingServiceProvider?: string;
+  marketingServiceProviderAddress?: string;
+  marketingClientName?: string;
+  marketingClientAddress?: string;
+  marketingServicesScope?: string;
+  marketingCampaignObjectives?: string;
+  marketingTargetAudience?: string;
+  marketingChannels?: string;
+  marketingDeliverables?: string;
+  marketingTimeline?: string;
+  marketingKPIs?: string;
+  marketingReportingFrequency?: string;
+  marketingBudget?: string;
+  marketingPaymentTerms?: string;
+  marketingIntellectualProperty?: string;
+  marketingContentRights?: string;
+  marketingConfidentiality?: string;
+  marketingTermination?: string;
+  marketingIndemnification?: string;
+  marketingGoverningLaw?: string;
+  marketingDispute?: string;
+
   // Software License Agreement Fields
   softwareLicenseCompanyName?: string;
   softwareLicenseCompanyAddress?: string;
@@ -430,6 +453,32 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "marketing":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          marketingServiceProvider: z.string().min(1, "Service provider name is required"),
+          marketingServiceProviderAddress: z.string().min(1, "Service provider address is required"),
+          marketingClientName: z.string().min(1, "Client name is required"),
+          marketingClientAddress: z.string().min(1, "Client address is required"),
+          marketingServicesScope: z.string().min(1, "Services scope is required"),
+          marketingCampaignObjectives: z.string().min(1, "Campaign objectives are required"),
+          marketingTargetAudience: z.string().min(1, "Target audience is required"),
+          marketingChannels: z.string().min(1, "Marketing channels are required"),
+          marketingDeliverables: z.string().min(1, "Deliverables are required"),
+          marketingTimeline: z.string().min(1, "Timeline is required"),
+          marketingKPIs: z.string().min(1, "KPIs are required"),
+          marketingReportingFrequency: z.string().min(1, "Reporting frequency is required"),
+          marketingBudget: z.string().min(1, "Budget is required"),
+          marketingPaymentTerms: z.string().min(1, "Payment terms are required"),
+          marketingIntellectualProperty: z.string().min(1, "IP terms are required"),
+          marketingContentRights: z.string().min(1, "Content rights are required"),
+          marketingConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          marketingTermination: z.string().min(1, "Termination terms are required"),
+          marketingIndemnification: z.string().min(1, "Indemnification terms are required"),
+          marketingGoverningLaw: z.string().min(1, "Governing law is required"),
+          marketingDispute: z.string().min(1, "Dispute resolution terms are required"),
+        });
+
       case "software-license":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
