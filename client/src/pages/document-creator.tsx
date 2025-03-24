@@ -103,6 +103,36 @@ type FormFields = {
   ecfIssuerRepName?: string;
   ecfIssuerRepTitle?: string;
   ecfInvestorSignatureName?: string;
+
+  // Founders Agreement Fields
+  companyDescription?: string;
+  founder1Name?: string;
+  founder1Address?: string;
+  founder1EquityPercentage?: string;
+  founder1Responsibilities?: string;
+  founder2Name?: string;
+  founder2Address?: string;
+  founder2EquityPercentage?: string;
+  founder2Responsibilities?: string;
+  founder3Name?: string;
+  founder3Address?: string;
+  founder3EquityPercentage?: string;
+  founder3Responsibilities?: string;
+  vestingPeriod?: string;
+  cliffPeriod?: string;
+  accelerationConditions?: string;
+  unvestingTerms?: string;
+  votingRightsStructure?: string;
+  boardMembersCount?: string;
+  boardMembersNames?: string;
+  ipAssignmentTerms?: string;
+  confidentialityTerms?: string;
+  nonCompeteDuration?: string;
+  nonSolicitationDuration?: string;
+  exitNoticePeriod?: string;
+  equityValuationMethod?: string;
+  involuntaryExitCauses?: string;
+  arbitrationVenue?: string;
 };
 
 interface RouteParams {
@@ -199,6 +229,40 @@ export default function DocumentCreator() {
         closingDate: format(new Date(), "yyyy-MM-dd"),
         closingLocation: "",
       } as const;
+    } else if (params.type === "founders") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        companyName: "",
+        companyDescription: "",
+        founder1Name: "",
+        founder1Address: "",
+        founder1EquityPercentage: "",
+        founder1Responsibilities: "",
+        founder2Name: "",
+        founder2Address: "",
+        founder2EquityPercentage: "",
+        founder2Responsibilities: "",
+        founder3Name: "",
+        founder3Address: "",
+        founder3EquityPercentage: "",
+        founder3Responsibilities: "",
+        vestingPeriod: "",
+        cliffPeriod: "",
+        accelerationConditions: "",
+        unvestingTerms: "",
+        votingRightsStructure: "",
+        boardMembersCount: "",
+        boardMembersNames: "",
+        ipAssignmentTerms: "",
+        confidentialityTerms: "",
+        nonCompeteDuration: "",
+        nonSolicitationDuration: "",
+        exitNoticePeriod: "",
+        equityValuationMethod: "",
+        involuntaryExitCauses: "",
+        arbitrationVenue: "",
+        jurisdiction: "",
+      } as const;
     }
     return {};
   }, [params.type]);
@@ -252,6 +316,8 @@ export default function DocumentCreator() {
         return "Marketing Agreement";
       case "dpa":
         return "Data Processing Agreement";
+      case "founders":
+        return "Founders Agreement";
       default:
         return "Document";
     }
@@ -1029,7 +1095,7 @@ export default function DocumentCreator() {
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select option" />
+                            <SelectValue placeholder="Selectoption" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -1423,7 +1489,8 @@ export default function DocumentCreator() {
                 <FormField
                   control={form.control}
                   name="jurisdiction"
-                  render={({ field }) => (                    <FormItem>
+                  render={({ field }) => (
+                    <FormItem>
                       <FormLabel>Jurisdiction</FormLabel>
                       <FormControl>
                         <Input placeholder="Enter applicable jurisdiction" {...field} />
@@ -1581,6 +1648,8 @@ const getFormSchema = (type: string) => {
         closingDate: z.string().min(1, "Closing Date is required"),
         closingLocation: z.string().min(1, "Closing Location is required"),
       });
+    case "founders":
+      return foundersFormSchema;
     default:
       return z.object({});
   }
