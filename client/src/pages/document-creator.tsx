@@ -28,6 +28,23 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Subscription Agreement Fields
+  subscriptionIssuerName?: string;
+  subscriptionIssuerAddress?: string;
+  subscriptionSubscriberName?: string;
+  subscriptionSubscriberAddress?: string;
+  subscriptionNumShares?: string;
+  subscriptionShareClass?: string;
+  subscriptionPricePerShare?: string;
+  subscriptionTotalAmount?: string;
+  subscriptionPaymentMethod?: string;
+  subscriptionPaymentDueDate?: string;
+  subscriptionBoardApprovalDate?: string;
+  subscriptionComplianceStatus?: string;
+  subscriptionRocFilings?: string;
+  subscriptionAllotmentTimeline?: string;
+  subscriptionArbitrationCity?: string;
+
   // Stock Purchase Agreement Fields
   stockSellerName?: string;
   stockSellerAddress?: string;
@@ -266,6 +283,25 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "subscription":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          subscriptionIssuerName: z.string().min(1, "Issuer name is required"),
+          subscriptionIssuerAddress: z.string().min(1, "Issuer address is required"),
+          subscriptionSubscriberName: z.string().min(1, "Subscriber name is required"),
+          subscriptionSubscriberAddress: z.string().min(1, "Subscriber address is required"),
+          subscriptionNumShares: z.string().min(1, "Number of shares is required"),
+          subscriptionShareClass: z.string().min(1, "Share class is required"),
+          subscriptionPricePerShare: z.string().min(1, "Price per share is required"),
+          subscriptionTotalAmount: z.string().min(1, "Total amount is required"),
+          subscriptionPaymentMethod: z.string().min(1, "Payment method is required"),
+          subscriptionPaymentDueDate: z.string().min(1, "Payment due date is required"),
+          subscriptionBoardApprovalDate: z.string().min(1, "Board approval date is required"),
+          subscriptionComplianceStatus: z.string().min(1, "Compliance status is required"),
+          subscriptionRocFilings: z.string().min(1, "RoC filings details are required"),
+          subscriptionAllotmentTimeline: z.string().min(1, "Allotment timeline is required"),
+          subscriptionArbitrationCity: z.string().min(1, "Arbitration city is required"),
+        });
       case "convertible-note":
         return z.object({
           convertibleCompanyName: z.string().min(1, "Company name is required"),
@@ -388,7 +424,26 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "convertible-note") {
+    if (params.type === "subscription") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        subscriptionIssuerName: "",
+        subscriptionIssuerAddress: "",
+        subscriptionSubscriberName: "",
+        subscriptionSubscriberAddress: "",
+        subscriptionNumShares: "",
+        subscriptionShareClass: "",
+        subscriptionPricePerShare: "",
+        subscriptionTotalAmount: "",
+        subscriptionPaymentMethod: "",
+        subscriptionPaymentDueDate: format(new Date(), "yyyy-MM-dd"),
+        subscriptionBoardApprovalDate: format(new Date(), "yyyy-MM-dd"),
+        subscriptionComplianceStatus: "",
+        subscriptionRocFilings: "",
+        subscriptionAllotmentTimeline: "",
+        subscriptionArbitrationCity: "",
+      } as const;
+    } else if (params.type === "convertible-note") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         convertibleCompanyName: "",
@@ -680,6 +735,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "subscription":
+        return "Subscription Agreement";
       case "stock-purchase":
         return "Stock Purchase Agreement";
       case "convertible-note":
@@ -735,6 +792,246 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "subscription":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionIssuerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Issuer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Issuer Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionIssuerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Issuer Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Registered Address of Issuer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionSubscriberName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subscriber Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Subscriber" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionSubscriberAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subscriber Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Address of Subscriber" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Share Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionNumShares"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Shares Subscribed</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Number of Shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionShareClass"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Class and Type of Shares</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Equity Shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionPricePerShare"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price Per Share</FormLabel>
+                      <FormControl>
+                        <Input placeholder="INR Amount per Share" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionTotalAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Subscription Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="INR Total Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Payment Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionPaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Bank Transfer/Cheque/Other" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionPaymentDueDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Due Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Conditions Precedent</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionBoardApprovalDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Issuer's Board Approval Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionComplianceStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compliance Status with Companies Act, 2013</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Details of compliance status" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionRocFilings"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Filings with Registrar of Companies (RoC)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Details of RoC filings" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Timeline and Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="subscriptionAllotmentTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Share Allotment Timeline</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of Days from Payment Receipt" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subscriptionArbitrationCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "stock-purchase":
         return (
           <>
