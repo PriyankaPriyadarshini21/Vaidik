@@ -171,6 +171,30 @@ type FormFields = {
   employmentPerformanceReview?: string;
   employmentBonusStructure?: string;
 
+  // Vendor Agreement Fields
+  vendorCompanyName?: string;
+  vendorCompanyAddress?: string;
+  vendorContactName?: string;
+  vendorContactDetails?: string;
+  clientCompanyName?: string;
+  clientCompanyAddress?: string;
+  servicesDescription?: string;
+  deliverySchedule?: string;
+  qualityStandards?: string;
+  pricingTerms?: string;
+  paymentSchedule?: string;
+  performanceMetrics?: string;
+  warrantyTerms?: string;
+  liabilityTerms?: string;
+  insuranceRequirements?: string;
+  terminationConditions?: string;
+  confidentialityTerms?: string;
+  intellectualPropertyRights?: string;
+  complianceRequirements?: string;
+  disputeResolutionProcess?: string;
+  governingLawJurisdiction?: string;
+  amendmentTerms?: string;
+
   // Shareholders Agreement Fields
   shareholderCompanyName?: string;
   shareholderCompanyAddress?: string;
@@ -477,6 +501,33 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "vendor":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          vendorCompanyName: z.string().min(1, "Vendor company name is required"),
+          vendorCompanyAddress: z.string().min(1, "Vendor company address is required"),
+          vendorContactName: z.string().min(1, "Vendor contact name is required"),
+          vendorContactDetails: z.string().min(1, "Vendor contact details are required"),
+          clientCompanyName: z.string().min(1, "Client company name is required"),
+          clientCompanyAddress: z.string().min(1, "Client company address is required"),
+          servicesDescription: z.string().min(1, "Services description is required"),
+          deliverySchedule: z.string().min(1, "Delivery schedule is required"),
+          qualityStandards: z.string().min(1, "Quality standards are required"),
+          pricingTerms: z.string().min(1, "Pricing terms are required"),
+          paymentSchedule: z.string().min(1, "Payment schedule is required"),
+          performanceMetrics: z.string().min(1, "Performance metrics are required"),
+          warrantyTerms: z.string().min(1, "Warranty terms are required"),
+          liabilityTerms: z.string().min(1, "Liability terms are required"),
+          insuranceRequirements: z.string().min(1, "Insurance requirements are required"),
+          terminationConditions: z.string().min(1, "Termination conditions are required"),
+          confidentialityTerms: z.string().min(1, "Confidentiality terms are required"),
+          intellectualPropertyRights: z.string().min(1, "IP rights are required"),
+          complianceRequirements: z.string().min(1, "Compliance requirements are required"),
+          disputeResolutionProcess: z.string().min(1, "Dispute resolution process is required"),
+          governingLawJurisdiction: z.string().min(1, "Governing law is required"),
+          amendmentTerms: z.string().min(1, "Amendment terms are required"),
+        });
+
       case "marketing":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -832,6 +883,34 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
+    if (params.type === "vendor") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        vendorCompanyName: "",
+        vendorCompanyAddress: "",
+        vendorContactName: "",
+        vendorContactDetails: "",
+        clientCompanyName: "",
+        clientCompanyAddress: "",
+        servicesDescription: "",
+        deliverySchedule: "",
+        qualityStandards: "",
+        pricingTerms: "",
+        paymentSchedule: "",
+        performanceMetrics: "",
+        warrantyTerms: "",
+        liabilityTerms: "",
+        insuranceRequirements: "",
+        terminationConditions: "",
+        confidentialityTerms: "",
+        intellectualPropertyRights: "",
+        complianceRequirements: "",
+        disputeResolutionProcess: "",
+        governingLawJurisdiction: "",
+        amendmentTerms: "",
+      } as const;
+    }
+
     if (params.type === "marketing") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -1359,6 +1438,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "vendor":
+        return "Vendor Agreement";
       case "marketing":
         return "Marketing Agreement";
       case "software-license":
@@ -1418,6 +1499,339 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "vendor":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Vendor Information</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="vendorCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Legal name of the vendor company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="vendorCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the vendor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="vendorContactName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor Contact Person</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of primary contact person" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="vendorContactDetails"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor Contact Details</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Contact information including phone, email, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Client Information</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="clientCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Legal name of the client company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="clientCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Services and Delivery</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="servicesDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Services Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of services/products to be provided" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="deliverySchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Delivery Schedule</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Timeline and schedule for deliveries" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="qualityStandards"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quality Standards</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required quality standards and specifications" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Payment Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="pricingTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pricing Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Pricing structure and terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Schedule</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment timeline and terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Performance and Warranties</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="performanceMetrics"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Performance Metrics</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Performance standards and KPIs" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="warrantyTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warranty Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Warranty terms and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Requirements</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="liabilityTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liability Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Liability limitations and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="insuranceRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Insurance Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required insurance coverage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="terminationConditions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Conditions</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for contract termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confidentialityTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="intellectualPropertyRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="complianceRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compliance Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Regulatory and compliance obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="disputeResolutionProcess"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution Process</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Process for resolving disputes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="governingLawJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amendmentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Amendment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Process for making amendments to the agreement" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "marketing":
         return (
           <>
