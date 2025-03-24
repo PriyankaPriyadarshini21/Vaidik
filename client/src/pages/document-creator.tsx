@@ -540,6 +540,33 @@ type FormFields = {
   jurisdiction?: string;
   noticesAddress?: string;
   loanJurisdiction?: string;
+
+  // Consulting Agreement Fields
+  consultingConsultantName?: string;
+  consultingConsultantAddress?: string;
+  consultingConsultantExpertise?: string;
+  consultingClientName?: string;
+  consultingClientAddress?: string;
+  consultingServicesScope?: string;
+  consultingObjectives?: string;
+  consultingDeliverables?: string;
+  consultingTimeline?: string;
+  consultingMilestones?: string;
+  consultingReportingStructure?: string;
+  consultingCompensation?: string;
+  consultingPaymentTerms?: string;
+  consultingExpenses?: string;
+  consultingTerm?: string;
+  consultingTermination?: string;
+  consultingConfidentiality?: string;
+  consultingNonCompete?: string;
+  consultingIntellectualProperty?: string;
+  consultingIndependentStatus?: string;
+  consultingProfessionalStandards?: string;
+  consultingLiability?: string;
+  consultingInsurance?: string;
+  consultingGoverningLaw?: string;
+  consultingDispute?: string;
 };
 
 interface RouteParams {
@@ -741,6 +768,36 @@ export default function DocumentCreator() {
           salesArbitrationVenue: z.string().min(1, "Arbitration venue is required"),
           salesNoticesPeriod: z.string().min(1, "Notices period is required"),
         });
+      case "consulting":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          consultingConsultantName: z.string().min(1, "Consultant name is required"),
+          consultingConsultantAddress: z.string().min(1, "Consultant address is required"), 
+          consultingConsultantExpertise: z.string().min(1, "Consultant expertise is required"),
+          consultingClientName: z.string().min(1, "Client name is required"),
+          consultingClientAddress: z.string().min(1, "Client address is required"),
+          consultingServicesScope: z.string().min(1, "Services scope is required"),
+          consultingObjectives: z.string().min(1, "Objectives are required"),
+          consultingDeliverables: z.string().min(1, "Deliverables are required"),
+          consultingTimeline: z.string().min(1, "Timeline is required"),
+          consultingMilestones: z.string().min(1, "Milestones are required"),
+          consultingReportingStructure: z.string().min(1, "Reporting structure is required"),
+          consultingCompensation: z.string().min(1, "Compensation terms are required"),
+          consultingPaymentTerms: z.string().min(1, "Payment terms are required"),
+          consultingExpenses: z.string().min(1, "Expense terms are required"),
+          consultingTerm: z.string().min(1, "Term duration is required"),
+          consultingTermination: z.string().min(1, "Termination terms are required"),
+          consultingConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          consultingNonCompete: z.string().min(1, "Non-compete terms are required"),
+          consultingIntellectualProperty: z.string().min(1, "IP terms are required"),
+          consultingIndependentStatus: z.string().min(1, "Independent contractor status is required"),
+          consultingProfessionalStandards: z.string().min(1, "Professional standards are required"),
+          consultingLiability: z.string().min(1, "Liability terms are required"),
+          consultingInsurance: z.string().min(1, "Insurance requirements are required"),
+          consultingGoverningLaw: z.string().min(1, "Governing law is required"),
+          consultingDispute: z.string().min(1, "Dispute resolution terms are required"),
+        });
+
       case "distribution":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -1155,6 +1212,37 @@ export default function DocumentCreator() {
         salesNoticesPeriod: "",
       } as const;
     }
+    if (params.type === "consulting") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        consultingConsultantName: "",
+        consultingConsultantAddress: "",
+        consultingConsultantExpertise: "",
+        consultingClientName: "",
+        consultingClientAddress: "",
+        consultingServicesScope: "",
+        consultingObjectives: "",
+        consultingDeliverables: "",
+        consultingTimeline: "",
+        consultingMilestones: "",
+        consultingReportingStructure: "",
+        consultingCompensation: "",
+        consultingPaymentTerms: "",
+        consultingExpenses: "",
+        consultingTerm: "",
+        consultingTermination: "",
+        consultingConfidentiality: "",
+        consultingNonCompete: "",
+        consultingIntellectualProperty: "",
+        consultingIndependentStatus: "",
+        consultingProfessionalStandards: "",
+        consultingLiability: "",
+        consultingInsurance: "",
+        consultingGoverningLaw: "",
+        consultingDispute: "",
+      } as const;
+    }
+
     if (params.type === "distribution") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -1611,6 +1699,8 @@ export default function DocumentCreator() {
         return "Employment Agreement";
       case "distribution":
         return "Distribution Agreement";
+      case "consulting":
+        return "Consulting Agreement";
       case "service":
         return "Service Agreement";
       case "freelancer":
@@ -1636,6 +1726,387 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "consulting":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Consultant Information</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingConsultantName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Consultant Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full legal name of consultant" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingConsultantAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Consultant Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of consultant" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingConsultantExpertise"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Professional Expertise</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Areas of expertise and qualifications" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Client Information</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingClientAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Services and Objectives</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingServicesScope"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Scope of Services</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of consulting services" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingObjectives"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Objectives</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Key objectives and goals" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingDeliverables"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Deliverables</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specific deliverables and outcomes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Project Timeline</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Timeline</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Overall project timeline" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingMilestones"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Milestones</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Key milestones and deadlines" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingReportingStructure"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reporting Structure</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Reporting requirements and frequency" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Compensation</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingCompensation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compensation Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Compensation structure and rates" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingPaymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment schedule and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingExpenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expense Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Expense reimbursement policy" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Term and Termination</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingTerm"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Term Duration</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Duration of the agreement" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Conditions for contract termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Professional Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingNonCompete"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Compete Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Non-compete restrictions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingIndependentStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Independent Contractor Status</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Independent contractor relationship terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingProfessionalStandards"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Professional Standards</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required professional standards and conduct" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="consultingLiability"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liability Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Liability limitations and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingInsurance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Insurance Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required insurance coverage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="consultingDispute"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Dispute resolution process" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+
       case "freelancer":
         return (
           <>
