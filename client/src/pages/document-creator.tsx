@@ -145,27 +145,30 @@ type FormFields = {
   freelancerDispute?: string;
 
   // Marketing Agreement Fields
-  marketingServiceProvider?: string;
-  marketingServiceProviderAddress?: string;
+  marketingDateOfAgreement?: string;
   marketingClientName?: string;
   marketingClientAddress?: string;
+  marketingAgencyName?: string;
+  marketingAgencyAddress?: string;
   marketingServicesScope?: string;
-  marketingCampaignObjectives?: string;
-  marketingTargetAudience?: string;
-  marketingChannels?: string;
+  marketingStartDate?: string;
+  marketingEndDate?: string;
+  marketingTotalAmount?: string;
+  marketingPaymentSchedule?: string;
+  marketingAdditionalCosts?: string;
+  marketingTaxes?: string;
   marketingDeliverables?: string;
-  marketingTimeline?: string;
-  marketingKPIs?: string;
-  marketingReportingFrequency?: string;
-  marketingBudget?: string;
-  marketingPaymentTerms?: string;
-  marketingIntellectualProperty?: string;
-  marketingContentRights?: string;
-  marketingConfidentiality?: string;
-  marketingTermination?: string;
-  marketingIndemnification?: string;
-  marketingGoverningLaw?: string;
-  marketingDispute?: string;
+  marketingAgencyResponsibilities?: string;
+  marketingClientResponsibilities?: string;
+  marketingIpOwnership?: string;
+  marketingAgencyUsageRights?: string;
+  marketingPerformanceMetrics?: string;
+  marketingTerminationNoticeDays?: string;
+  marketingTerminationNonPaymentDays?: string;
+  marketingTerminationImmediate?: string;
+  marketingArbitrationVenue?: string;
+  marketingClientSignatory?: string;
+  marketingAgencySignatory?: string;
 
   // DPA Fields
   controllerName?: string;
@@ -398,27 +401,29 @@ const getFormSchema = (type: string) => {
     case "marketing":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
-        marketingServiceProvider: z.string().min(1, "Service provider name is required"),
-        marketingServiceProviderAddress: z.string().min(1, "Service provider address is required"),
-        marketingClientName: z.string().min(1, "Client name is required"),
-        marketingClientAddress: z.string().min(1, "Client address is required"),
-        marketingServicesScope: z.string().min(1, "Services scope is required"),
-        marketingCampaignObjectives: z.string().min(1, "Campaign objectives are required"),
-        marketingTargetAudience: z.string().min(1, "Target audience is required"),
-        marketingChannels: z.string().min(1, "Marketing channels are required"),
+        marketingClientName: z.string().min(1, "Client's name is required"),
+        marketingClientAddress: z.string().min(1, "Client's address is required"),
+        marketingAgencyName: z.string().min(1, "Agency's name is required"),
+        marketingAgencyAddress: z.string().min(1, "Agency's address is required"),
+        marketingServicesScope: z.string().min(1, "Scope of services is required"),
+        marketingStartDate: z.string().min(1, "Start date is required"),
+        marketingEndDate: z.string().min(1, "End date is required"),
+        marketingTotalAmount: z.string().min(1, "Total amount is required"),
+        marketingPaymentSchedule: z.string().min(1, "Payment schedule is required"),
+        marketingAdditionalCosts: z.string().min(1, "Additional costs information is required"),
+        marketingTaxes: z.string().min(1, "Tax information is required"),
         marketingDeliverables: z.string().min(1, "Deliverables are required"),
-        marketingTimeline: z.string().min(1, "Timeline is required"),
-        marketingKPIs: z.string().min(1, "KPIs are required"),
-        marketingReportingFrequency: z.string().min(1, "Reporting frequency is required"),
-        marketingBudget: z.string().min(1, "Budget is required"),
-        marketingPaymentTerms: z.string().min(1, "Payment terms are required"),
-        marketingIntellectualProperty: z.string().min(1, "IP terms are required"),
-        marketingContentRights: z.string().min(1, "Content rights are required"),
-        marketingConfidentiality: z.string().min(1, "Confidentiality terms are required"),
-        marketingTermination: z.string().min(1, "Termination terms are required"),
-        marketingIndemnification: z.string().min(1, "Indemnification terms are required"),
-        marketingGoverningLaw: z.string().min(1, "Governing law is required"),
-        marketingDispute: z.string().min(1, "Dispute resolution terms are required"),
+        marketingAgencyResponsibilities: z.string().min(1, "Agency responsibilities are required"),
+        marketingClientResponsibilities: z.string().min(1, "Client responsibilities are required"),
+        marketingIpOwnership: z.string().min(1, "IP ownership terms are required"),
+        marketingAgencyUsageRights: z.string().min(1, "Agency usage rights are required"),
+        marketingPerformanceMetrics: z.string().min(1, "Performance metrics are required"),
+        marketingTerminationNoticeDays: z.string().min(1, "Termination notice period is required"),
+        marketingTerminationNonPaymentDays: z.string().min(1, "Non-payment termination period is required"),
+        marketingTerminationImmediate: z.string().min(1, "Immediate termination terms are required"),
+        marketingArbitrationVenue: z.string().min(1, "Arbitration venue is required"),
+        marketingClientSignatory: z.string().min(1, "Client's signatory details are required"),
+        marketingAgencySignatory: z.string().min(1, "Agency's signatory details are required"),
       });
     case "dpa":
       return z.object({
