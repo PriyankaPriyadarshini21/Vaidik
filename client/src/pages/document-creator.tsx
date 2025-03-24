@@ -28,6 +28,32 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Freelancer Agreement Fields
+  freelancerName?: string;
+  freelancerAddress?: string;
+  freelancerContactInfo?: string;
+  freelancerExpertise?: string;
+  freelancerClientName?: string;
+  freelancerClientAddress?: string;
+  freelancerProjectScope?: string;
+  freelancerDeliverables?: string;
+  freelancerTimeline?: string;
+  freelancerMilestones?: string;
+  freelancerPaymentRate?: string;
+  freelancerPaymentTerms?: string;
+  freelancerExpenses?: string;
+  freelancerEquipment?: string;
+  freelancerWorkHours?: string;
+  freelancerLocation?: string;
+  freelancerIntellectualProperty?: string;
+  freelancerConfidentiality?: string;
+  freelancerNonCompete?: string;
+  freelancerIndependentStatus?: string;
+  freelancerTermination?: string;
+  freelancerModification?: string;
+  freelancerGoverningLaw?: string;
+  freelancerDispute?: string;
+
   // Marketing Agreement Fields
   marketingServiceProvider?: string;
   marketingServiceProviderAddress?: string;
@@ -525,6 +551,35 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "freelancer":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          freelancerName: z.string().min(1, "Freelancer name is required"),
+          freelancerAddress: z.string().min(1, "Freelancer address is required"),
+          freelancerContactInfo: z.string().min(1, "Contact information is required"),
+          freelancerExpertise: z.string().min(1, "Expertise details are required"),
+          freelancerClientName: z.string().min(1, "Client name is required"),
+          freelancerClientAddress: z.string().min(1, "Client address is required"),
+          freelancerProjectScope: z.string().min(1, "Project scope is required"),
+          freelancerDeliverables: z.string().min(1, "Deliverables are required"),
+          freelancerTimeline: z.string().min(1, "Timeline is required"),
+          freelancerMilestones: z.string().min(1, "Milestones are required"),
+          freelancerPaymentRate: z.string().min(1, "Payment rate is required"),
+          freelancerPaymentTerms: z.string().min(1, "Payment terms are required"),
+          freelancerExpenses: z.string().min(1, "Expense terms are required"),
+          freelancerEquipment: z.string().min(1, "Equipment details are required"),
+          freelancerWorkHours: z.string().min(1, "Work hours are required"),
+          freelancerLocation: z.string().min(1, "Work location is required"),
+          freelancerIntellectualProperty: z.string().min(1, "IP terms are required"),
+          freelancerConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          freelancerNonCompete: z.string().min(1, "Non-compete terms are required"), 
+          freelancerIndependentStatus: z.string().min(1, "Independent contractor status is required"),
+          freelancerTermination: z.string().min(1, "Termination terms are required"),
+          freelancerModification: z.string().min(1, "Modification terms are required"),
+          freelancerGoverningLaw: z.string().min(1, "Governing law is required"),
+          freelancerDispute: z.string().min(1, "Dispute resolution terms are required"),
+        });
+
       case "dpa":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -958,6 +1013,36 @@ export default function DocumentCreator() {
         disputeResolutionProcess: "",
         governingLawJurisdiction: "",
         amendmentTerms: "",
+      } as const;
+    }
+
+    if (params.type === "freelancer") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        freelancerName: "",
+        freelancerAddress: "",
+        freelancerContactInfo: "",
+        freelancerExpertise: "",
+        freelancerClientName: "",
+        freelancerClientAddress: "",
+        freelancerProjectScope: "",
+        freelancerDeliverables: "",
+        freelancerTimeline: "",
+        freelancerMilestones: "",
+        freelancerPaymentRate: "",
+        freelancerPaymentTerms: "",
+        freelancerExpenses: "",
+        freelancerEquipment: "",
+        freelancerWorkHours: "",
+        freelancerLocation: "",
+        freelancerIntellectualProperty: "",
+        freelancerConfidentiality: "",
+        freelancerNonCompete: "",
+        freelancerIndependentStatus: "",
+        freelancerTermination: "",
+        freelancerModification: "",
+        freelancerGoverningLaw: "",
+        freelancerDispute: "",
       } as const;
     }
 
@@ -1551,6 +1636,366 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "freelancer":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Freelancer Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Freelancer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full legal name of freelancer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Freelancer Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of freelancer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerContactInfo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Information</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Phone, email, and other contact details" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerExpertise"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Professional Expertise</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Relevant skills and expertise" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Client Information</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerClientAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Project Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerProjectScope"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Scope</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of project scope" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerDeliverables"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Deliverables</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specific deliverables and outcomes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Timeline</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Overall project timeline" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerMilestones"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Milestones</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Key milestones and deadlines" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Payment Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerPaymentRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Hourly rate or project fee" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerPaymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment schedule and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerExpenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expense Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Expense reimbursement policy" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Work Arrangements</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerEquipment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Equipment and Resources</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Required equipment and resources" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerWorkHours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Hours</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Expected working hours" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Remote or on-site location" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="freelancerIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerNonCompete"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Compete Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Non-compete restrictions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerIndependentStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Independent Contractor Status</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Independent contractor relationship terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Conditions for contract termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerModification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Modification Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for contract modifications" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="freelancerDispute"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Dispute resolution process" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+
       case "dpa":
         return (
           <>
