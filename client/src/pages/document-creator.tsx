@@ -13,6 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent, 
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -230,31 +237,25 @@ type FormFields = {
   serviceDisputeResolution?: string;
 
   // Software License Agreement Fields
-  softwareLicenseCompanyName?: string;
-  softwareLicenseCompanyAddress?: string;
-  softwareLicenseLicensorName?: string;
-  softwareLicenseLicensorAddress?: string;
-  softwareLicenseSoftwareName?: string;
-  softwareLicenseDescription?: string;
+  softwareLicensorName?: string;
+  softwareLicensorAddress?: string;
+  softwareLicenseeName?: string;
+  softwareLicenseeAddress?: string;
   softwareLicenseType?: string;
-  softwareLicenseScope?: string;
-  softwareLicenseRestrictions?: string;
-  softwareLicenseFees?: string;
-  softwareLicensePaymentTerms?: string;
-  softwareLicenseStartDate?: string;
-  softwareLicenseEndDate?: string;
-  softwareLicenseTerritory?: string;
-  softwareLicenseUsageRights?: string;
-  softwareLicenseModificationRights?: string;
-  softwareLicenseDistributionRights?: string;
-  softwareLicenseWarranty?: string;
-  softwareLicenseSupport?: string;
-  softwareLicenseTermination?: string;
-  softwareLicenseIpRights?: string;
-  softwareLicenseConfidentiality?: string;
-  softwareLicenseIndemnification?: string;
-  softwareLicenseGoverningLaw?: string;
-  softwareLicenseDispute?: string;
+  softwareName?: string;
+  softwarePurpose?: string;
+  softwareLicenseFee?: string;
+  softwareInitialPayment?: string;
+  softwarePaymentSchedule?: string;
+  softwareDeliveryTimeline?: string;
+  softwareInstallationAssistance?: string;
+  softwareStandardSupport?: string;
+  softwareSupportDuration?: string;
+  softwareAdditionalSupportCharges?: string;
+  softwareWarrantyPeriod?: string;
+  softwareAgreementDuration?: string;
+  softwareTerminationPeriod?: string;
+  softwareArbitrationCity?: string;
 
   // Software Development Agreement Fields
   softwareDevCompanyName?: string;
@@ -492,31 +493,25 @@ const getFormSchema = (type: string) => {
     case "software-license":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
-        softwareLicenseCompanyName: z.string().min(1, "Company name is required"),
-        softwareLicenseCompanyAddress: z.string().min(1, "Company address is required"),
-        softwareLicenseLicensorName: z.string().min(1, "Licensor name is required"),
-        softwareLicenseLicensorAddress: z.string().min(1, "Licensor address is required"),
-        softwareLicenseSoftwareName: z.string().min(1, "Software name is required"),
-        softwareLicenseDescription: z.string().min(1, "Software description is required"),
+        softwareLicensorName: z.string().min(1, "Licensor's name is required"),
+        softwareLicensorAddress: z.string().min(1, "Licensor's address is required"),
+        softwareLicenseeName: z.string().min(1, "Licensee's name is required"),
+        softwareLicenseeAddress: z.string().min(1, "Licensee's address is required"),
         softwareLicenseType: z.string().min(1, "License type is required"),
-        softwareLicenseScope: z.string().min(1, "License scope is required"),
-        softwareLicenseRestrictions: z.string().min(1, "License restrictions are required"),
-        softwareLicenseFees: z.string().min(1, "License fees are required"),
-        softwareLicensePaymentTerms: z.string().min(1, "Payment terms are required"),
-        softwareLicenseStartDate: z.string().min(1, "Start date is required"),
-        softwareLicenseEndDate: z.string().min(1, "End date is required"),
-        softwareLicenseTerritory: z.string().min(1, "Territory is required"),
-        softwareLicenseUsageRights: z.string().min(1, "Usage rights are required"),
-        softwareLicenseModificationRights: z.string().min(1, "Modification rights are required"),
-        softwareLicenseDistributionRights: z.string().min(1, "Distribution rights are required"),
-        softwareLicenseWarranty: z.string().min(1, "Warranty terms are required"),
-        softwareLicenseSupport: z.string().min(1, "Support terms are required"),
-        softwareLicenseTermination: z.string().min(1, "Termination terms are required"),
-        softwareLicenseIpRights: z.string().min(1, "IP rights are required"),
-        softwareLicenseConfidentiality: z.string().min(1, "Confidentiality terms are required"),
-        softwareLicenseIndemnification: z.string().min(1, "Indemnification terms are required"),
-        softwareLicenseGoverningLaw: z.string().min(1, "Governing law is required"),
-        softwareLicenseDispute: z.string().min(1, "Dispute resolution terms are required"),
+        softwareName: z.string().min(1, "Software name is required"),
+        softwarePurpose: z.string().min(1, "Purpose of software use is required"),
+        softwareLicenseFee: z.string().min(1, "License fee is required"),
+        softwareInitialPayment: z.string().min(1, "Initial payment amount is required"),
+        softwarePaymentSchedule: z.string(),
+        softwareDeliveryTimeline: z.string().min(1, "Delivery timeline is required"),
+        softwareInstallationAssistance: z.string().min(1, "Installation assistance details are required"),
+        softwareStandardSupport: z.string().min(1, "Standard support details are required"),
+        softwareSupportDuration: z.string().min(1, "Support duration is required"),
+        softwareAdditionalSupportCharges: z.string(),
+        softwareWarrantyPeriod: z.string().min(1, "Warranty period is required"),
+        softwareAgreementDuration: z.string().min(1, "Agreement duration is required"),
+        softwareTerminationPeriod: z.string().min(1, "Termination notice period is required"),
+        softwareArbitrationCity: z.string().min(1, "Arbitration city is required"),
       });
     case "commission":
       return z.object({
@@ -2829,16 +2824,16 @@ const renderFormFields = (type: string, form: any): ReactNode => {
         <div className="space-y-8">
           {commonDateField}
           <div className="grid gap-6">
-            <h3 className="text-lg font-semibold">Company Information</h3>
+            <h3 className="text-lg font-semibold">Licensor & Licensee Information</h3>
             <div className="grid gap-4">
               <FormField
                 control={form.control}
-                name="softwareLicenseCompanyName"
+                name="softwareLicensorName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company Name</FormLabel>
+                    <FormLabel>Licensor's Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full legal name of company" {...field} />
+                      <Input placeholder="Full Name or Company Name of the Licensor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2846,12 +2841,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseCompanyAddress"
+                name="softwareLicensorAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company Address</FormLabel>
+                    <FormLabel>Licensor's Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Complete address of company" {...field} />
+                      <Textarea placeholder="Address of the Licensor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2859,12 +2854,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseLicensorName"
+                name="softwareLicenseeName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Licensor Name</FormLabel>
+                    <FormLabel>Licensee's Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full legal name of licensor" {...field} />
+                      <Input placeholder="Full Name or Company Name of the Licensee" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2872,54 +2867,29 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseLicensorAddress"
+                name="softwareLicenseeAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Licensor Address</FormLabel>
+                    <FormLabel>Licensee's Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Complete address of licensor" {...field} />
+                      <Textarea placeholder="Address of the Licensee" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <h3 className="text-lg font-semibold">Software License Details</h3>
+
+            <h3 className="text-lg font-semibold">License Details</h3>
             <div className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="softwareLicenseSoftwareName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Software Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Name of the software" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="softwareLicenseDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Software Description</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Description of the software" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="softwareLicenseType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License Type</FormLabel>
+                    <FormLabel>Type of License</FormLabel>
                     <FormControl>
-                      <Input placeholder="Type of license" {...field} />
+                      <Input placeholder="Specify Non-Exclusive or Exclusive" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2927,12 +2897,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseScope"
+                name="softwareName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License Scope</FormLabel>
+                    <FormLabel>Software Name</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Scope of the license" {...field} />
+                      <Input placeholder="Name of the Software" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2940,12 +2910,29 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseRestrictions"
+                name="softwarePurpose"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License Restrictions</FormLabel>
+                    <FormLabel>Purpose of Software Use</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Restrictions on license usage" {...field} />
+                      <Textarea placeholder="Specific purpose or industry for permitted use" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Payment Terms</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareLicenseFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>License Fee Amount</FormLabel>
+                    <FormControl>
+                      <Input placeholder="₹Amount" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2953,12 +2940,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseFees"
+                name="softwareInitialPayment"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License Fees</FormLabel>
+                    <FormLabel>Initial Payment Amount</FormLabel>
                     <FormControl>
-                      <Input placeholder="License fees" {...field} />
+                      <Input placeholder="₹Amount" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2966,12 +2953,29 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicensePaymentTerms"
+                name="softwarePaymentSchedule"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Payment Terms</FormLabel>
+                    <FormLabel>Subsequent Payment Schedule</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Payment schedule and terms" {...field} />
+                      <Textarea placeholder="Specify payment schedule details (if any)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Support & Warranty</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareDeliveryTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Timeline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of Days" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2979,12 +2983,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseStartDate"
+                name="softwareInstallationAssistance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License Start Date</FormLabel>
+                    <FormLabel>Installation Assistance</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input placeholder="Yes/No, and any conditions" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -2992,12 +2996,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseEndDate"
+                name="softwareStandardSupport"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>License End Date</FormLabel>
+                    <FormLabel>Standard Support</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Textarea placeholder="Details, e.g., email, phone, or online" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3005,12 +3009,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseTerritory"
+                name="softwareSupportDuration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Territory</FormLabel>
+                    <FormLabel>Support Duration</FormLabel>
                     <FormControl>
-                      <Input placeholder="Geographic territory" {...field} />
+                      <Input placeholder="Duration, e.g., one year" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3018,12 +3022,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseUsageRights"
+                name="softwareAdditionalSupportCharges"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Usage Rights</FormLabel>
+                    <FormLabel>Additional Support Charges</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Rights to use the software" {...field} />
+                      <Textarea placeholder="Details of additional fees, if applicable" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3031,12 +3035,29 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseModificationRights"
+                name="softwareWarrantyPeriod"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Modification Rights</FormLabel>
+                    <FormLabel>Warranty Period</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Rights to modify the software" {...field} />
+                      <Input placeholder="Number of Days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Agreement Terms</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareAgreementDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration of Agreement</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify duration, e.g., one year" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3044,12 +3065,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseDistributionRights"
+                name="softwareTerminationPeriod"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Distribution Rights</FormLabel>
+                    <FormLabel>Termination Notice Period</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Rights to distribute the software" {...field} />
+                      <Input placeholder="Number of Days" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3057,12 +3078,36 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseWarranty"
+                name="softwareArbitrationCity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Warranty</FormLabel>
+                    <FormLabel>City for Arbitration Venue</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Warranty terms" {...field} />
+                      <Input placeholder="City Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    case "software-license":
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Licensor & Licensee Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareLicensorName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Licensor's Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full Name or Company Name of the Licensor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3070,12 +3115,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseSupport"
+                name="softwareLicensorAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Support</FormLabel>
+                    <FormLabel>Licensor's Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Support terms" {...field} />
+                      <Textarea placeholder="Address of the Licensor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3083,12 +3128,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseTermination"
+                name="softwareLicenseeName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Termination</FormLabel>
+                    <FormLabel>Licensee's Name</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Termination clause" {...field} />
+                      <Input placeholder="Full Name or Company Name of the Licensee" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3096,12 +3141,40 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseIpRights"
+                name="softwareLicenseeAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>IP Rights</FormLabel>
+                    <FormLabel>Licensee's Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Intellectual property rights" {...field} />
+                      <Textarea placeholder="Address of the Licensee" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">License Details</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareLicenseType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type of License</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select license type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="non-exclusive">Non-Exclusive</SelectItem>
+                          <SelectItem value="exclusive">Exclusive</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3109,12 +3182,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseConfidentiality"
+                name="softwareName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confidentiality</FormLabel>
+                    <FormLabel>Software Name</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Confidentiality agreement" {...field} />
+                      <Input placeholder="Name of the Software" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3122,12 +3195,29 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseIndemnification"
+                name="softwarePurpose"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Indemnification</FormLabel>
+                    <FormLabel>Purpose of Software Use</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Indemnification clause" {...field} />
+                      <Textarea placeholder="Specific purpose or industry for permitted use" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Payment Terms</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareLicenseFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>License Fee Amount</FormLabel>
+                    <FormControl>
+                      <Input placeholder="₹Amount" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3135,12 +3225,12 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseGoverningLaw"
+                name="softwareInitialPayment"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Governing Law</FormLabel>
+                    <FormLabel>Initial Payment Amount</FormLabel>
                     <FormControl>
-                      <Input placeholder="Governing law" {...field} />
+                      <Input placeholder="₹Amount" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -3148,12 +3238,148 @@ const renderFormFields = (type: string, form: any): ReactNode => {
               />
               <FormField
                 control={form.control}
-                name="softwareLicenseDispute"
+                name="softwarePaymentSchedule"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dispute Resolution</FormLabel>
+                    <FormLabel>Subsequent Payment Schedule</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Dispute resolution clause" {...field} />
+                      <Textarea placeholder="Specify payment schedule details (if any)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Support & Installation</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareDeliveryTimeline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Timeline</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of Days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareInstallationAssistance"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Installation Assistance</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select option" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareStandardSupport"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Standard Support Provided</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Details, e.g., email, phone, or online" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareSupportDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Support Duration</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Duration, e.g., one year" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareAdditionalSupportCharges"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Support Charges</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Details of additional fees, if applicable" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Agreement Terms</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="softwareWarrantyPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Warranty Period</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of Days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareAgreementDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration of Agreement</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Specify duration, e.g., one year" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareTerminationPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination Notice Period</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of Days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="softwareArbitrationCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City for Arbitration Venue</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
