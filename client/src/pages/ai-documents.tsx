@@ -21,10 +21,10 @@ const documentTypes: DocumentType[] = [
   // Service Agreements
   { id: 'service', name: 'Service Agreement', icon: FileCheck, category: 'Services' },
   { id: 'software-development', name: 'Software Development Agreement', icon: Code, category: 'Services' },
-  { id: 'software-licensing', name: 'Software Licensing Agreement', icon: Code, category: 'Services' },
-  { id: 'marketing', name: 'Marketing/Advertising Agreement', icon: FileText, category: 'Services' },
+  { id: 'software-license', name: 'Software License Agreement', icon: Code, category: 'Services' },
+  { id: 'marketing', name: 'Marketing Agreement', icon: FileText, category: 'Services' },
   { id: 'vendor', name: 'Vendor Agreement', icon: FileText, category: 'Services' },
-  { id: 'dpa', name: 'Data Processing Agreement (DPA)', icon: Shield, category: 'Services' },
+  { id: 'dpa', name: 'Data Processing Agreement', icon: Shield, category: 'Services' },
 
   // Business & Commercial
   { id: 'sales', name: 'Sales Agreement', icon: Briefcase, category: 'Business' },
