@@ -28,6 +28,28 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Service Agreement Fields
+  serviceProviderName?: string;
+  serviceProviderAddress?: string;
+  serviceClientName?: string;
+  serviceClientAddress?: string;
+  serviceDescription?: string;
+  serviceDuration?: string;
+  serviceStartDate?: string;
+  serviceEndDate?: string;
+  serviceFees?: string;
+  servicePaymentTerms?: string;
+  serviceDeliverables?: string;
+  serviceTimeline?: string;
+  servicePerformanceMetrics?: string;
+  serviceTermination?: string;
+  serviceConfidentiality?: string;
+  serviceIntellectualProperty?: string;
+  serviceIndemnification?: string;
+  serviceLimitation?: string;
+  serviceGoverningLaw?: string;
+  serviceDisputeResolution?: string;
+
   // Employment Agreement Fields
   employmentCompanyName?: string;
   employmentCompanyAddress?: string;
@@ -334,6 +356,30 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "service":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          serviceProviderName: z.string().min(1, "Service provider name is required"),
+          serviceProviderAddress: z.string().min(1, "Service provider address is required"),
+          serviceClientName: z.string().min(1, "Client name is required"),
+          serviceClientAddress: z.string().min(1, "Client address is required"), 
+          serviceDescription: z.string().min(1, "Service description is required"),
+          serviceDuration: z.string().min(1, "Duration is required"),
+          serviceStartDate: z.string().min(1, "Start date is required"),
+          serviceEndDate: z.string().min(1, "End date is required"),
+          serviceFees: z.string().min(1, "Fees are required"),
+          servicePaymentTerms: z.string().min(1, "Payment terms are required"),
+          serviceDeliverables: z.string().min(1, "Deliverables are required"),
+          serviceTimeline: z.string().min(1, "Timeline is required"),
+          servicePerformanceMetrics: z.string().min(1, "Performance metrics are required"),
+          serviceTermination: z.string().min(1, "Termination terms are required"),
+          serviceConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          serviceIntellectualProperty: z.string().min(1, "IP terms are required"),
+          serviceIndemnification: z.string().min(1, "Indemnification terms are required"),
+          serviceLimitation: z.string().min(1, "Limitation of liability is required"),
+          serviceGoverningLaw: z.string().min(1, "Governing law is required"),
+          serviceDisputeResolution: z.string().min(1, "Dispute resolution terms are required"),
+        });
       case "employment":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -530,7 +576,31 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "employment") {
+    if (params.type === "service") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        serviceProviderName: "",
+        serviceProviderAddress: "",
+        serviceClientName: "",
+        serviceClientAddress: "",
+        serviceDescription: "",
+        serviceDuration: "",
+        serviceStartDate: format(new Date(), "yyyy-MM-dd"),
+        serviceEndDate: format(new Date(), "yyyy-MM-dd"),
+        serviceFees: "",
+        servicePaymentTerms: "",
+        serviceDeliverables: "",
+        serviceTimeline: "",
+        servicePerformanceMetrics: "",
+        serviceTermination: "",
+        serviceConfidentiality: "",
+        serviceIntellectualProperty: "",
+        serviceIndemnification: "",
+        serviceLimitation: "",
+        serviceGoverningLaw: "",
+        serviceDisputeResolution: "",
+      } as const;
+    } else if (params.type === "employment") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         employmentCompanyName: "",
@@ -955,6 +1025,310 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "service":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="serviceProviderName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Provider Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of service provider" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceProviderAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Provider Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of service provider" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceClientAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Service Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="serviceDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of services to be provided" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="serviceDuration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Duration</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., 12 months" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="serviceStartDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Start Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="serviceEndDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>End Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Payment Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="serviceFees"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Fees</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed fee structure and amounts" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="servicePaymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment schedule, method, and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Deliverables and Timeline</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="serviceDeliverables"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Deliverables</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="List of specific deliverables" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timeline</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Delivery schedule and milestones" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="servicePerformanceMetrics"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Performance Metrics</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Key performance indicators and standards" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="serviceTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Conditions and process for termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations and restrictions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceIndemnification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Indemnification</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Indemnification terms and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceLimitation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Limitation of Liability</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Liability limitations and exclusions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceDisputeResolution"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Process for resolving disputes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "employment":
         return (
           <>
