@@ -59,6 +59,29 @@ type FormFields = {
   investorRepName?: string;
   investorRepTitle?: string;
 
+  // Loan Agreement Fields
+  lenderName?: string;
+  lenderAddress?: string;
+  borrowerName?: string;
+  borrowerAddress?: string;
+  loanAmountFigures?: string;
+  loanAmountWords?: string;
+  loanPurpose?: string;
+  loanStartDate?: string;
+  loanEndDate?: string;
+  interestRate?: string;
+  interestBasis?: "simple" | "compound";
+  interestPaymentDates?: string;
+  numberOfInstallments?: string;
+  installmentAmount?: string;
+  firstInstallmentDate?: string;
+  lenderBankDetails?: string;
+  prepaymentOption?: "yes" | "no";
+  jurisdiction?: string;
+  noticesAddress?: string;
+  lenderRepNameTitle?: string;
+  borrowerRepNameTitle?: string;
+
   // Preferred Stock Agreement Fields
   companyName?: string;
   companyLocation?: string;
@@ -146,20 +169,33 @@ type FormFields = {
   terminationClause?: string;
   disputeResolutionCity?: string;
 
-  // Promissory Note / Loan Agreement Fields
+  // Loan Agreement Fields
   loanAmount?: string;
-  borrowerName?: string;
-  borrowerAddress?: string;
+  loanAmountFigures?: string;
+  loanAmountWords?: string;
+  loanPurpose?: string;
+  loanStartDate?: string;
+  loanEndDate?: string;
   lenderName?: string;
   lenderAddress?: string;
+  lenderBankDetails?: string;
+  lenderRepNameTitle?: string;
+  borrowerName?: string;
+  borrowerAddress?: string;
+  borrowerRepNameTitle?: string;
   interestRate?: string;
+  interestBasis?: "simple" | "compound";
+  interestPaymentDates?: string;
   repaymentDate?: string;
   numberOfInstallments?: string;
   installmentAmount?: string;
-  firstPaymentDate?: string;
+  firstInstallmentDate?: string;
   paymentSchedule?: string;
   paymentMethod?: string;
   paymentDetails?: string;
+  prepaymentOption?: "yes" | "no";
+  jurisdiction?: string;
+  noticesAddress?: string;
   loanJurisdiction?: string;
 };
 
@@ -170,6 +206,38 @@ interface RouteParams {
 export default function DocumentCreator() {
   const params = useParams<RouteParams>();
   const { toast } = useToast();
+  const getFormSchema = (type: string) => {
+    switch (type) {
+      case "loan":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          lenderName: z.string().min(1, "Lender name is required"),
+          lenderAddress: z.string().min(1, "Lender address is required"),
+          borrowerName: z.string().min(1, "Borrower name is required"),
+          borrowerAddress: z.string().min(1, "Borrower address is required"),
+          loanAmountFigures: z.string().min(1, "Loan amount in figures is required"),
+          loanAmountWords: z.string().min(1, "Loan amount in words is required"),
+          loanPurpose: z.string().min(1, "Loan purpose is required"),
+          loanStartDate: z.string().min(1, "Start date is required"),
+          loanEndDate: z.string().min(1, "End date is required"),
+          interestRate: z.string().min(1, "Interest rate is required"),
+          interestBasis: z.enum(["simple", "compound"]),
+          interestPaymentDates: z.string().min(1, "Interest payment dates are required"),
+          numberOfInstallments: z.string().min(1, "Number of installments is required"),
+          installmentAmount: z.string().min(1, "Installment amount is required"),
+          firstInstallmentDate: z.string().min(1, "First installment date is required"),
+          lenderBankDetails: z.string().min(1, "Bank details are required"),
+          prepaymentOption: z.enum(["yes", "no"]),
+          jurisdiction: z.string().min(1, "Jurisdiction is required"),
+          noticesAddress: z.string().min(1, "Notices address is required"),
+          lenderRepNameTitle: z.string().min(1, "Lender representative details are required"),
+          borrowerRepNameTitle: z.string().min(1, "Borrower representative details are required"),
+        });
+      default:
+        return z.object({});
+    }
+  };
+  
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
@@ -317,11 +385,44 @@ export default function DocumentCreator() {
         repaymentDate: format(new Date(), "yyyy-MM-dd"),
         numberOfInstallments: "",
         installmentAmount: "",
-        firstPaymentDate: format(new Date(), "yyyy-MM-dd"),
+        firstInstallmentDate: format(new Date(), "yyyy-MM-dd"),
         paymentSchedule: "",
         paymentMethod: "",
         paymentDetails: "",
         loanJurisdiction: "",
+        jurisdiction: "",
+        interestBasis: "simple",
+        interestPaymentDates: "",
+        lenderBankDetails: "",
+        prepaymentOption: "no",
+        noticesAddress: "",
+        lenderRepNameTitle: "",
+        borrowerRepNameTitle: "",
+      } as const;
+    } else if (params.type === "loan") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        lenderName: "",
+        lenderAddress: "",
+        borrowerName: "",
+        borrowerAddress: "",
+        loanAmountFigures: "",
+        loanAmountWords: "",
+        loanPurpose: "",
+        loanStartDate: format(new Date(), "yyyy-MM-dd"),
+        loanEndDate: format(new Date(), "yyyy-MM-dd"),
+        interestRate: "",
+        interestBasis: "simple",
+        interestPaymentDates: "",
+        numberOfInstallments: "",
+        installmentAmount: "",
+        firstInstallmentDate: format(new Date(), "yyyy-MM-dd"),
+        lenderBankDetails: "",
+        prepaymentOption: "no",
+        jurisdiction: "",
+        noticesAddress: "",
+        lenderRepNameTitle: "",
+        borrowerRepNameTitle: "",
       } as const;
     }
     return {};
@@ -389,6 +490,354 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "loan":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Parties</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="lenderName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lender Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Lender's Full Name/Company Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lenderAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lender Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the Lender" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="borrowerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Borrower Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Borrower's Full Name/Company Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="borrowerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Borrower Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the Borrower" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Loan Details</h3>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="loanAmountFigures"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Loan Amount (Figures)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="₹Amount in Figures" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="loanAmountWords"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Loan Amount (Words)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Amount in Words" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="loanPurpose"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Loan Purpose</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specific purpose, e.g., 'to finance the business operations of the Borrower'" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Loan Term</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="loanStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="loanEndDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Interest Details</h3>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="interestRate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interest Rate</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., 10" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="interestBasis"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interest Basis</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select interest basis" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="simple">Simple</SelectItem>
+                            <SelectItem value="compound">Compound</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="interestPaymentDates"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interest Payment Dates</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Specific dates, e.g., 'the first day of each month'" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Repayment Terms</h3>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="numberOfInstallments"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Installments</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="e.g., 12" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="installmentAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Installment Amount</FormLabel>
+                        <FormControl>
+                          <Input placeholder="₹Amount per installment" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="firstInstallmentDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Installment Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="lenderBankDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lender's Bank Account Details</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Account Details/Address for Payments" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="prepaymentOption"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prepayment Option</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction for Disputes</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City/State in India" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="noticesAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notices and Communication Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Address for each Party" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Signatory Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="lenderRepNameTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lender's Representative Name & Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name/Title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="borrowerRepNameTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Borrower's Representative Name & Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name/Title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "voting-rights":
         return (
           <>
