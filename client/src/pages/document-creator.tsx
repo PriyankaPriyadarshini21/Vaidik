@@ -168,28 +168,41 @@ type FormFields = {
   marketingDispute?: string;
 
   // DPA Fields
-  dpaProcessorName?: string;
-  dpaProcessorAddress?: string;
-  dpaControllerName?: string;
-  dpaControllerAddress?: string;
-  dpaDataTypes?: string;
-  dpaDataSubjects?: string;
-  dpaProcessingPurpose?: string;
-  dpaProcessingDuration?: string;
-  dpaSecurityMeasures?: string;
-  dpaSubProcessors?: string;
-  dpaSubProcessorRequirements?: string;
-  dpaDataBreachNotification?: string;
-  dpaBreachTimeline?: string;
-  dpaDataTransfers?: string;
-  dpaDataProtectionImpact?: string;
-  dpaAudits?: string;
-  dpaConfidentiality?: string;
-  dpaDataDeletion?: string;
-  dpaTermination?: string;
-  dpaGoverningLaw?: string;
-  dpaLiability?: string;
-  dpaComplianceRequirements?: string;
+  controllerName?: string;
+  controllerAddress?: string;
+  controllerContactPerson?: string;
+  controllerEmail?: string;
+  controllerPhone?: string;
+  
+  processorName?: string;
+  processorAddress?: string;
+  processorContactPerson?: string;
+  processorEmail?: string;
+  processorPhone?: string;
+  
+  processingPurpose?: string;
+  processingNature?: string;
+  processingDuration?: string;
+  
+  personalDataCategories?: string;
+  sensitivePDataCategories?: string;
+  otherDataCategories?: string;
+  
+  dataSubjectsCategories?: string;
+  processingInstructions?: string;
+  
+  encryptionStandards?: string;
+  accessControl?: string;
+  dataBackup?: string;
+  additionalSecurityMeasures?: string;
+  
+  retentionPeriod?: string;
+  
+  subProcessorApproval?: string;
+  subProcessorDetails?: string;
+  
+  breachNotificationPeriod?: string;
+  reportingFormat?: string;
 
   // Service Agreement Fields
   serviceProviderName?: string;
@@ -410,28 +423,41 @@ const getFormSchema = (type: string) => {
     case "dpa":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
-        dpaProcessorName: z.string().min(1, "Processor name is required"),
-        dpaProcessorAddress: z.string().min(1, "Processor address is required"),
-        dpaControllerName: z.string().min(1, "Controller name is required"),
-        dpaControllerAddress: z.string().min(1, "Controller address is required"),
-        dpaDataTypes: z.string().min(1, "Data types are required"),
-        dpaDataSubjects: z.string().min(1, "Data subjects are required"),
-        dpaProcessingPurpose: z.string().min(1, "Processing purpose is required"),
-        dpaProcessingDuration: z.string().min(1, "Processing duration is required"),
-        dpaSecurityMeasures: z.string().min(1, "Security measures are required"),
-        dpaSubProcessors: z.string().min(1, "Sub-processor information is required"),
-        dpaSubProcessorRequirements: z.string().min(1, "Sub-processor requirements are required"),
-        dpaDataBreachNotification: z.string().min(1, "Data breach notification procedure is required"),
-        dpaBreachTimeline: z.string().min(1, "Breach notification timeline is required"),
-        dpaDataTransfers: z.string().min(1, "Data transfer details are required"),
-        dpaDataProtectionImpact: z.string().min(1, "Data protection impact is required"),
-        dpaAudits: z.string().min(1, "Audit procedures are required"),
-        dpaConfidentiality: z.string().min(1, "Confidentiality terms are required"),
-        dpaDataDeletion: z.string().min(1, "Data deletion procedures are required"),
-        dpaTermination: z.string().min(1, "Termination terms are required"),
-        dpaGoverningLaw: z.string().min(1, "Governing law is required"),
-        dpaLiability: z.string().min(1, "Liability terms are required"),
-        dpaComplianceRequirements: z.string().min(1, "Compliance requirements are required"),
+        controllerName: z.string().min(1, "Controller name is required"),
+        controllerAddress: z.string().min(1, "Controller address is required"),
+        controllerContactPerson: z.string().min(1, "Controller contact person is required"),
+        controllerEmail: z.string().email("Valid email is required"),
+        controllerPhone: z.string().min(1, "Controller phone number is required"),
+        
+        processorName: z.string().min(1, "Processor name is required"),
+        processorAddress: z.string().min(1, "Processor address is required"),
+        processorContactPerson: z.string().min(1, "Processor contact person is required"),
+        processorEmail: z.string().email("Valid email is required"),
+        processorPhone: z.string().min(1, "Processor phone number is required"),
+        
+        processingPurpose: z.string().min(1, "Processing purpose is required"),
+        processingNature: z.string().min(1, "Nature of processing is required"),
+        processingDuration: z.string().min(1, "Duration of processing is required"),
+        
+        personalDataCategories: z.string().min(1, "Personal data categories are required"),
+        sensitivePDataCategories: z.string(),
+        otherDataCategories: z.string(),
+        
+        dataSubjectsCategories: z.string().min(1, "Data subjects categories are required"),
+        processingInstructions: z.string().min(1, "Processing instructions are required"),
+        
+        encryptionStandards: z.string().min(1, "Encryption standards are required"),
+        accessControl: z.string().min(1, "Access control measures are required"),
+        dataBackup: z.string().min(1, "Data backup measures are required"),
+        additionalSecurityMeasures: z.string(),
+        
+        retentionPeriod: z.string().min(1, "Retention period is required"),
+        
+        subProcessorApproval: z.string().min(1, "Sub-processor approval status is required"),
+        subProcessorDetails: z.string(),
+        
+        breachNotificationPeriod: z.string().min(1, "Breach notification period is required"),
+        reportingFormat: z.string().min(1, "Reporting format is required"),
       });
     case "service":
       return z.object({
