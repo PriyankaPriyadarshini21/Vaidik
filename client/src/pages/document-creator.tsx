@@ -833,7 +833,7 @@ export default function DocumentCreator() {
                     <FormItem>
                       <FormLabel>Issuer Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter name of the company" {...field} />
+                        <Input placeholder="Name of the Company" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -846,7 +846,7 @@ export default function DocumentCreator() {
                     <FormItem>
                       <FormLabel>Investor Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter name of the investor" {...field} />
+                        <Input placeholder="Name of the Investor" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -861,7 +861,7 @@ export default function DocumentCreator() {
                   <FormItem>
                     <FormLabel>Issuer Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Enter issuer's complete address" {...field} />
+                      <Textarea placeholder="Complete address of the Issuer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -875,7 +875,335 @@ export default function DocumentCreator() {
                   <FormItem>
                     <FormLabel>Investor Address</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Enter investor's complete address" {...field} />
+                      <Textarea placeholder="Complete address of the Investor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfInvestmentAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investment Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Amount in INR/USD" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfEquityAllocated"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Equity Allocated</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of Shares or Percentage" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfTotalEquityPercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Equity Percentage</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Percentage of Issuer's Total Equity" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfShareClass"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Class of Shares</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Common Shares or Preferred Shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="ecfUseOfFunds"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Use of Funds</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specific purposes, e.g., product development, marketing, operational expenses" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfPlatformName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Platform Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of the Crowdfunding Platform" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfPlatformFeesResponsibility"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Platform Fees Responsibility</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select responsibility" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="issuer">Issuer</SelectItem>
+                          <SelectItem value="investor">Investor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="ecfVotingRights"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Voting Rights</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify voting rights if applicable" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ecfPeriodicUpdates"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Periodic Updates</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Quarterly financial reports" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfDividendsEligibility"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dividends Eligibility</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="ecfInvestorAcknowledgments"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Legal Acknowledgments</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Acknowledgment of Risks" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ecfConfidentialityClause"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confidentiality Clause</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Specify any additional confidentiality details" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold">Exit Strategy Mechanisms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfExitStrategySale"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sale of shares in future funding round</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfExitStrategyMerger"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Exit through acquisition/merger</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfExitStrategyListing"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Public listing</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfArbitrationCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution Arbitration City/State</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City, State" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfGoverningLawCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law City/State</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City, State" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ecfIssuerRepName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Issuer Representative Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Issuer Representative's Full Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ecfIssuerRepTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Issuer Representative Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., CEO, Founder" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="ecfInvestorSignatureName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Investor Name (for signature)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name of Investor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
