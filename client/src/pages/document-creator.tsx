@@ -171,6 +171,30 @@ type FormFields = {
   employmentPerformanceReview?: string;
   employmentBonusStructure?: string;
 
+  // Data Processing Agreement Fields
+  dpaProcessorName?: string;
+  dpaProcessorAddress?: string;
+  dpaControllerName?: string;
+  dpaControllerAddress?: string;
+  dpaDataTypes?: string;
+  dpaDataSubjects?: string;
+  dpaProcessingPurpose?: string;
+  dpaProcessingDuration?: string;
+  dpaSecurityMeasures?: string;
+  dpaSubProcessors?: string;
+  dpaSubProcessorRequirements?: string;
+  dpaDataBreachNotification?: string;
+  dpaBreachTimeline?: string;
+  dpaDataTransfers?: string;
+  dpaDataProtectionImpact?: string;
+  dpaAudits?: string;
+  dpaConfidentiality?: string;
+  dpaDataDeletion?: string;
+  dpaTermination?: string;
+  dpaGoverningLaw?: string;
+  dpaLiability?: string;
+  dpaComplianceRequirements?: string;
+
   // Vendor Agreement Fields
   vendorCompanyName?: string;
   vendorCompanyAddress?: string;
@@ -501,6 +525,32 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "dpa":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          dpaProcessorName: z.string().min(1, "Processor name is required"),
+          dpaProcessorAddress: z.string().min(1, "Processor address is required"),
+          dpaControllerName: z.string().min(1, "Controller name is required"),
+          dpaControllerAddress: z.string().min(1, "Controller address is required"),
+          dpaDataTypes: z.string().min(1, "Data types are required"),
+          dpaDataSubjects: z.string().min(1, "Data subjects are required"),
+          dpaProcessingPurpose: z.string().min(1, "Processing purpose is required"),
+          dpaProcessingDuration: z.string().min(1, "Processing duration is required"),
+          dpaSecurityMeasures: z.string().min(1, "Security measures are required"),
+          dpaSubProcessors: z.string().min(1, "Sub-processor information is required"),
+          dpaSubProcessorRequirements: z.string().min(1, "Sub-processor requirements are required"),
+          dpaDataBreachNotification: z.string().min(1, "Data breach notification procedure is required"),
+          dpaBreachTimeline: z.string().min(1, "Breach notification timeline is required"),
+          dpaDataTransfers: z.string().min(1, "Data transfer details are required"),
+          dpaDataProtectionImpact: z.string().min(1, "Data protection impact is required"),
+          dpaAudits: z.string().min(1, "Audit procedures are required"),
+          dpaConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          dpaDataDeletion: z.string().min(1, "Data deletion procedures are required"),
+          dpaTermination: z.string().min(1, "Termination terms are required"),
+          dpaGoverningLaw: z.string().min(1, "Governing law is required"),
+          dpaLiability: z.string().min(1, "Liability terms are required"),
+          dpaComplianceRequirements: z.string().min(1, "Compliance requirements are required"),
+        });
       case "vendor":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -1438,6 +1488,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "dpa":
+        return "Data Processing Agreement";
       case "vendor":
         return "Vendor Agreement";
       case "marketing":
@@ -1499,6 +1551,342 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "dpa":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaProcessorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Processor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Legal name of the data processor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaProcessorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Processor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the data processor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaControllerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Controller Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Legal name of the data controller" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaControllerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Controller Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the data controller" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Data Processing Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaDataTypes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Types of Personal Data</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Description of personal data types to be processed" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaDataSubjects"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Subjects</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Categories of data subjects affected" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaProcessingPurpose"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purpose of Processing</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of processing purposes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaProcessingDuration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration of Processing</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Duration of data processing activities" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Security and Sub-processors</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaSecurityMeasures"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Security Measures</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Technical and organizational security measures" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaSubProcessors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sub-processors</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="List of authorized sub-processors" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaSubProcessorRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sub-processor Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Requirements and obligations for sub-processors" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Data Breach and Transfers</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaDataBreachNotification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Breach Notification Procedure</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Process for notifying data breaches" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaBreachTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Breach Notification Timeline</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Timeline for breach notifications" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaDataTransfers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>International Data Transfers</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Details of international data transfers" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Compliance and Audits</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaDataProtectionImpact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Protection Impact Assessment</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Impact assessment requirements" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaAudits"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Audit Procedures</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Audit rights and procedures" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaComplianceRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compliance Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Regulatory compliance requirements" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Confidentiality and Termination</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaDataDeletion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data Deletion Procedures</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Procedures for data deletion" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for agreement termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="dpaGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpaLiability"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liability Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Liability and indemnification terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "vendor":
         return (
           <>
