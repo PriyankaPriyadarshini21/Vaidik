@@ -781,6 +781,32 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
+    if (params.type === "marketing") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        marketingServiceProvider: "",
+        marketingServiceProviderAddress: "",
+        marketingClientName: "",
+        marketingClientAddress: "",
+        marketingServicesScope: "",
+        marketingCampaignObjectives: "",
+        marketingTargetAudience: "",
+        marketingChannels: "",
+        marketingDeliverables: "",
+        marketingTimeline: "",
+        marketingKPIs: "",
+        marketingReportingFrequency: "",
+        marketingBudget: "",
+        marketingPaymentTerms: "",
+        marketingIntellectualProperty: "",
+        marketingContentRights: "",
+        marketingConfidentiality: "",
+        marketingTermination: "",
+        marketingIndemnification: "",
+        marketingGoverningLaw: "",
+        marketingDispute: "",
+      } as const;
+    }
     if (params.type === "software-license") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -1254,6 +1280,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "marketing":
+        return "Marketing Agreement";
       case "software-license":
         return "Software License Agreement";
       case "software-development":
@@ -1317,6 +1345,326 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "marketing":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingServiceProvider"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Provider Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of marketing service provider" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingServiceProviderAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Provider Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of service provider" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingClientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingClientAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of client" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Marketing Services</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingServicesScope"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Scope of Services</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Detailed description of marketing services" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingCampaignObjectives"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Campaign Objectives</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Marketing campaign goals and objectives" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingTargetAudience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Target Audience</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Description of target audience" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingChannels"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Marketing Channels</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Marketing channels to be used" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Deliverables and Timeline</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingDeliverables"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Deliverables</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="List of deliverables" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timeline</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Project timeline and milestones" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Performance and Reporting</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingKPIs"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Key Performance Indicators (KPIs)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Performance metrics and KPIs" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingReportingFrequency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reporting Frequency</FormLabel>
+                      <FormControl>
+                        <Input placeholder="How often reports will be provided" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Payment Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingBudget"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Budget</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Total marketing budget" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingPaymentTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Payment schedule and terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="marketingIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP ownership and rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingContentRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Content ownership and usage rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for contract termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingIndemnification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Indemnification</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Indemnification terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketingDispute"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dispute Resolution</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Dispute resolution process" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+
       case "software-license":
         return (
           <>
