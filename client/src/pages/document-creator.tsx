@@ -414,6 +414,30 @@ type FormFields = {
   terminationClause?: string;
   disputeResolutionCity?: string;
 
+  // Distribution Agreement Fields
+  distributionCompanyName?: string;
+  distributionCompanyAddress?: string;
+  distributionDistributorName?: string;
+  distributionDistributorAddress?: string;
+  distributionTerritory?: string;
+  distributionProducts?: string;
+  distributionPricing?: string;
+  distributionCommission?: string;
+  distributionMinimumRequirements?: string;
+  distributionExclusivity?: string;
+  distributionTerm?: string;
+  distributionRenewal?: string;
+  distributionTermination?: string;
+  distributionIntellectualProperty?: string;
+  distributionTraining?: string;
+  distributionSupport?: string;
+  distributionWarranty?: string;
+  distributionIndemnification?: string;
+  distributionConfidentiality?: string;
+  distributionNonCompete?: string;
+  distributionGoverningLaw?: string;
+  distributionArbitration?: string;
+
   // Loan Agreement Fields
   loanAmount?: string;
   loanAmountFigures?: string;
@@ -561,6 +585,33 @@ export default function DocumentCreator() {
           salesArbitrationVenue: z.string().min(1, "Arbitration venue is required"),
           salesNoticesPeriod: z.string().min(1, "Notices period is required"),
         });
+      case "distribution":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          distributionCompanyName: z.string().min(1, "Company name is required"),
+          distributionCompanyAddress: z.string().min(1, "Company address is required"),
+          distributionDistributorName: z.string().min(1, "Distributor name is required"),
+          distributionDistributorAddress: z.string().min(1, "Distributor address is required"),
+          distributionTerritory: z.string().min(1, "Territory is required"),
+          distributionProducts: z.string().min(1, "Products description is required"),
+          distributionPricing: z.string().min(1, "Pricing terms are required"),
+          distributionCommission: z.string().min(1, "Commission structure is required"),
+          distributionMinimumRequirements: z.string().min(1, "Minimum requirements are required"),
+          distributionExclusivity: z.string().min(1, "Exclusivity terms are required"),
+          distributionTerm: z.string().min(1, "Term duration is required"),
+          distributionRenewal: z.string().min(1, "Renewal terms are required"),
+          distributionTermination: z.string().min(1, "Termination terms are required"),
+          distributionIntellectualProperty: z.string().min(1, "IP terms are required"),
+          distributionTraining: z.string().min(1, "Training terms are required"),
+          distributionSupport: z.string().min(1, "Support terms are required"),
+          distributionWarranty: z.string().min(1, "Warranty terms are required"),
+          distributionIndemnification: z.string().min(1, "Indemnification terms are required"),
+          distributionConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          distributionNonCompete: z.string().min(1, "Non-compete terms are required"),
+          distributionGoverningLaw: z.string().min(1, "Governing law is required"),
+          distributionArbitration: z.string().min(1, "Arbitration terms are required"),
+        });
+
       case "service":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -890,6 +941,34 @@ export default function DocumentCreator() {
         salesNoticesPeriod: "",
       } as const;
     }
+    if (params.type === "distribution") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        distributionCompanyName: "",
+        distributionCompanyAddress: "",
+        distributionDistributorName: "",
+        distributionDistributorAddress: "",
+        distributionTerritory: "",
+        distributionProducts: "",
+        distributionPricing: "",
+        distributionCommission: "",
+        distributionMinimumRequirements: "",
+        distributionExclusivity: "",
+        distributionTerm: "",
+        distributionRenewal: "",
+        distributionTermination: "",
+        distributionIntellectualProperty: "",
+        distributionTraining: "",
+        distributionSupport: "",
+        distributionWarranty: "",
+        distributionIndemnification: "",
+        distributionConfidentiality: "",
+        distributionNonCompete: "",
+        distributionGoverningLaw: "",
+        distributionArbitration: "",
+      } as const;
+    }
+
     if (params.type === "service") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -1312,24 +1391,18 @@ export default function DocumentCreator() {
         return "Event Management Agreement";
       case "employment":
         return "Employment Agreement";
+      case "distribution":
+        return "Distribution Agreement";
       case "service":
         return "Service Agreement";
       case "freelancer":
         return "Freelancer Agreement";
       case "consulting":
         return "Consulting Agreement";
-      case "distribution":
-        return "Distribution Agreement";
       case "commission":
         return "Commission Agreement";
       case "sales":
         return "Sales Agreement";
-      case "software-development":
-        return "Software Development Agreement";
-      case "software-licensing":
-        return "Software License Agreement";
-      case "marketing":
-        return "Marketing Agreement";
       case "dpa":
         return "Data Processing Agreement";
       case "founders":
@@ -2697,6 +2770,339 @@ export default function DocumentCreator() {
             </div>
           </>
         );
+      case "distribution":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full legal name of the company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionDistributorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Distributor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name of distributor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionDistributorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Distributor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of distributor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Distribution Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionTerritory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Territory</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Geographical area covered by distribution rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionProducts"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Products/Services</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Description of products or services covered" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Commercial Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionPricing"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pricing Structure</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Pricing terms and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionCommission"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Structure</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Commission rates and payment terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionMinimumRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Minimum Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Minimum purchase or performance requirements" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionExclusivity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Exclusivity Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms of exclusivity rights" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Term and Renewal</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionTerm"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Term Duration</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Duration of the agreement" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionRenewal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Renewal Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Terms for agreement renewal" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Conditions for agreement termination" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Support and Training</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionTraining"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Training Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Training provisions and requirements" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionSupport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Support Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Support services and commitments" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionWarranty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warranty Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Warranty coverage and conditions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="distributionIntellectualProperty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intellectual Property</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="IP rights and restrictions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionIndemnification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Indemnification</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Indemnification terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Confidentiality obligations" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionNonCompete"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Non-Compete</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Non-compete provisions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionGoverningLaw"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jurisdiction for legal matters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="distributionArbitration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Arbitration procedures and venue" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
+
       case "service":
         return (
           <>
