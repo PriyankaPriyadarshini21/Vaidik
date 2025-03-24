@@ -132,16 +132,27 @@ export function registerRoutes(app: Express): Server {
   });
 
   app.post("/api/documents", isAuthenticated, async (req, res) => {
-    const parsed = insertDocumentSchema.safeParse({
-      ...req.body,
-      userId: req.user!.id
-    });
-    if (!parsed.success) {
-      res.status(400).json({ message: "Invalid document data" });
-      return;
+    try {
+      const parsed = insertDocumentSchema.safeParse({
+        ...req.body,
+        userId: req.user!.id
+      });
+
+      if (!parsed.success) {
+        return res.status(400).json({ 
+          message: "Invalid document data",
+          errors: parsed.error.errors
+        });
+      }
+
+      const document = await storage.createDocument(parsed.data);
+      res.status(201).json(document);
+    } catch (error: any) {
+      console.error('Document creation error:', error);
+      res.status(500).json({ 
+        message: error.message || "Failed to create document"
+      });
     }
-    const document = await storage.createDocument(parsed.data);
-    res.status(201).json(document);
   });
 
   app.patch("/api/documents/:id", isAuthenticated, async (req, res) => {

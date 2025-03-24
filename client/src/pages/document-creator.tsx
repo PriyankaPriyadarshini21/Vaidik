@@ -147,7 +147,7 @@ const getFormSchema = (type: string) => {
         marketingDeliverables: z.string().min(1, "Deliverables are required"),
         marketingTimeline: z.string().min(1, "Timeline is required"),
         marketingKPIs: z.string().min(1, "KPIs are required"),
-        marketingReportingFrequency: z.string().min(1, "Reporting frequency is required"), 
+        marketingReportingFrequency: z.string().min(1, "Reporting frequency is required"),
         marketingBudget: z.string().min(1, "Budget is required"),
         marketingPaymentTerms: z.string().min(1, "Payment terms are required"),
         marketingIntellectualProperty: z.string().min(1, "IP terms are required"),
@@ -219,6 +219,71 @@ const getDefaultValues = (type: string) => {
   };
 };
 
+const renderFormFields = (type: string, form: any) => {
+  switch (type) {
+    case "freelancer":
+      return (
+        <>
+          <FormField
+            control={form.control}
+            name="freelancerName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Freelancer Name</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Add other freelancer fields here */}
+        </>
+      );
+    case "marketing":
+      return (
+        <>
+          <FormField
+            control={form.control}
+            name="marketingServiceProvider"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Marketing Service Provider</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Add other marketing fields here */}
+        </>
+      );
+    case "dpa":
+      return (
+        <>
+          <FormField
+            control={form.control}
+            name="dpaProcessorName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Data Processor Name</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Add other DPA fields here */}
+        </>
+      );
+    default:
+      return null;
+  }
+};
+
+
 // Main component
 export default function DocumentCreator() {
   const params = useParams<RouteParams>();
@@ -227,13 +292,23 @@ export default function DocumentCreator() {
 
   const createDocumentMutation = useMutation({
     mutationFn: async (data: FormFields) => {
-      const response = await apiRequest("POST", "/api/documents", {
-        title: `${getFormTitle(params.type)} - ${format(new Date(), "yyyy-MM-dd")}`,
-        type: params.type,
-        content: data,
-        status: "draft"
-      });
-      return response.json();
+      try {
+        const response = await apiRequest("POST", "/api/documents", {
+          title: `${getFormTitle(params.type)} - ${format(new Date(), "yyyy-MM-dd")}`,
+          type: params.type,
+          content: data,
+          status: "draft"
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Failed to create document");
+        }
+
+        return response.json();
+      } catch (error: any) {
+        throw new Error(error.message || "Failed to create document");
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
@@ -258,8 +333,23 @@ export default function DocumentCreator() {
   });
 
   const onSubmit = async (data: FormFields) => {
-    await createDocumentMutation.mutateAsync(data);
+    try {
+      await createDocumentMutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      // Error will be handled by mutation error handler
+    }
   };
+
+  if (!params.type) {
+    return (
+      <div className="container mx-auto py-6">
+        <h1 className="text-2xl font-semibold text-center">
+          Invalid document type
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -285,24 +375,38 @@ export default function DocumentCreator() {
             />
 
             {/* Form fields based on agreement type */}
-            {/* Add specific form fields based on params.type */}
+            {renderFormFields(params.type, form)}
           </div>
-          
+
           <div className="flex justify-end gap-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => setLocation("/documents")}
+              disabled={createDocumentMutation.isPending}
             >
               Cancel
             </Button>
             <Button 
               type="submit"
               disabled={createDocumentMutation.isPending}
+              className="min-w-[120px]"
             >
-              {createDocumentMutation.isPending ? "Creating..." : "Create Agreement"}
+              {createDocumentMutation.isPending ? (
+                <>
+                  <span className="animate-pulse">Creating...</span>
+                </>
+              ) : (
+                "Create Agreement"
+              )}
             </Button>
           </div>
+
+          {form.formState.errors.root && (
+            <p className="text-sm text-red-500 mt-2">
+              {form.formState.errors.root.message}
+            </p>
+          )}
         </form>
       </Form>
     </div>
