@@ -25,6 +25,29 @@ import { format } from "date-fns";
 import { ReactNode, useMemo, useEffect } from "react";
 
 type FormFields = {
+  // Investment Agreement Fields
+  // Common Fields
+  dateOfAgreement?: string;
+  jurisdiction?: string;
+  informationRights?: string;
+
+  // Investment Agreement Fields
+  investmentInvestorName?: string;
+  investmentInvestorAddress?: string;
+  investmentCompanyName?: string;
+  investmentCompanyAddress?: string;
+  investmentAmount?: string;
+  investmentType?: string;
+  paymentTimeline?: string;
+  investmentPurpose?: string;
+  investmentVotingRights?: string;
+  boardRepresentation?: string;
+  buybackTerms?: string;
+  ipoExitRights?: string;
+  investmentConfidentiality?: string;
+  investmentTermination?: string;
+  investmentArbitrationCity?: string;
+
   // Voting Rights Agreement Fields
   dateOfAgreement?: string;
   votingCompanyName?: string;
@@ -58,29 +81,6 @@ type FormFields = {
   founderSignatures?: string;
   investorRepName?: string;
   investorRepTitle?: string;
-
-  // Loan Agreement Fields
-  lenderName?: string;
-  lenderAddress?: string;
-  borrowerName?: string;
-  borrowerAddress?: string;
-  loanAmountFigures?: string;
-  loanAmountWords?: string;
-  loanPurpose?: string;
-  loanStartDate?: string;
-  loanEndDate?: string;
-  interestRate?: string;
-  interestBasis?: "simple" | "compound";
-  interestPaymentDates?: string;
-  numberOfInstallments?: string;
-  installmentAmount?: string;
-  firstInstallmentDate?: string;
-  lenderBankDetails?: string;
-  prepaymentOption?: "yes" | "no";
-  jurisdiction?: string;
-  noticesAddress?: string;
-  lenderRepNameTitle?: string;
-  borrowerRepNameTitle?: string;
 
   // Preferred Stock Agreement Fields
   companyName?: string;
@@ -208,6 +208,26 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "investment":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          investmentInvestorName: z.string().min(1, "Investor name is required"),
+          investmentInvestorAddress: z.string().min(1, "Investor address is required"),
+          investmentCompanyName: z.string().min(1, "Company name is required"),
+          investmentCompanyAddress: z.string().min(1, "Company address is required"),
+          investmentAmount: z.string().min(1, "Investment amount is required"),
+          investmentType: z.string().min(1, "Investment type is required"),
+          paymentTimeline: z.string().min(1, "Payment timeline is required"),
+          investmentPurpose: z.string().min(1, "Purpose of investment is required"),
+          investmentVotingRights: z.string().min(1, "Voting rights details are required"),
+          boardRepresentation: z.string().min(1, "Board representation details are required"),
+          informationRights: z.string().min(1, "Information rights details are required"),
+          buybackTerms: z.string().min(1, "Buyback terms are required"),
+          ipoExitRights: z.string().min(1, "IPO/Strategic sale rights are required"),
+          investmentConfidentiality: z.string().min(1, "Confidentiality terms are required"),
+          investmentTermination: z.string().min(1, "Termination terms are required"),
+          investmentArbitrationCity: z.string().min(1, "Arbitration city is required"),
+        });
       case "loan":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -241,7 +261,27 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "voting-rights") {
+    if (params.type === "investment") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        investmentInvestorName: "",
+        investmentInvestorAddress: "",
+        investmentCompanyName: "",
+        investmentCompanyAddress: "",
+        investmentAmount: "",
+        investmentType: "",
+        paymentTimeline: "",
+        investmentPurpose: "",
+        investmentVotingRights: "",
+        boardRepresentation: "",
+        informationRights: "",
+        buybackTerms: "",
+        ipoExitRights: "",
+        investmentConfidentiality: "",
+        investmentTermination: "",
+        investmentArbitrationCity: "",
+      } as const;
+    } else if (params.type === "voting-rights") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         votingCompanyName: "",
@@ -443,6 +483,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "investment":
+        return "Investment Agreement";
       case "voting-rights":
         return "Voting Rights Agreement";
       case "equity-crowdfunding":
@@ -490,6 +532,256 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "investment":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="investmentInvestorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of the Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentInvestorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Complete address of the Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Registered Office Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Investment Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="investmentAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investment Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="₹Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type of Investment</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Number of shares or financial instruments, class of equity, percentage of total shareholding" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentTimeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Timeline</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of days for payment after signing" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentPurpose"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purpose of Investment Funds</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specific use, e.g., operational growth, product development, marketing, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Rights and Representation</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="investmentVotingRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Voting Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specify voting rights for the Investor, if any" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="boardRepresentation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Board Representation</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specify board representation rights, if applicable" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="informationRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Information Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Access to reports or updates, as needed" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Exit Mechanisms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="buybackTerms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyback Option Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specify buyback terms" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ipoExitRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>IPO/Strategic Sale Rights</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Exit rights in case of IPO or company sale" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="investmentConfidentiality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confidentiality Terms</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specify exceptions, if any, to confidentiality" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentTermination"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Termination Terms</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of days' notice for breach rectification" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="investmentArbitrationCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City for arbitration venue" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "loan":
         return (
           <>
