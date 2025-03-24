@@ -28,6 +28,20 @@ type FormFields = {
   // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
 
+  // Stock Purchase Agreement Fields
+  stockSellerName?: string;
+  stockSellerAddress?: string;
+  stockBuyerName?: string;
+  stockBuyerAddress?: string;
+  stockNumShares?: string;
+  stockCompanyName?: string;
+  stockPurchasePrice?: string;
+  stockPaymentMethod?: string;
+  stockPaymentDeadline?: string;
+  stockClosingDate?: string;
+  stockClosingLocation?: string;
+  stockJurisdiction?: string;
+
   // Convertible Note Agreement Fields
   convertibleCompanyName?: string;
   convertibleCompanyAddress?: string;
@@ -325,6 +339,22 @@ export default function DocumentCreator() {
           investmentTermination: z.string().min(1, "Termination terms are required"),
           investmentArbitrationCity: z.string().min(1, "Arbitration city is required"),
         });
+      case "stock-purchase":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          stockSellerName: z.string().min(1, "Seller name is required"),
+          stockSellerAddress: z.string().min(1, "Seller address is required"),
+          stockBuyerName: z.string().min(1, "Buyer name is required"),
+          stockBuyerAddress: z.string().min(1, "Buyer address is required"),
+          stockNumShares: z.string().min(1, "Number of shares is required"),
+          stockCompanyName: z.string().min(1, "Company name is required"),
+          stockPurchasePrice: z.string().min(1, "Purchase price is required"),
+          stockPaymentMethod: z.string().min(1, "Payment method is required"),
+          stockPaymentDeadline: z.string().min(1, "Payment deadline is required"),
+          stockClosingDate: z.string().min(1, "Closing date is required"),
+          stockClosingLocation: z.string().min(1, "Closing location is required"),
+          stockJurisdiction: z.string().min(1, "Jurisdiction is required"),
+        });
       case "loan":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -590,6 +620,22 @@ export default function DocumentCreator() {
         lenderRepNameTitle: "",
         borrowerRepNameTitle: "",
       } as const;
+    } else if (params.type === "stock-purchase") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        stockSellerName: "",
+        stockSellerAddress: "",
+        stockBuyerName: "",
+        stockBuyerAddress: "",
+        stockNumShares: "",
+        stockCompanyName: "",
+        stockPurchasePrice: "",
+        stockPaymentMethod: "",
+        stockPaymentDeadline: "",
+        stockClosingDate: format(new Date(), "yyyy-MM-dd"),
+        stockClosingLocation: "",
+        stockJurisdiction: "",
+      } as const;
     } else if (params.type === "loan") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
@@ -634,6 +680,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "stock-purchase":
+        return "Stock Purchase Agreement";
       case "convertible-note":
         return "Convertible Note Agreement";
       case "safe":
@@ -687,6 +735,201 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "stock-purchase":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="stockSellerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seller Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Seller" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockSellerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seller Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Seller's Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockBuyerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyer Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Buyer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockBuyerAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Buyer Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Buyer's Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Share Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="stockNumShares"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Shares</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Number of shares being sold" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name of the company issuing the shares" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockPurchasePrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purchase Price (INR)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="₹Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Transaction Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="stockPaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Bank Transfer/Cheque/Other Method" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockPaymentDeadline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Deadline</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Number of days after Agreement execution" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="stockClosingDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Closing Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stockClosingLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Closing Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Location where the transaction will take place" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <FormField
+                control={form.control}
+                name="stockJurisdiction"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Jurisdiction</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Jurisdiction where disputes will be resolved" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
       case "convertible-note":
         return (
           <>
