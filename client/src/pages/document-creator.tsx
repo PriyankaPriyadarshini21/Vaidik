@@ -25,11 +25,41 @@ import { format } from "date-fns";
 import { ReactNode, useMemo, useEffect } from "react";
 
 type FormFields = {
-  // Investment Agreement Fields
-  // Common Fields
+  // Common Fields (shared across all agreements)
   dateOfAgreement?: string;
-  jurisdiction?: string;
-  informationRights?: string;
+
+  // SAFE Agreement Fields
+  safeEffectiveDate?: string;
+  safeCompanyName?: string;
+  safeJurisdiction?: string;
+  safeCompanyAddress?: string;
+  safeInvestorName?: string;
+  safeInvestorAddress?: string;
+  safeInvestmentAmount?: string;
+  safeUsageOfFunds?: string;
+  safeFinancingThreshold?: string;
+  safeValuationCap?: string;
+  safeDiscountRate?: string;
+  safeArbitrationLocation?: string;
+
+  // Commission Agreement Fields
+  commissionCompanyName: string;
+  commissionEntityType: string;
+  commissionCompanyAddress: string;
+  commissionInvestorName: string;
+  commissionInvestorAddress: string;
+  commissionAmount: string;
+  commissionMaturityDate: string;
+  commissionInterestRate: string;
+  commissionCompoundingFreq: string;
+  commissionQualifiedMin: string;
+  commissionDiscountPercent: string;
+  commissionValuationCap: string;
+  commissionLiquidityMult: string;
+  commissionReportingFreq: string;
+  commissionObserverRights: "yes" | "no";
+  commissionArbitrationRules: string;
+  commissionArbitrationCity: string;
 
   // Investment Agreement Fields
   investmentInvestorName?: string;
@@ -49,7 +79,6 @@ type FormFields = {
   investmentArbitrationCity?: string;
 
   // Voting Rights Agreement Fields
-  dateOfAgreement?: string;
   votingCompanyName?: string;
   votingCompanyAddress?: string;
   founderNames?: string;
@@ -95,9 +124,9 @@ type FormFields = {
   dividendRate?: string;
   conversionRightsClause?: string;
   votingPower?: string;
-  jurisdiction?: string;
-  disputeResolution?: string;
-  arbitrationRules?: string;
+  preferredStockJurisdiction?: string;
+  preferredStockDispute?: string;
+  preferredStockArbitration?: string;
   closingDate?: string;
   closingLocation?: string;
 
@@ -208,6 +237,43 @@ export default function DocumentCreator() {
   const { toast } = useToast();
   const getFormSchema = (type: string) => {
     switch (type) {
+      case "safe":
+        return z.object({
+          safeEffectiveDate: z.string().min(1, "Effective date is required"),
+          safeCompanyName: z.string().min(1, "Company name is required"),
+          safeJurisdiction: z.string().min(1, "Jurisdiction is required"),
+          safeCompanyAddress: z.string().min(1, "Company address is required"),
+          safeInvestorName: z.string().min(1, "Investor name is required"),
+          safeInvestorAddress: z.string().min(1, "Investor address is required"),
+          safeInvestmentAmount: z.string().min(1, "Investment amount is required"),
+          safeUsageOfFunds: z.string().min(1, "Usage of funds is required"),
+          safeFinancingThreshold: z.string().min(1, "Financing threshold is required"),
+          safeValuationCap: z.string().min(1, "Valuation cap is required"),
+          safeDiscountRate: z.string().min(1, "Discount rate is required"),
+          safeArbitrationLocation: z.string().min(1, "Arbitration location is required"),
+        });
+      case "commission":
+        return z.object({
+          dateOfAgreement: z.string().min(1, "Date is required"),
+          commissionCompanyName: z.string().min(1, "Company name is required"),
+          commissionEntityType: z.string().min(1, "Entity type is required"),
+          commissionCompanyAddress: z.string().min(1, "Company address is required"),
+          commissionInvestorName: z.string().min(1, "Investor name is required"),
+          commissionInvestorAddress: z.string().min(1, "Investor address is required"),
+          commissionAmount: z.string().min(1, "Commission amount is required"),
+          commissionMaturityDate: z.string().min(1, "Maturity date is required"),
+          commissionInterestRate: z.string().min(1, "Interest rate is required"),
+          commissionCompoundingFreq: z.string().min(1, "Compounding frequency is required"),
+          commissionQualifiedMin: z.string().min(1, "Qualified financing minimum is required"),
+          commissionDiscountPercent: z.string().min(1, "Discount percentage is required"),
+          commissionValuationCap: z.string().min(1, "Valuation cap is required"),
+          commissionLiquidityMult: z.string().min(1, "Liquidity event multiplier is required"),
+          commissionReportingFreq: z.string().min(1, "Financial reporting frequency is required"),
+          commissionObserverRights: z.enum(["yes", "no"]),
+          commissionJurisdiction: z.string().min(1, "Jurisdiction is required"),
+          commissionArbitrationRules: z.string().min(1, "Arbitration rules are required"),
+          commissionArbitrationCity: z.string().min(1, "Arbitration city is required"),
+        });
       case "investment":
         return z.object({
           dateOfAgreement: z.string().min(1, "Date is required"),
@@ -261,7 +327,44 @@ export default function DocumentCreator() {
   const formSchema = getFormSchema(params.type);
 
   const defaultValues = useMemo(() => {
-    if (params.type === "investment") {
+    if (params.type === "safe") {
+      return {
+        safeEffectiveDate: format(new Date(), "yyyy-MM-dd"),
+        safeCompanyName: "",
+        safeJurisdiction: "",
+        safeCompanyAddress: "",
+        safeInvestorName: "",
+        safeInvestorAddress: "",
+        safeInvestmentAmount: "",
+        safeUsageOfFunds: "",
+        safeFinancingThreshold: "",
+        safeValuationCap: "",
+        safeDiscountRate: "",
+        safeArbitrationLocation: "",
+      } as const;
+    } else if (params.type === "commission") {
+      return {
+        dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
+        commissionCompanyName: "",
+        commissionEntityType: "",
+        commissionCompanyAddress: "",
+        commissionInvestorName: "",
+        commissionInvestorAddress: "",
+        commissionAmount: "",
+        commissionMaturityDate: format(new Date(), "yyyy-MM-dd"),
+        commissionInterestRate: "",
+        commissionCompoundingFreq: "",
+        commissionQualifiedMin: "",
+        commissionDiscountPercent: "",
+        commissionValuationCap: "",
+        commissionLiquidityMult: "",
+        commissionReportingFreq: "",
+        commissionObserverRights: "no",
+        commissionJurisdiction: "",
+        commissionArbitrationRules: "",
+        commissionArbitrationCity: "",
+      } as const;
+    } else if (params.type === "investment") {
       return {
         dateOfAgreement: format(new Date(), "yyyy-MM-dd"),
         investmentInvestorName: "",
@@ -483,6 +586,8 @@ export default function DocumentCreator() {
 
   const getFormTitle = () => {
     switch (params.type) {
+      case "safe":
+        return "SAFE Agreement";
       case "investment":
         return "Investment Agreement";
       case "voting-rights":
@@ -532,6 +637,482 @@ export default function DocumentCreator() {
 
   const renderFormFields = () => {
     switch (params.type) {
+      case "safe":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="safeEffectiveDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Effective Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="safeCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="safeJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction (Company Incorporation)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Country/State of Incorporation" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="safeCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Principal office address of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="safeInvestorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of the Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="safeInvestorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Address of the Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Investment Details</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="safeInvestmentAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investment Amount (INR)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Investment Amount in Rupees" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="safeUsageOfFunds"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Usage of Funds</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Specify purpose or general corporate purposes" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Financial Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="safeFinancingThreshold"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Qualified Financing Threshold Amount (INR)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Threshold Amount for Equity Financing" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="safeValuationCap"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valuation Cap Amount (INR)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Maximum Valuation Cap for Equity Calculation" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="safeDiscountRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Discount Rate (%)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage Discount for Qualified Financing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <FormField
+                control={form.control}
+                name="safeArbitrationLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Location (Dispute Resolution)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City/Location for Arbitration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        );
+      case "commission":
+        return (
+          <>
+            <div className="grid gap-6">
+              <h3 className="text-lg font-semibold">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Agreement</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionCompanyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionEntityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type of Entity</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Private Limited Company, LLP, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionCompanyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Registered Address of the Company" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionInvestorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full Name of Investor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionInvestorAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investor Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Investor's Residential/Principal Office Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Investment Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Investment Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="₹ or other currency amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionMaturityDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maturity Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionInterestRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interest Rate</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 8%" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionCompoundingFreq"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compounding Frequency</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Annually, quarterly, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Financial Terms</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionQualifiedMin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Qualified Financing Minimum Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="₹ or other currency minimum amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionDiscountPercent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Discount Percentage</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 20%" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionValuationCap"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valuation Cap</FormLabel>
+                      <FormControl>
+                        <Input placeholder="₹ or other currency valuation cap" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionLiquidityMult"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Liquidity Event Multiplier</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 2x" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Rights and Reporting</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionReportingFreq"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Financial Reporting Frequency</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Quarterly, annually, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionObserverRights"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Observer Rights</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <h3 className="text-lg font-semibold mt-6">Legal Terms</h3>
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="commissionJurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction for Governing Law</FormLabel>
+                      <FormControl>
+                        <Input placeholder="State/Country" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionArbitrationRules"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration Rules</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Arbitration and Conciliation Act, 1996" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="commissionArbitrationCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Arbitration City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City where arbitration will take place" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        );
       case "investment":
         return (
           <>
