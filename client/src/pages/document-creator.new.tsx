@@ -34,13 +34,12 @@ interface RouteParams {
 interface FormFields {
   // Common Fields
   dateOfAgreement?: string;
-  
   // Consulting Agreement Fields
   consultingConsultantName?: string;
   consultingConsultantType?: string;
   consultingConsultantAddress?: string;
   consultingClientName?: string;
-  consultingClientAddress?: string;
+  consultingClientAddress?: string; 
   consultingServicesDescription?: string;
   consultingAdditionalServices?: string;
   consultingStartDate?: string;
@@ -52,6 +51,39 @@ interface FormFields {
   consultingTerminationNoticePeriod?: string;
   consultingTerminationNonPayment?: string;
   consultingArbitrationCity?: string;
+  // Employment Agreement Fields
+  employmentCompanyName?: string;
+  employmentEmployerAddress?: string;
+  employmentEmployeeName?: string;
+  employmentEmployeeAddress?: string;
+  employmentJobTitle?: string;
+  employmentStartDate?: string;
+  employmentBaseSalary?: string;
+  employmentSalaryFrequency?: string;
+  employmentBonusDetails?: string;
+  employmentBenefits?: string;
+  employmentWorkHoursPerWeek?: string;
+  employmentWorkStartTime?: string;
+  employmentWorkEndTime?: string;
+  employmentNonCompetePeriod?: string;
+  employmentNonSolicitationPeriod?: string;
+  employmentNoticeEmployer?: string;
+  employmentNoticeEmployee?: string;
+  employmentGoverningCity?: string;
+  // NDA Fields
+  ndaCompanyName?: string;
+  ndaCompanyAddress?: string;
+  ndaEmployeeName?: string;
+  ndaEmployeeAddress?: string;
+  ndaConfidentialInfo?: string;
+  ndaPermittedUse?: string;
+  ndaExcludedInfo?: string;
+  ndaReturnOfInfo?: string;
+  ndaDuration?: string;
+  ndaSurvivalTerms?: string;
+  ndaRemedies?: string;
+  ndaGoverningLaw?: string;
+  ndaSignatureDate?: string;
 }
 
 interface FormProps {
@@ -59,14 +91,23 @@ interface FormProps {
   type: string;
 }
 
-// Helper function to get form schema
+// Helper functions
+const getFormTitle = (type: string) => {
+  switch (type) {
+    case "consulting":
+      return "Consulting Agreement";
+    default:
+      return "Create Agreement";
+  }
+};
+
 const getFormSchema = (type: string) => {
   switch (type) {
     case "consulting": {
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
         consultingConsultantName: z.string().min(1, "Consultant's name is required"),
-        consultingConsultantType: z.string().min(1, "Consultant's type is required"),
+        consultingConsultantType: z.string().min(1, "Consultant's type is required"), 
         consultingConsultantAddress: z.string().min(1, "Consultant's address is required"),
         consultingClientName: z.string().min(1, "Client's name is required"),
         consultingClientAddress: z.string().min(1, "Client's address is required"),
@@ -85,23 +126,12 @@ const getFormSchema = (type: string) => {
     }
     default: {
       return z.object({
-        dateOfAgreement: z.string().min(1, "Date is required"),
+        dateOfAgreement: z.string().min(1, "Date is required"), 
       });
     }
   }
 };
 
-// Helper function to get form title
-const getFormTitle = (type: string) => {
-  switch (type) {
-    case "consulting":
-      return "Consulting Agreement";
-    default:
-      return "Create Agreement";
-  }
-};
-
-// Form fields rendering component
 const renderFormFields = ({ type, form }: FormProps): ReactNode => {
   // Define the common date field that will be used across all forms
   const CommonDateField = (
@@ -368,7 +398,7 @@ const renderFormFields = ({ type, form }: FormProps): ReactNode => {
                 name="consultingTerminationNonPayment"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Termination Notice Period (Consultant for Non-Payment)</FormLabel>
+                    <FormLabel>Termination Notice Period (Non-Payment)</FormLabel>
                     <FormControl>
                       <Input placeholder="Notice Period in Days" {...field} />
                     </FormControl>
