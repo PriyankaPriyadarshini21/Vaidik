@@ -31,6 +31,24 @@ type FormFields = {
   // Common Fields
   dateOfAgreement?: string;
 
+  // Consulting Agreement Fields
+  consultingConsultantName?: string;
+  consultingConsultantType?: string;
+  consultingConsultantAddress?: string;
+  consultingClientName?: string;
+  consultingClientAddress?: string;
+  consultingServicesDescription?: string;
+  consultingAdditionalServices?: string;
+  consultingStartDate?: string;
+  consultingEndDate?: string;
+  consultingFee?: string;
+  consultingPaymentTerms?: string;
+  consultingExpenseReimbursement?: "yes" | "no";
+  consultingPaymentMethod?: string;
+  consultingTerminationNoticePeriod?: string;
+  consultingTerminationNonPayment?: string;
+  consultingArbitrationCity?: string;
+
   // Employment Agreement Fields
   employmentCompanyName?: string;
   employmentEmployerAddress?: string;
@@ -418,6 +436,27 @@ const getFormSchema = (type: string) => {
         freelancerGoverningLaw: z.string().min(1, "Governing law is required"),
         freelancerDispute: z.string().min(1, "Dispute resolution terms are required"),
       });
+    case "consulting":
+      return z.object({
+        dateOfAgreement: z.string().min(1, "Date is required"),
+        consultingConsultantName: z.string().min(1, "Consultant's name is required"),
+        consultingConsultantType: z.string().min(1, "Consultant's type is required"),
+        consultingConsultantAddress: z.string().min(1, "Consultant's address is required"),
+        consultingClientName: z.string().min(1, "Client's name is required"),
+        consultingClientAddress: z.string().min(1, "Client's address is required"),
+        consultingServicesDescription: z.string().min(1, "Description of services is required"),
+        consultingAdditionalServices: z.string(),
+        consultingStartDate: z.string().min(1, "Start date is required"),
+        consultingEndDate: z.string().min(1, "End date is required"),
+        consultingFee: z.string().min(1, "Consulting fee is required"),
+        consultingPaymentTerms: z.string().min(1, "Payment terms are required"),
+        consultingExpenseReimbursement: z.enum(["yes", "no"]),
+        consultingPaymentMethod: z.string().min(1, "Payment method is required"),
+        consultingTerminationNoticePeriod: z.string().min(1, "Termination notice period is required"),
+        consultingTerminationNonPayment: z.string().min(1, "Non-payment termination period is required"),
+        consultingArbitrationCity: z.string().min(1, "Arbitration city is required"),
+      });
+
     case "marketing":
       return z.object({
         dateOfAgreement: z.string().min(1, "Date is required"),
