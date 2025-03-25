@@ -2906,6 +2906,323 @@ const renderFormFields = (type: string, form: any): ReactNode => {
         </div>
       );
 
+    case "event":
+      return (
+        <div className="space-y-8">
+          {commonDateField}
+          
+          <div className="grid gap-6">
+            <h3 className="text-lg font-semibold">Client & Event Manager Information</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="eventClientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full Name of Client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventClientAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Client's Address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventManagerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Manager Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name of Event Manager/Company" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventManagerAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Manager Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Event Manager's Address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Event Details</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="eventName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Name/Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Name/Description of the Event" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventDates"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Date(s)</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventServices"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Services to be Provided</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={`Planning and coordination
+Venue selection and booking
+Vendor management
+Event promotion and marketing
+On-site event management
+Post-event services
+Other additional services`} 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Agreement Term & Payment</h3>
+            <div className="grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="eventTermStart"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Term Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="eventTermEnd"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Term End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="eventTotalFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Fee (INR)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Amount" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Payment Schedule</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="eventPaymentScheduleSigningPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Signing Payment Percentage</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage upon signing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventPaymentSchedulePlanningPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Planning Phase Payment Percentage</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage upon planning completion" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventPaymentScheduleCompletionPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Completion Payment Percentage</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage upon event completion" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventPaymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., bank transfer, cheque" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventLatePaymentRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Late Payment Interest Rate (% per month)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Rate" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Cancellation & Refund Policy</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="eventCancellationNoticePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cancellation Notice Period (Days)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventRefundBeforeDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Refund Available Before Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventRefundBeforePercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Refund Percentage</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Percentage" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventNoRefundAfterDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No Refund After Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <h3 className="text-lg font-semibold">Legal Terms</h3>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="eventArbitrationLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Arbitration Location</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventTerminationNoticePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Termination Notice Period (Days)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Number of days" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      );
+
     case "service":
       return (
         <div className="space-y-8">
