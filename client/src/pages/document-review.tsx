@@ -1,16 +1,31 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, X, Eye, AlertCircle, CheckCircle, AlertTriangle, Download, MessageSquare, Edit, Save, History, Share, Archive, Settings, Trash } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { 
+  FileText, Upload, X, Eye, AlertCircle, CheckCircle, 
+  AlertTriangle, Download, MessageSquare, Edit, Save, 
+  History, Share, Archive, Settings, Trash, Users, 
+  Calendar, PieChart, Split, Diff, FileSearch, 
+  Scissors, Bookmark, Clock, GitCompare, ScrollText,
+  UserPlus, Bot, BarChart3, Copy, HelpCircle, ShieldCheck 
+} from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useQueryClient } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { DocumentActions } from "@/components/document/document-actions";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface UploadedFile {
   id?: number;
@@ -376,47 +391,277 @@ export default function DocumentReview() {
                 </div>
               </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Summary & Recommendations</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <p className="text-sm text-muted-foreground">{analysis.summary}</p>
+              <Tabs defaultValue="summary" className="space-y-4">
+                <TabsList className="grid grid-cols-3 mb-2">
+                  <TabsTrigger value="summary">Analysis Summary</TabsTrigger>
+                  <TabsTrigger value="version">Version Comparison</TabsTrigger>
+                  <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
+                </TabsList>
 
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Recommended Actions:</h4>
-                    <ul className="space-y-2">
-                      {analysis.recommendations.map((recommendation, index) => (
-                        <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="text-primary">•</span>
-                          {recommendation}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <TabsContent value="summary">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Summary & Recommendations</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <p className="text-sm text-muted-foreground">{analysis.summary}</p>
 
-                  <DocumentActions 
-                    document={{
-                      id: currentFile?.id || 0,
-                      title: currentFile?.name || '',
-                      type: 'document',
-                      content: {},
-                      status: 'active',
-                      userId: 0, 
-                      filename: currentFile?.name || '',
-                      fileSize: currentFile?.size || '',
-                      fileUrl: currentFile?.fileUrl || '',
-                      createdAt: new Date(),
-                      updatedAt: new Date(),
-                      tags: currentFile?.tags || [],
-                      expiresAt: null
-                    }}
-                    variant="summary"
-                  />
-                </CardContent>
-              </Card>
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Recommended Actions:</h4>
+                        <ul className="space-y-2">
+                          {analysis.recommendations.map((recommendation, index) => (
+                            <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-primary">•</span>
+                              {recommendation}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-              {/* Added sections */}
+                      <DocumentActions 
+                        document={{
+                          id: currentFile?.id || 0,
+                          title: currentFile?.name || '',
+                          type: 'document',
+                          content: {},
+                          status: 'active',
+                          userId: 0, 
+                          filename: currentFile?.name || '',
+                          fileSize: currentFile?.size || '',
+                          fileUrl: currentFile?.fileUrl || '',
+                          createdAt: new Date(),
+                          updatedAt: new Date(),
+                          tags: currentFile?.tags || [],
+                          expiresAt: null
+                        }}
+                        variant="summary"
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="version">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <GitCompare className="h-5 w-5" />
+                        Document Version Comparison
+                      </CardTitle>
+                      <CardDescription>
+                        Compare this document with previous versions or template standards
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-medium">Compare with:</h4>
+                          <Select defaultValue="previous">
+                            <SelectTrigger className="w-[200px]">
+                              <SelectValue placeholder="Select version" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="previous">Previous Version (v1.2)</SelectItem>
+                              <SelectItem value="template">Standard Template</SelectItem>
+                              <SelectItem value="custom">Custom Document</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 border rounded-md p-4 bg-muted/30">
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge>Current Version</Badge>
+                              <p className="text-sm text-muted-foreground">Last updated: Mar 15, 2025</p>
+                            </div>
+                            <div className="border rounded-md p-3 bg-card h-[220px] overflow-auto">
+                              <p className="text-sm">
+                                <strong>5.1 Termination.</strong> Either party may terminate this Agreement with thirty (30) days prior written notice. Upon termination, Client shall pay Consultant for all services performed up to the date of termination.
+                              </p>
+                              <p className="text-sm mt-2">
+                                <strong>5.2 Material Breach.</strong> Either party may terminate this Agreement immediately upon written notice in the event of a material breach by the other party.
+                              </p>
+                              <p className="text-sm mt-2">
+                                <strong>6.1 Payment Terms.</strong> Payment shall be made within 30 days of invoice receipt.
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant="outline">Previous Version</Badge>
+                              <p className="text-sm text-muted-foreground">Created: Feb 28, 2025</p>
+                            </div>
+                            <div className="border rounded-md p-3 bg-card h-[220px] overflow-auto">
+                              <p className="text-sm">
+                                <strong>5.1 Termination.</strong> <span className="bg-yellow-100 dark:bg-yellow-950/30">Either party may terminate this Agreement with <del className="text-red-500">fifteen (15)</del> <ins className="text-green-500">thirty (30)</ins> days prior written notice.</span> Upon termination, Client shall pay Consultant for all services performed up to the date of termination.
+                              </p>
+                              <p className="text-sm mt-2">
+                                <strong>5.2 Material Breach.</strong> Either party may terminate this Agreement immediately upon written notice in the event of a material breach by the other party.
+                              </p>
+                              <p className="text-sm mt-2 bg-red-100 dark:bg-red-950/30">
+                                <strong>6.1 Payment Terms.</strong> <del>Payment shall be made upon delivery of services.</del>
+                              </p>
+                              <p className="text-sm mt-2 bg-green-100 dark:bg-green-950/30">
+                                <strong>6.1 Payment Terms.</strong> <ins>Payment shall be made within 30 days of invoice receipt.</ins>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="font-medium flex items-center gap-2">
+                          <Diff className="h-4 w-4" />
+                          Key Changes
+                        </h4>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <div className="h-2 w-2 rounded-full bg-yellow-500 mt-2" />
+                            <p className="text-sm">Extended termination notice period from 15 days to 30 days</p>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <div className="h-2 w-2 rounded-full bg-green-500 mt-2" />
+                            <p className="text-sm">Added net-30 payment terms which better protects cash flow</p>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <div className="h-2 w-2 rounded-full bg-blue-500 mt-2" />
+                            <p className="text-sm">Improved clarity on termination payment obligations</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-6">
+                        <Button variant="outline" className="flex items-center gap-2">
+                          <Download className="h-4 w-4" />
+                          Download Comparison Report
+                        </Button>
+                        
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="secondary" className="flex items-center gap-2">
+                                <Bot className="h-4 w-4" />
+                                AI Analysis
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Get AI analysis of the changes and their legal implications</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="collaboration">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Collaboration Tools
+                      </CardTitle>
+                      <CardDescription>
+                        Share and collaborate on this document with your team
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Document Access</h4>
+                        <div className="border rounded-md p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                              <UserPlus className="h-4 w-4 text-muted-foreground" />
+                              <p className="text-sm font-medium">Invite Team Members</p>
+                            </div>
+                            <Button variant="outline" size="sm">Manage Access</Button>
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between py-2 border-b">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium">JD</div>
+                                <div>
+                                  <p className="text-sm font-medium">Jane Doe</p>
+                                  <p className="text-xs text-muted-foreground">jane.doe@example.com</p>
+                                </div>
+                              </div>
+                              <Badge>Owner</Badge>
+                            </div>
+                            <div className="flex items-center justify-between py-2 border-b">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium">JS</div>
+                                <div>
+                                  <p className="text-sm font-medium">John Smith</p>
+                                  <p className="text-xs text-muted-foreground">john.smith@example.com</p>
+                                </div>
+                              </div>
+                              <Badge variant="outline">Editor</Badge>
+                            </div>
+                            <div className="flex items-center justify-between py-2">
+                              <Input 
+                                placeholder="Email address" 
+                                className="max-w-xs h-8 text-sm" 
+                              />
+                              <Select defaultValue="editor">
+                                <SelectTrigger className="w-[110px] h-8">
+                                  <SelectValue placeholder="Permission" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="viewer">Viewer</SelectItem>
+                                  <SelectItem value="commenter">Commenter</SelectItem>
+                                  <SelectItem value="editor">Editor</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button size="sm">Invite</Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Comments & Feedback</h4>
+                        <Textarea placeholder="Add a comment or feedback about this document..." className="h-20 resize-none" />
+                        <div className="flex justify-end">
+                          <Button>Add Comment</Button>
+                        </div>
+                        
+                        <div className="space-y-4 mt-2">
+                          <div className="border rounded-md p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-xs">JS</div>
+                                <div>
+                                  <p className="text-sm font-medium">John Smith</p>
+                                  <p className="text-xs text-muted-foreground">Mar 18, 2025</p>
+                                </div>
+                              </div>
+                              <Button variant="ghost" size="icon" className="h-6 w-6">
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                            <p className="text-sm">The payment terms need to be more specific. Can we add something about late payment penalties?</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">Reply</Button>
+                              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">Resolve</Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-2">
+                        <Button variant="outline" className="flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4" />
+                          Start Group Discussion
+                        </Button>
+                        <Button className="flex items-center gap-2">
+                          <Share className="h-4 w-4" />
+                          Share Document
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+
               <div className="grid gap-6 md:grid-cols-3">
                 <Card>
                   <CardHeader>
