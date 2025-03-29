@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
@@ -7,8 +7,11 @@ import { insertDocumentSchema, insertConsultationSchema, insertPricingPlanSchema
 import { setupAuth, comparePasswords, hashPassword } from "./auth";
 import * as z from 'zod';
 
+// Import LLM functions
+import { analyzeLegalDocument, extractTextFromPDF } from "./llm";
+
 // Authentication middleware
-function isAuthenticated(req: Express.Request, res: Express.Response, next: Express.NextFunction) {
+function isAuthenticated(req: Request, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Not authenticated" });
   }
@@ -219,6 +222,43 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Export error:', error);
       res.status(500).json({ message: "Could not process export request" });
+    }
+  });
+  
+  // Document analysis with LLM
+  app.post("/api/documents/analyze", isAuthenticated, async (req, res) => {
+    try {
+      const { documentId, content, model } = req.body;
+      
+      if (!documentId && !content) {
+        return res.status(400).json({ 
+          message: "Either documentId or content is required"
+        });
+      }
+      
+      // If documentId is provided, get the document
+      let documentContent = content;
+      let document;
+      
+      if (documentId) {
+        document = await storage.getDocument(Number(documentId), req.user!.id);
+        if (!document) {
+          return res.status(404).json({ message: "Document not found" });
+        }
+        // In a real implementation, extract text content from document file
+        // For now, we'll use a placeholder
+        documentContent = "This is the extracted document content";
+      }
+      
+      // Get analysis from LLM based on model selection
+      const analysis = await analyzeLegalDocument(documentContent, model);
+      
+      res.json(analysis);
+    } catch (error: any) {
+      console.error('Document analysis error:', error);
+      res.status(500).json({ 
+        message: error.message || "Could not analyze document"
+      });
     }
   });
 

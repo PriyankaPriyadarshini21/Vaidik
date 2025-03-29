@@ -53,6 +53,7 @@ export default function DocumentReview() {
   const [currentFile, setCurrentFile] = useState<UploadedFile | null>(null);
   const [newTag, setNewTag] = useState("");
   const [editingFileName, setEditingFileName] = useState("");
+  const [selectedModel, setSelectedModel] = useState<'openai' | 'claude' | 'ollama'>('openai');
 
   const [analysis, setAnalysis] = useState<AnalysisResult>({
     status: 'analyzing',
@@ -109,55 +110,152 @@ export default function DocumentReview() {
     }
   };
 
-  const startAnalysis = () => {
+  const startAnalysis = async () => {
+    if (!currentFile) {
+      toast({
+        title: "Error",
+        description: "Please upload a document first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setAnalysis(prev => ({ ...prev, status: 'analyzing', progress: 0 }));
-
-    // Simulate AI analysis progress
+    
+    // Start progress animation
     const interval = setInterval(() => {
       setAnalysis(prev => {
-        if (prev.progress >= 100) {
-          clearInterval(interval);
-          return {
-            status: 'complete',
-            progress: 100,
-            keyClauses: [
-              {
-                title: "Termination Clause",
-                content: "Either party may terminate with 30 days notice",
-                type: "neutral"
-              },
-              {
-                title: "Liability Protection",
-                content: "Strong indemnification provisions",
-                type: "positive"
-              },
-              {
-                title: "Payment Terms",
-                content: "Payment schedule is not clearly defined",
-                type: "negative"
-              }
-            ],
-            strengths: [
-              "Comprehensive intellectual property protection",
-              "Clear dispute resolution process",
-              "Well-defined confidentiality terms"
-            ],
-            risks: [
-              "Vague payment terms could lead to disputes",
-              "Missing force majeure clause",
-              "Limited liability cap may be insufficient"
-            ],
-            recommendations: [
-              "Add specific payment milestones and deadlines",
-              "Include force majeure provisions",
-              "Review and potentially increase liability cap"
-            ],
-            summary: "This document provides a solid foundation but requires some refinements in key areas, particularly regarding payment terms and risk management provisions."
-          };
+        if (prev.progress >= 95) {
+          return prev; // Cap at 95% until real response
         }
         return { ...prev, progress: prev.progress + 2 };
       });
     }, 100);
+    
+    try {
+      // Send the document ID and the selected model
+      const response = await fetch('/api/documents/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          documentId: currentFile?.id,
+          // For demo purposes, use a placeholder since we might not have actual content yet
+          content: `This Agreement ("Agreement") is made and entered into as of [DATE] by and between:
+
+[COMPANY NAME], a corporation organized and existing under the laws of [STATE/COUNTRY], with its principal place of business at [ADDRESS] ("Company"),
+
+and
+
+[CONSULTANT NAME], an individual residing at [ADDRESS] / a company organized and existing under the laws of [STATE/COUNTRY] with its principal place of business at [ADDRESS] ("Consultant").
+
+WHEREAS, Company desires to retain Consultant to perform certain services for Company; and
+
+WHEREAS, Consultant is willing to perform such services for Company;
+
+NOW, THEREFORE, in consideration of the mutual promises and covenants contained herein, the parties agree as follows:
+
+1. SERVICES. Consultant shall provide consulting services to Company as described in Exhibit A attached hereto (the "Services"). Consultant shall perform the Services in a professional and workmanlike manner, in accordance with industry standards and in compliance with all applicable laws and regulations.
+
+2. TERM. This Agreement shall commence on [START DATE] and shall continue until [END DATE], unless earlier terminated as provided herein (the "Term").
+
+3. COMPENSATION. 
+   a. Company shall pay Consultant a fee of [AMOUNT] per [HOUR/DAY/MONTH/PROJECT], payable [PAYMENT TERMS].
+   b. Consultant shall submit invoices to Company [FREQUENCY], and Company shall pay such invoices within [NUMBER] days of receipt.
+   c. Consultant shall be responsible for all taxes and other expenses incurred in connection with the Services.
+
+4. EXPENSES. Company shall reimburse Consultant for reasonable out-of-pocket expenses incurred in connection with the Services, provided that such expenses are approved in advance by Company and Consultant provides Company with appropriate documentation of such expenses.
+
+5. RELATIONSHIP OF PARTIES. Consultant is an independent contractor and not an employee of Company. Consultant shall be solely responsible for all taxes, withholdings, and other statutory or contractual obligations of any sort.
+
+6. CONFIDENTIALITY. 
+   a. "Confidential Information" means any information disclosed by one party to the other, either directly or indirectly, in writing, orally or by inspection of tangible objects, which is designated as "Confidential," "Proprietary" or some similar designation, or information which a reasonable person would understand to be confidential given the nature of the information and circumstances of disclosure.
+   b. Consultant shall hold in confidence all Confidential Information of Company and shall not disclose such Confidential Information to any third party or use such Confidential Information for any purpose other than performing the Services.
+   c. The confidentiality obligations set forth herein shall survive the termination or expiration of this Agreement for a period of [NUMBER] years.
+
+7. INTELLECTUAL PROPERTY. 
+   a. Company shall own all right, title, and interest in and to any work product, deliverables, or other materials created by Consultant in the course of performing the Services (collectively, the "Work Product").
+   b. Consultant hereby assigns to Company all right, title, and interest in and to the Work Product, including all intellectual property rights therein.
+   c. Consultant shall assist Company, at Company's expense, to obtain and enforce patents, copyrights, and other intellectual property rights in the Work Product.
+
+8. TERMINATION. 
+   a. Either party may terminate this Agreement upon [NUMBER] days' written notice to the other party.
+   b. Company may terminate this Agreement immediately upon written notice to Consultant if Consultant breaches any provision of this Agreement.
+   c. Upon termination, Consultant shall promptly deliver to Company all Work Product, whether complete or in progress, and all Confidential Information of Company.
+   d. If this Agreement is terminated by Company without cause, Company shall pay Consultant for all Services performed through the effective date of termination.
+
+9. WARRANTIES. Consultant warrants that (a) the Services will be performed in a professional and workmanlike manner, in accordance with industry standards; (b) Consultant has the right to enter into this Agreement; and (c) the Work Product will not infringe any intellectual property rights of any third party.`,
+          model: selectedModel
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error analyzing document: ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      clearInterval(interval);
+      
+      setAnalysis({
+        status: 'complete',
+        progress: 100,
+        keyClauses: result.keyClauses || [],
+        strengths: result.strengths || [],
+        risks: result.risks || [],
+        recommendations: result.recommendations || [],
+        summary: result.summary || ''
+      });
+    } catch (error: any) {
+      console.error('Analysis error:', error);
+      clearInterval(interval);
+      
+      // For demo purposes, use mock data if API fails
+      // In production, we would display an error message
+      toast({
+        title: 'Analysis completed using fallback data',
+        description: 'API connection failed. Using demo data for preview.',
+        variant: 'destructive'
+      });
+      
+      setAnalysis({
+        status: 'complete',
+        progress: 100,
+        keyClauses: [
+          {
+            title: "Termination Clause",
+            content: "Either party may terminate with 30 days notice",
+            type: "neutral"
+          },
+          {
+            title: "Liability Protection",
+            content: "Strong indemnification provisions",
+            type: "positive"
+          },
+          {
+            title: "Payment Terms",
+            content: "Payment schedule is not clearly defined",
+            type: "negative"
+          }
+        ],
+        strengths: [
+          "Comprehensive intellectual property protection",
+          "Clear dispute resolution process",
+          "Well-defined confidentiality terms"
+        ],
+        risks: [
+          "Vague payment terms could lead to disputes",
+          "Missing force majeure clause",
+          "Limited liability cap may be insufficient"
+        ],
+        recommendations: [
+          "Add specific payment milestones and deadlines",
+          "Include force majeure provisions",
+          "Review and potentially increase liability cap"
+        ],
+        summary: "This document provides a solid foundation but requires some refinements in key areas, particularly regarding payment terms and risk management provisions."
+      });
+    }
   };
 
   const handleAddTag = () => {
@@ -311,7 +409,26 @@ export default function DocumentReview() {
           {analysis.status === 'analyzing' ? (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Analysis in Progress</CardTitle>
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <CardTitle className="text-lg">Analysis in Progress</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="model-selection" className="text-sm text-muted-foreground">AI Model:</label>
+                    <Select 
+                      value={selectedModel} 
+                      onValueChange={(value: 'openai' | 'claude' | 'ollama') => setSelectedModel(value)}
+                      disabled={analysis.status === 'analyzing'}
+                    >
+                      <SelectTrigger id="model-selection" className="w-[150px]">
+                        <SelectValue placeholder="Select Model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="openai">OpenAI GPT-4</SelectItem>
+                        <SelectItem value="claude">Claude</SelectItem>
+                        <SelectItem value="ollama">Ollama (Local)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <Progress value={analysis.progress} className="mb-2" />
@@ -401,7 +518,36 @@ export default function DocumentReview() {
                 <TabsContent value="summary">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Summary & Recommendations</CardTitle>
+                      <div className="flex justify-between items-center flex-wrap gap-4">
+                        <CardTitle>Summary & Recommendations</CardTitle>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            <label htmlFor="results-model-selection" className="text-sm text-muted-foreground">AI Model:</label>
+                            <Select 
+                              value={selectedModel} 
+                              onValueChange={(value: 'openai' | 'claude' | 'ollama') => setSelectedModel(value)}
+                            >
+                              <SelectTrigger id="results-model-selection" className="w-[150px]">
+                                <SelectValue placeholder="Select Model" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="openai">OpenAI GPT-4</SelectItem>
+                                <SelectItem value="claude">Claude</SelectItem>
+                                <SelectItem value="ollama">Ollama (Local)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex items-center gap-2"
+                            onClick={() => startAnalysis()}
+                          >
+                            <Bot className="h-4 w-4" />
+                            Reanalyze
+                          </Button>
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       <p className="text-sm text-muted-foreground">{analysis.summary}</p>
