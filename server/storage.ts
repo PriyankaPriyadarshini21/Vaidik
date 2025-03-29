@@ -44,7 +44,7 @@ export interface IStorage {
   // Pricing plan operations
   getPricingPlans(): Promise<PricingPlan[]>;
   createPricingPlan(plan: InsertPricingPlan): Promise<PricingPlan>;
-  getUserSubscription(userId: number): Promise<UserSubscription | undefined>;
+  getUserSubscription(userId: number): Promise<(UserSubscription & { planName?: string, features?: string[], price?: number }) | undefined>;
   createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
 
   // Session store for authentication
@@ -193,13 +193,31 @@ export class DatabaseStorage implements IStorage {
     return newPlan;
   }
 
-  async getUserSubscription(userId: number): Promise<UserSubscription | undefined> {
+  async getUserSubscription(userId: number): Promise<(UserSubscription & { planName?: string, features?: string[], price?: number }) | undefined> {
+    // Get the latest subscription
     const [subscription] = await db
       .select()
       .from(userSubscriptions)
       .where(eq(userSubscriptions.userId, userId))
       .orderBy(desc(userSubscriptions.createdAt));
-    return subscription;
+    
+    if (!subscription) {
+      return undefined;
+    }
+    
+    // Get pricing plan details to enrich subscription data
+    const [plan] = await db
+      .select()
+      .from(pricingPlans)
+      .where(eq(pricingPlans.id, subscription.planId));
+
+    // Enrich the subscription with plan details
+    return {
+      ...subscription,
+      planName: plan?.name,
+      features: plan?.features || [],
+      price: plan?.price,
+    };
   }
 
   async createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription> {

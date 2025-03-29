@@ -50,7 +50,17 @@ import {
   HelpCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { User } from "@shared/schema";
+import { User, UserSubscription, PricingPlan } from "@shared/schema";
+
+// Extended user type that includes subscription information
+interface ExtendedUser extends User {
+  subscription?: UserSubscription & {
+    planName?: string;
+    features?: string[];
+    paymentMethod?: string;
+    price?: number;
+  };
+}
 
 const profileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -78,7 +88,8 @@ export default function Profile() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(false);
 
-  const { data: userInfo, isLoading, error } = useQuery<User>({
+  // Query for user data including subscription
+  const { data: userInfo, isLoading, error } = useQuery<ExtendedUser>({
     queryKey: ["/api/user"],
     retry: 2,
     refetchOnWindowFocus: false,
@@ -87,7 +98,32 @@ export default function Profile() {
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
-      return response.json();
+      
+      // Get the basic user data
+      const userData: User = await response.json();
+
+      try {
+        // Get the user's subscription data
+        const subscriptionResponse = await apiRequest("GET", `/api/users/${userData.id}/subscription`);
+        
+        // If the user has a subscription, add it to the user data
+        if (subscriptionResponse.ok) {
+          const subscriptionData = await subscriptionResponse.json();
+          return {
+            ...userData,
+            subscription: {
+              ...subscriptionData,
+              paymentMethod: subscriptionData.status === 'active' ? 'Credit Card' : undefined
+            }
+          };
+        }
+      } catch (error) {
+        // If there's an error fetching the subscription, just return the user data without it
+        console.error("Error fetching subscription:", error);
+      }
+      
+      // Return user data without subscription if there's no subscription or there was an error
+      return userData;
     },
   });
 
@@ -341,7 +377,7 @@ export default function Profile() {
               <div className="flex items-center gap-6 mb-6">
                 <div className="relative">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={userInfo?.avatarUrl} />
+                    <AvatarImage src={userInfo?.avatarUrl || undefined} />
                     <AvatarFallback>{userInfo?.fullName?.substring(0, 2)?.toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <label
@@ -449,7 +485,183 @@ export default function Profile() {
         </TabsContent>
 
         <TabsContent value="subscription" className="space-y-6">
-          {/* Subscription Tab Content */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Current Plan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Current Plan Overview */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-muted/50 rounded-lg">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold">
+                        {userInfo?.subscription?.planName || "Free Plan"}
+                      </h3>
+                      <Badge variant="secondary" className="ml-2">
+                        {userInfo?.subscription?.status || "Active"}
+                      </Badge>
+                    </div>
+                    <p className="text-muted-foreground">
+                      {userInfo?.subscription?.planName === "Free Plan" 
+                        ? "Limited access to AI document generation and analysis tools." 
+                        : "Full access to all features with premium support."}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="text-2xl font-bold">
+                      ${userInfo?.subscription?.price || "0"}<span className="text-sm font-normal text-muted-foreground">/month</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {userInfo?.subscription?.endDate 
+                        ? `Renews on ${new Date(userInfo.subscription.endDate).toLocaleDateString()}` 
+                        : ""}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subscription Features */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Your Plan Features</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {userInfo?.subscription?.features ? (
+                      userInfo.subscription.features.map((feature, index) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span>{feature}</span>
+                        </div>
+                      ))
+                    ) : (
+                      // Default features for Free Plan
+                      <>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span>50+ AI drafts per month</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span>3 AI documents analyze</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span>24*7 Support</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Upgrade Button */}
+                <div className="pt-2">
+                  <Button className="w-full md:w-auto" onClick={() => window.location.href = "/pricing"}>
+                    {userInfo?.subscription?.planName === "Enterprise Plan" 
+                      ? "Manage Subscription" 
+                      : "Upgrade Plan"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Billing History */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Billing & Payment</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Payment Method */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Payment Method</h3>
+                <div className="flex items-center gap-4 p-4 border rounded-lg">
+                  <CreditCard className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">
+                      {userInfo?.subscription?.paymentMethod || "No payment method on file"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {userInfo?.subscription?.paymentMethod 
+                        ? "Card ending in •••• 4242" 
+                        : "Add a payment method to upgrade your plan"}
+                    </p>
+                  </div>
+                  <div className="ml-auto">
+                    <Button variant="outline" size="sm">
+                      {userInfo?.subscription?.paymentMethod ? "Update" : "Add"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Billing History */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Billing History</h3>
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download All
+                  </Button>
+                </div>
+                
+                {/* History Table */}
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Amount</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Invoice</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-background divide-y divide-border">
+                      {/* Show example or actual billing history */}
+                      {userInfo?.subscription ? (
+                        <tr>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            {new Date(userInfo.subscription.startDate).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            ${userInfo.subscription.price || "0.00"}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            <Badge variant={userInfo.subscription.status === "active" ? "outline" : "secondary"}>
+                              {userInfo.subscription.status === "active" ? "Paid" : "Pending"}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            <Button variant="ghost" size="sm">
+                              <FileText className="h-4 w-4 mr-1" />
+                              PDF
+                            </Button>
+                          </td>
+                        </tr>
+                      ) : (
+                        <tr>
+                          <td colSpan={4} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                            No billing history available
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Manage Subscription */}
+              <div className="space-y-4 pt-2">
+                <h3 className="text-lg font-medium">Manage Subscription</h3>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="outline">
+                    Change Plan
+                  </Button>
+                  <Button variant="outline" className="text-destructive hover:bg-destructive/10">
+                    Cancel Subscription
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           </TabsContent>
 
         <TabsContent value="security" className="space-y-6">
