@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +41,7 @@ import {
   Trash,
   Calendar,
   MessageSquare,
+  MessagesSquare,
   Mail,
   CreditCard,
   FileText,
@@ -47,7 +49,10 @@ import {
   Clock,
   AlertTriangle,
   Shield,
-  HelpCircle
+  HelpCircle,
+  ExternalLink,
+  GraduationCap,
+  PlayCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { User, UserSubscription, PricingPlan } from "@shared/schema";
@@ -777,7 +782,172 @@ export default function Profile() {
         </TabsContent>
 
         <TabsContent value="support" className="space-y-6">
-          {/* Support Tab Content */}
+          {/* Get Help Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Get Help</CardTitle>
+              <CardDescription>
+                Our support team is here to assist you with any questions or issues
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Contact Options */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col items-center gap-4 p-6 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <MessagesSquare className="h-10 w-10 text-primary" />
+                  <h3 className="text-lg font-medium">Live Chat</h3>
+                  <p className="text-center text-muted-foreground">
+                    Chat with our support team in real-time for immediate assistance
+                  </p>
+                  <Button variant="outline" onClick={startChat}>
+                    Start Chat
+                  </Button>
+                </div>
+                <div className="flex flex-col items-center gap-4 p-6 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Mail className="h-10 w-10 text-primary" />
+                  <h3 className="text-lg font-medium">Email Support</h3>
+                  <p className="text-center text-muted-foreground">
+                    Send us an email and we'll get back to you within 24 hours
+                  </p>
+                  <Button variant="outline" onClick={sendEmail}>
+                    Send Email
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Support Hours */}
+              <div className="bg-muted/30 p-4 rounded-lg">
+                <h4 className="font-medium mb-2 flex items-center">
+                  <Clock className="h-5 w-5 mr-2 text-muted-foreground" />
+                  Support Hours
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <p className="font-medium">Monday - Friday:</p>
+                    <p className="text-muted-foreground">9:00 AM - 8:00 PM EST</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Saturday - Sunday:</p>
+                    <p className="text-muted-foreground">10:00 AM - 6:00 PM EST</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* FAQ Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Frequently Asked Questions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>How do I create a new legal document?</AccordionTrigger>
+                  <AccordionContent>
+                    To create a new legal document, navigate to the AI Documents section from the main dashboard. 
+                    Select your desired document type, fill in the required information in the form, and our AI 
+                    will generate a customized document for you. You can then review, edit, and download your document.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>Can I share documents with others?</AccordionTrigger>
+                  <AccordionContent>
+                    Yes, you can share documents with colleagues or clients. Open the document you want to share,
+                    click on the Share button in the top right corner, and enter the email addresses of the people
+                    you want to share it with. You can set permissions for each recipient (view only or edit).
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>How can I upgrade my subscription plan?</AccordionTrigger>
+                  <AccordionContent>
+                    To upgrade your subscription, go to your Profile page and select the Subscription tab.
+                    You'll see your current plan and options to upgrade. Click the Upgrade Plan button and
+                    follow the prompts to select your new plan and complete the payment process.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4">
+                  <AccordionTrigger>What types of legal documents can I create?</AccordionTrigger>
+                  <AccordionContent>
+                    Our platform supports a wide range of legal documents including employment agreements,
+                    consulting contracts, NDAs, service agreements, data processing agreements, and many more.
+                    Check the AI Documents section for the complete list of available templates.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-5">
+                  <AccordionTrigger>How secure is my data on your platform?</AccordionTrigger>
+                  <AccordionContent>
+                    We take data security extremely seriously. All documents and personal information are encrypted
+                    both during transmission and at rest. We use industry-standard security protocols and regularly
+                    update our systems to protect against vulnerabilities. Your data is never shared with third parties
+                    without your explicit consent.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+          
+          {/* Tutorials Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Getting Started</CardTitle>
+              <CardDescription>
+                Learn how to make the most of our platform with these helpful resources
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Tutorial Cards */}
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col gap-2">
+                      <PlayCircle className="h-8 w-8 text-primary" />
+                      <h4 className="font-medium">Platform Tour</h4>
+                      <p className="text-sm text-muted-foreground">
+                        A quick guide to navigating and using all features.
+                      </p>
+                      <Button variant="link" className="px-0 justify-start" onClick={() => window.open('/help', '_blank')}>
+                        Watch tutorial
+                        <ExternalLink className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col gap-2">
+                      <FileText className="h-8 w-8 text-primary" />
+                      <h4 className="font-medium">Document Creation</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Learn how to create and customize legal documents.
+                      </p>
+                      <Button variant="link" className="px-0 justify-start" onClick={() => window.open('/help/documents', '_blank')}>
+                        Read guide
+                        <ExternalLink className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col gap-2">
+                      <GraduationCap className="h-8 w-8 text-primary" />
+                      <h4 className="font-medium">Advanced Features</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Explore premium features and advanced customization.
+                      </p>
+                      <Button variant="link" className="px-0 justify-start" onClick={() => window.open('/help/advanced', '_blank')}>
+                        Explore features
+                        <ExternalLink className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
