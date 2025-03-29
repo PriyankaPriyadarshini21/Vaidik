@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navigation from "@/components/layout/navigation";
 import {
   AIDocuments,
+  AIConsultation,
   DocumentManagement,
   Settings,
   Help,
@@ -43,6 +44,7 @@ function Router() {
                 <Switch>
                   <ProtectedRoute path="/" component={Dashboard} />
                   <ProtectedRoute path="/ai-documents" component={AIDocuments} />
+                  <ProtectedRoute path="/ai-consultation" component={AIConsultation} />
                   <ProtectedRoute path="/create/:type" component={DocumentCreator} />
                   <ProtectedRoute path="/documents/new" component={DocumentDashboard} />
                   <ProtectedRoute path="/review" component={DocumentReview} />

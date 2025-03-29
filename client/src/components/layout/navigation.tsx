@@ -86,6 +86,7 @@ export default function Navigation() {
         <NavLink href="/" icon={Home}>Dashboard</NavLink>
         <NavLink href="/profile" icon={User}>Profile</NavLink>
         <NavLink href="/ai-documents" icon={FileText}>AI-Written Documents</NavLink>
+        <NavLink href="/ai-consultation" icon={Users}>AI Consultation</NavLink>
         <NavLink href="/review" icon={Search}>Document Review</NavLink>
         <NavLink href="/consultation" icon={Users}>Legal Consultation</NavLink>
         <NavLink href="/documents" icon={FolderOpen}>Document Management</NavLink>
