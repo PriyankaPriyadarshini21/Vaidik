@@ -11,7 +11,8 @@ import {
   History, Share, Archive, Settings, Trash, Users, 
   Calendar, PieChart, Split, Diff, FileSearch, 
   Scissors, Bookmark, Clock, GitCompare, ScrollText,
-  UserPlus, Bot, BarChart3, Copy, HelpCircle, ShieldCheck 
+  UserPlus, Bot, BarChart3, Copy, HelpCircle, ShieldCheck,
+  Loader2, FileUp, CheckCheck, CloudUpload, ArrowUpCircle, UploadCloud
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -45,6 +46,76 @@ interface AnalysisResult {
   recommendations: string[];
   summary: string;
 }
+
+// Animated upload indicator component
+const AnimatedUploadIndicator = ({ progress }: { progress: number }) => {
+  // Determine which icon to show based on progress
+  const getUploadIcon = () => {
+    if (progress < 25) {
+      return <UploadCloud className="h-12 w-12 text-primary animate-pulse" />;
+    } else if (progress < 50) {
+      return <FileUp className="h-12 w-12 text-primary animate-bounce" />;
+    } else if (progress < 75) {
+      return <ArrowUpCircle className="h-12 w-12 text-primary animate-pulse" />;
+    } else if (progress < 100) {
+      return <CloudUpload className="h-12 w-12 text-primary animate-pulse" />;
+    } else {
+      return <CheckCheck className="h-12 w-12 text-green-500" />;
+    }
+  };
+
+  // Determine the progress indicator text
+  const getProgressText = () => {
+    if (progress < 25) {
+      return "Starting upload...";
+    } else if (progress < 50) {
+      return "Uploading document...";
+    } else if (progress < 75) {
+      return "Processing document...";
+    } else if (progress < 100) {
+      return "Almost there...";
+    } else {
+      return "Upload complete!";
+    }
+  };
+  
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col items-center justify-center">
+        <div className="relative mb-4">
+          {getUploadIcon()}
+          <div className="absolute -bottom-1 -right-1">
+            {progress < 100 && (
+              <Loader2 className="h-5 w-5 text-primary animate-spin" />
+            )}
+          </div>
+        </div>
+        <h3 className="text-lg font-medium mb-2">
+          {getProgressText()}
+        </h3>
+      </div>
+      <div className="w-full max-w-xs mx-auto">
+        <Progress 
+          value={progress} 
+          className="mb-2 h-2"
+          // Change color as progress increases
+          style={{ 
+            background: progress < 50 ? 'var(--background-muted)' : 'var(--background)',
+            '--progress-color': progress === 100 ? '#10b981' : 'var(--primary)'
+          } as React.CSSProperties}
+        />
+        <p className="text-sm text-center font-medium" style={{ 
+          color: progress === 100 ? '#10b981' : 'var(--primary)'
+        }}>
+          {progress}%
+        </p>
+      </div>
+      <p className="text-xs text-muted-foreground mt-2 text-center">
+        {progress < 100 ? 'Larger files may take some time to process' : 'Preparing document for analysis...'}
+      </p>
+    </div>
+  );
+};
 
 export default function DocumentReview() {
   const queryClient = useQueryClient();
@@ -355,21 +426,7 @@ NOW, THEREFORE, in consideration of the mutual promises and covenants contained 
           />
           <CardContent className="py-12 flex flex-col items-center justify-center text-center">
             {isUploading ? (
-              <>
-                <div className="mb-4 text-center">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                </div>
-                <h3 className="text-lg font-medium mb-2">
-                  Uploading document...
-                </h3>
-                <div className="w-full max-w-xs mx-auto mb-2">
-                  <Progress value={uploadProgress} className="mb-2" />
-                  <p className="text-sm text-muted-foreground">{uploadProgress}%</p>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Larger files may take some time to process
-                </p>
-              </>
+              <AnimatedUploadIndicator progress={uploadProgress} />
             ) : (
               <>
                 <Upload className="h-12 w-12 text-muted-foreground mb-4" />
@@ -484,11 +541,42 @@ NOW, THEREFORE, in consideration of the mutual promises and covenants contained 
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Progress value={analysis.progress} className="mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  Analyzing document contents... {analysis.progress}%
-                </p>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <Loader2 className="h-5 w-5 text-primary animate-spin" />
+                  <span className="text-sm font-medium">AI processing your document...</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>{analysis.progress < 25 ? "Reading document" : 
+                           analysis.progress < 50 ? "Identifying key clauses" : 
+                           analysis.progress < 75 ? "Analyzing legal implications" : 
+                           analysis.progress < 95 ? "Generating recommendations" : 
+                           "Finalizing analysis"}</span>
+                    <span className="font-medium">{analysis.progress}%</span>
+                  </div>
+                  <Progress 
+                    value={analysis.progress} 
+                    className="h-2"
+                    style={{
+                      background: 'var(--background-muted)',
+                      '--progress-color': `hsl(${analysis.progress * 1.2}, 65%, 45%)`
+                    } as React.CSSProperties}
+                  />
+                </div>
+                
+                <div className="pt-2 space-y-3">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Bot className="h-4 w-4" />
+                    Using {selectedModel === 'openai' ? 'OpenAI GPT-4' : 
+                           selectedModel === 'claude' ? 'Anthropic Claude' : 
+                           'Ollama (Local Model)'}
+                  </p>
+                  <p className="text-xs text-muted-foreground italic">
+                    Our AI is carefully analyzing your document for legal insights and potential issues
+                  </p>
+                </div>
               </CardContent>
             </Card>
           ) : (
