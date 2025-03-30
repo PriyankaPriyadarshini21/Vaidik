@@ -1080,7 +1080,7 @@ export default function LegalConsultation() {
                 
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
                   <div className="flex items-start gap-4">
-                    <div className="bg-black/10 p-3 rounded-xl shadow-sm hidden md:flex">
+                    <div className="bg-gradient-to-br from-black/10 to-black/20 p-3.5 rounded-xl shadow-md hidden md:flex">
                       <MessagesSquare className="h-7 w-7 text-black" />
                     </div>
                     <div>
@@ -1091,6 +1091,24 @@ export default function LegalConsultation() {
                       <p className="text-sm text-gray-600 max-w-xl leading-relaxed font-light">
                         Access your past and upcoming consultations with AI assistants and legal experts. Continue active conversations or schedule new consultations.
                       </p>
+                      
+                      <div className="mt-3 flex items-center gap-4 text-xs text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <div className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-30"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
+                          </div>
+                          <span>{consultations.filter(c => c.status === 'active').length} Active</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="h-2 w-2 rounded-full bg-black/30"></div>
+                          <span>{consultations.filter(c => c.status === 'scheduled').length} Scheduled</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="h-2 w-2 rounded-full bg-black/20"></div>
+                          <span>{consultations.filter(c => c.status === 'completed').length} Completed</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -1155,9 +1173,12 @@ export default function LegalConsultation() {
                       </div>
                       
                       {/* Mini Calendar */}
-                      <div className="hidden md:block bg-white rounded-lg border border-black/10 shadow-sm p-3">
-                        <div className="text-xs font-medium mb-2 text-black">Upcoming Consultations</div>
-                        <div className="grid grid-cols-7 gap-1 mb-1">
+                      <div className="hidden md:block bg-white rounded-lg border border-black/10 shadow-md p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="text-xs font-medium text-black">Upcoming Consultations</div>
+                          <div className="text-[10px] text-gray-500">{new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</div>
+                        </div>
+                        <div className="grid grid-cols-7 gap-1 mb-2 mt-1">
                           {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
                             <div key={i} className="text-[10px] text-center text-gray-500 font-medium">{day}</div>
                           ))}
@@ -1174,16 +1195,28 @@ export default function LegalConsultation() {
                                 key={i} 
                                 className={`
                                   text-[10px] flex items-center justify-center rounded-full 
-                                  aspect-square w-6 font-medium 
+                                  aspect-square w-6 font-medium transition-all
                                   ${hasConsultation 
-                                    ? 'bg-black text-white' 
-                                    : 'text-gray-700 hover:bg-black/5 cursor-pointer'}
+                                    ? 'bg-black text-white shadow-sm' 
+                                    : i < 3 
+                                      ? 'text-gray-700 hover:bg-black/5 cursor-pointer bg-black/5'
+                                      : 'text-gray-700 hover:bg-black/5 cursor-pointer'}
                                 `}
                               >
                                 {date.getDate()}
                               </div>
                             );
                           })}
+                        </div>
+                        
+                        <div className="mt-3 pt-3 border-t border-black/5">
+                          <div className="flex items-center justify-between text-[10px] text-gray-700">
+                            <div className="font-medium">Next consultation</div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>Tomorrow, 10:00 AM</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1212,19 +1245,22 @@ export default function LegalConsultation() {
                   {consultations.map((consultation) => (
                     <Card 
                       key={consultation.id} 
-                      className={`overflow-hidden transition-all hover:shadow-md bg-white ${
+                      className={`overflow-hidden transition-all hover:shadow-md relative ${
                         consultation.status === 'active' 
-                          ? 'border-black/20' 
+                          ? 'border-black/20 bg-gradient-to-b from-white to-black/5' 
                           : consultation.status === 'scheduled' 
-                            ? 'border-black/15'
-                            : 'border-black/10'
+                            ? 'border-black/15 bg-white'
+                            : 'border-black/10 bg-white'
                       }`}
                     >
+                      {consultation.status === 'active' && (
+                        <div className="absolute top-0 left-0 w-1 h-full bg-black" />
+                      )}
                       <CardHeader className="pb-3 border-b border-black/10">
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-3">
                             {consultation.type === 'ai' ? (
-                              <div className="bg-black p-2 rounded-lg shadow-sm">
+                              <div className={`p-2 rounded-lg shadow-sm ${consultation.status === 'active' ? 'bg-black' : 'bg-black/80'}`}>
                                 <Bot className="h-5 w-5 text-white" />
                               </div>
                             ) : (
@@ -1237,8 +1273,14 @@ export default function LegalConsultation() {
                               </Avatar>
                             )}
                             <div>
-                              <CardTitle className="text-base font-semibold text-black">
+                              <CardTitle className="text-base font-semibold text-black flex items-center gap-2">
                                 {consultation.type === 'ai' ? 'AI Legal Assistant' : `Consultation with ${consultation.expertName}`}
+                                {consultation.status === 'active' && (
+                                  <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-30"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
+                                  </span>
+                                )}
                               </CardTitle>
                               <CardDescription className="text-xs flex items-center gap-1.5 text-gray-600">
                                 <FileText className="h-3 w-3" />
@@ -1249,62 +1291,61 @@ export default function LegalConsultation() {
                           <Badge 
                             variant="outline"
                             className={`
-                              ${consultation.status === 'active' ? 'bg-black/5 text-black border-black/20' : ''}
-                              ${consultation.status === 'scheduled' ? 'bg-black/5 text-black border-black/20' : ''}
+                              ${consultation.status === 'active' ? 'bg-black text-white border-0' : ''}
+                              ${consultation.status === 'scheduled' ? 'bg-black/10 text-black border-black/20' : ''}
                               ${consultation.status === 'completed' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
                               ${consultation.status === 'cancelled' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
                             `}
                           >
-                            {consultation.status === 'active' && (
-                              <span className="flex items-center gap-1">
-                                <span className="relative flex h-2 w-2 mr-0.5">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-30"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
-                                </span>
-                                Active
-                              </span>
-                            )}
-                            {consultation.status !== 'active' && (
+                            {consultation.status === 'active' ? 'Active Now' : (
                               <span className="capitalize">{consultation.status}</span>
                             )}
                           </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="p-4 space-y-3">
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-2">
                           {consultation.type === 'expert' && (
-                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                            <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5">
                               <CalendarIcon className="h-3.5 w-3.5 text-black/70" />
-                              <span className="text-gray-700">
+                              <span className="text-gray-700 font-medium">
                                 {new Date(consultation.date || '').toLocaleDateString()} at {consultation.time}
                               </span>
                             </div>
                           )}
                           
                           {consultation.documents && consultation.documents.length > 0 && (
-                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                            <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5">
                               <FileText className="h-3.5 w-3.5 text-black/70" />
-                              <span className="text-gray-700">
+                              <span className="text-gray-700 font-medium">
                                 {consultation.documents.length} document{consultation.documents.length > 1 ? 's' : ''}
                               </span>
                             </div>
                           )}
                           
-                          <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                          <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5">
                             <Clock className="h-3.5 w-3.5 text-black/70" />
-                            <span className="text-gray-700">
+                            <span className="text-gray-700 font-medium">
                               {new Date(consultation.createdAt).toLocaleDateString()}
                             </span>
                           </div>
                         </div>
                         
-                        <div className="border border-black/10 rounded-lg p-3 bg-black/5 max-h-20 overflow-hidden relative">
+                        <div className={`border rounded-lg p-3 max-h-20 overflow-hidden relative
+                          ${consultation.status === 'active' 
+                            ? 'border-black/20 bg-black/10' 
+                            : 'border-black/10 bg-black/5'}`}
+                        >
                           <div className="flex items-start gap-2 mb-1">
-                            <div className="min-w-fit mt-0.5">
+                            <div className={`min-w-fit mt-0.5 flex items-center justify-center rounded-full 
+                              ${consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' 
+                                ? 'h-5 w-5 bg-black' 
+                                : 'h-5 w-5 bg-black/80'}`}
+                            >
                               {consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' ? (
-                                <User className="h-3.5 w-3.5 text-black/60" />
+                                <User className="h-3 w-3 text-white" />
                               ) : (
-                                <Bot className="h-3.5 w-3.5 text-black/60" />
+                                <Bot className="h-3 w-3 text-white" />
                               )}
                             </div>
                             <div>
@@ -1319,6 +1360,19 @@ export default function LegalConsultation() {
                           </div>
                           <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/90 to-transparent" />
                         </div>
+                        
+                        {consultation.type === 'expert' && consultation.status === 'scheduled' && (
+                          <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
+                            <div className="flex items-center gap-1">
+                              <Video className="h-3.5 w-3.5" />
+                              <span>Video consultation</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>60 minutes</span>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                       <CardFooter className="px-4 pb-4 pt-1">
                         <Button 
