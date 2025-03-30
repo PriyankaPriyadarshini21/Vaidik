@@ -850,7 +850,6 @@ export default function LegalConsultation() {
         </TabsContent>
         
         <TabsContent value="consultations" className="space-y-6">
-          {/* Import these components at the top of the file */}
           <MyConsultationsHeader 
             onNewAIConsultation={startAiConsultation}
             onScheduleWithExpert={() => setActiveTab("experts")}

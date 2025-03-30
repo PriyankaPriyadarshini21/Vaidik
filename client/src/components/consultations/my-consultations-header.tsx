@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { MessageSquare, ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MyConsultationsHeaderProps {
   onNewAIConsultation: () => void;
@@ -16,7 +17,7 @@ export function MyConsultationsHeader({
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   
   // Days of the week for the mini calendar
-  const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
   
   // Get days in month
   const getDaysInMonth = (year: number, month: number) => {
@@ -82,40 +83,79 @@ export function MyConsultationsHeader({
   };
   
   // Dummy data for consultation dates (in a real app, this would come from the API)
-  const consultationDates = [5, 12, 18, 25]; // Example dates with consultations
+  const consultationDates = [5, 10]; // Example dates with consultations
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 p-6 bg-gray-50 rounded-lg">
-      <div className="space-y-2 flex-1">
-        <h2 className="text-2xl font-bold">My Legal Consultations</h2>
-        <p className="text-gray-600 max-w-2xl">
-          Access your past and upcoming consultations with AI assistants and legal experts. Continue active conversations or schedule new consultations.
-        </p>
+    <div className="flex justify-between rounded-lg bg-black text-white p-6">
+      <div className="flex items-center gap-4">
+        <div className="bg-white p-3 rounded-lg">
+          <MessageSquare className="h-6 w-6 text-black" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold">My Legal Consultations</h2>
+          <p className="text-sm text-white/80 max-w-md">
+            Access your past and upcoming consultations with AI assistants and legal experts. Continue active conversations or schedule new consultations.
+          </p>
+        </div>
       </div>
       
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Mini Calendar */}
-        <div className="hidden md:block bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium">
-              {getMonthName(currentMonth)} {currentYear}
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-2 justify-end">
+          <Button 
+            onClick={onNewAIConsultation}
+            className="bg-white text-black hover:bg-white/90"
+          >
+            New AI Consultation
+          </Button>
+          <Button 
+            onClick={onScheduleWithExpert}
+            variant="outline"
+            className="border-white text-white hover:bg-white/10"
+          >
+            Schedule With Expert
+            <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded">March 2025</span>
+          </Button>
+        </div>
+        
+        <div className="bg-black/30 rounded-lg p-3">
+          <div className="flex justify-between items-center mb-1">
+            <div className="text-xs text-white/70">Next Consultation</div>
+            <div className="text-xs text-white/70">In 22 hours</div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8 border-2 border-white/10">
+              <AvatarImage src="https://i.pravatar.cc/150?img=1" alt="Sarah Johnson" />
+              <AvatarFallback>SJ</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="text-sm font-medium">Consultation with Sarah Johnson</div>
+              <div className="flex items-center text-xs text-white/70">
+                <span>Tomorrow, 10:00 AM</span>
+                <span className="mx-2">•</span>
+                <span>March 2025</span>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-6 w-6 p-0"
-                onClick={goToPreviousMonth}
-              >
-                <ChevronLeft className="h-3 w-3" />
+            <div className="ml-auto flex">
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-white/70 hover:text-white hover:bg-transparent">
+                <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-6 w-6 p-0"
-                onClick={goToNextMonth}
-              >
-                <ChevronRight className="h-3 w-3" />
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-white/70 hover:text-white hover:bg-transparent">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-black/30 rounded-lg p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-sm font-medium">March 2025</div>
+            <div className="flex">
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-white/70 hover:text-white hover:bg-transparent">
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-white/70 hover:text-white hover:bg-transparent">
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -123,7 +163,7 @@ export function MyConsultationsHeader({
           {/* Days of week headers */}
           <div className="grid grid-cols-7 gap-1 mb-1">
             {daysOfWeek.map((day, i) => (
-              <div key={i} className="text-xs text-center text-gray-500 font-medium">
+              <div key={i} className="text-xs text-center text-white/50 font-medium">
                 {day}
               </div>
             ))}
@@ -131,56 +171,25 @@ export function MyConsultationsHeader({
           
           {/* Calendar days */}
           <div className="grid grid-cols-7 gap-1">
-            {calendarDays.map((day, i) => {
-              if (day === null) {
-                // Empty cell
-                return <div key={`empty-${i}`} className="aspect-square" />;
-              }
-              
-              const hasConsultation = consultationDates.includes(day);
-              
-              return (
-                <div 
-                  key={`day-${day}`} 
-                  className={`
-                    text-xs flex items-center justify-center rounded-full 
-                    aspect-square w-6 font-medium transition-all
-                    ${isToday(day) ? 'bg-black text-white' : ''}
-                    ${hasConsultation && !isToday(day) ? 'bg-gray-100 text-black' : ''}
-                    ${!hasConsultation && !isToday(day) ? 'text-gray-900 hover:bg-gray-100' : ''}
-                  `}
-                >
-                  {day}
-                </div>
-              );
-            })}
+            {/* Previous month days */}
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white/30">30</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white/30">31</div>
+            
+            {/* Current month days */}
+            <div className="text-xs flex items-center justify-center rounded-full aspect-square w-6 text-white bg-white/20">1</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">2</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">3</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">4</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white bg-white/10">5</div>
+            
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">6</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">7</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">8</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">9</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white bg-white/10">10</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">11</div>
+            <div className="text-xs flex items-center justify-center aspect-square w-6 text-white">12</div>
           </div>
-          
-          {/* Next consultation info */}
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <div className="text-xs text-gray-500 mb-1">Next consultation:</div>
-            <div className="flex items-center">
-              <Calendar className="h-3 w-3 mr-1 text-gray-700" />
-              <span className="text-xs font-medium">March 5, 10:00 AM</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Action Buttons */}
-        <div className="flex flex-col space-y-2">
-          <Button 
-            onClick={onNewAIConsultation}
-            className="bg-black text-white hover:bg-black/90"
-          >
-            New AI Consultation
-          </Button>
-          <Button 
-            onClick={onScheduleWithExpert}
-            variant="outline"
-            className="border-gray-300"
-          >
-            Schedule With Expert
-          </Button>
         </div>
       </div>
     </div>
