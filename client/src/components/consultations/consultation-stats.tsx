@@ -10,18 +10,21 @@ interface ConsultationStatsProps {
 
 export function ConsultationStats({ stats }: ConsultationStatsProps) {
   return (
-    <div className="flex gap-6 mb-6">
+    <div className="grid grid-cols-3 gap-4 mb-6 max-w-md">
       <StatCard 
         label="Active" 
         value={stats.active}
+        color="bg-blue-600"
       />
       <StatCard 
         label="Scheduled" 
         value={stats.scheduled}
+        color="bg-orange-600"
       />
       <StatCard 
         label="Completed" 
         value={stats.completed}
+        color="bg-green-600"
       />
     </div>
   );
@@ -30,16 +33,17 @@ export function ConsultationStats({ stats }: ConsultationStatsProps) {
 interface StatCardProps {
   label: string;
   value: number;
+  color: string;
 }
 
-function StatCard({ label, value }: StatCardProps) {
+function StatCard({ label, value, color }: StatCardProps) {
   return (
-    <div className="flex flex-col items-center bg-black/80 rounded-lg py-3 px-6 min-w-[100px]">
-      <div className="flex">
-        <span className="h-2 w-2 rounded-full bg-white/50 mr-1"></span>
-        <span className="text-lg font-bold text-white">{value}</span>
+    <div className="flex flex-col items-center bg-white rounded-lg py-3 px-2 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-center">
+        <span className={`h-2 w-2 rounded-full ${color} mr-1`}></span>
+        <span className="text-xl font-bold text-gray-800">{value}</span>
       </div>
-      <div className="text-xs text-white/70">{label}</div>
+      <div className="text-xs text-gray-500 mt-1">{label}</div>
     </div>
   );
 }

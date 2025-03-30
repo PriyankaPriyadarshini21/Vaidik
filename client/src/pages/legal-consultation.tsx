@@ -1323,48 +1323,42 @@ export default function LegalConsultation() {
                     {consultations.map((consultation) => (
                       <Card 
                         key={consultation.id} 
-                        className={`overflow-hidden transition-all hover:shadow-lg relative rounded-xl
-                          ${consultation.status === 'active' 
-                            ? 'border-0 shadow-md' 
-                            : consultation.status === 'scheduled' 
-                              ? 'border-black/15 bg-white shadow-sm'
-                              : 'border-black/10 bg-white shadow-sm'
-                          }`}
+                        className="overflow-hidden transition-all hover:shadow-md relative rounded-lg border border-gray-200 bg-white"
                       >
                         {consultation.status === 'active' && (
                           <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-black/0 to-black/5 pointer-events-none" />
                         )}
-                        <div className={`absolute top-0 left-0 w-1 h-full 
+                        <div className={`absolute top-0 left-0 w-[3px] h-full 
                           ${consultation.status === 'active' 
-                            ? 'bg-black' 
+                            ? 'bg-gradient-to-b from-blue-400 to-blue-600' 
                             : consultation.status === 'scheduled' 
-                              ? 'bg-black/40' 
-                              : 'bg-black/20'
+                              ? 'bg-gradient-to-b from-orange-400 to-orange-600' 
+                              : 'bg-gradient-to-b from-green-400 to-green-600'
                           }`}
                         />
-                        <CardHeader className={`pb-3 border-b ${consultation.status === 'active' ? 'border-black/10 bg-gradient-to-r from-black/5 to-black/0' : 'border-black/10'}`}>
+                        <CardHeader className="pb-3 border-b border-gray-100">
                           <div className="flex justify-between items-start">
                             <div className="flex items-center gap-3">
                               {consultation.type === 'ai' ? (
-                                <div className={`p-3 rounded-xl shadow-md ${consultation.status === 'active' ? 'bg-black' : 'bg-black/80'}`}>
+                                <div className="p-2 rounded-full shadow-sm bg-gradient-to-r from-blue-500 to-blue-600">
                                   <Bot className="h-5 w-5 text-white" />
                                 </div>
                               ) : (
-                                <Avatar className="h-11 w-11 border-2 border-black/10 shadow-md">
+                                <Avatar className="h-10 w-10 border border-gray-200 shadow-sm">
                                   <AvatarImage 
                                     src={experts.find(e => e.id === consultation.expertId)?.image} 
                                     alt={consultation.expertName} 
                                   />
-                                  <AvatarFallback className="bg-black/5 text-black font-medium">{consultation.expertName?.substring(0, 2)}</AvatarFallback>
+                                  <AvatarFallback className="bg-gray-50 text-gray-600">{consultation.expertName?.substring(0, 2)}</AvatarFallback>
                                 </Avatar>
                               )}
                               <div>
                                 <CardTitle className="text-base font-bold text-black flex items-center gap-2">
                                   {consultation.type === 'ai' ? 'AI Legal Assistant' : `Consultation with ${consultation.expertName}`}
                                   {consultation.status === 'active' && (
-                                    <span className="relative flex h-2.5 w-2.5">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-30"></span>
-                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-black"></span>
+                                    <span className="relative flex h-2 w-2">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                     </span>
                                   )}
                                 </CardTitle>
@@ -1374,14 +1368,14 @@ export default function LegalConsultation() {
                                 </CardDescription>
                               </div>
                             </div>
-                            <Badge 
-                              variant="outline"
-                              className={`font-semibold
-                                ${consultation.status === 'active' ? 'bg-black text-white border-0' : ''}
-                                ${consultation.status === 'scheduled' ? 'bg-black/10 text-black border-black/20' : ''}
-                                ${consultation.status === 'completed' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
-                                ${consultation.status === 'cancelled' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
-                              `}
+                            <Badge
+                              className={`${
+                                consultation.status === 'active'
+                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                : consultation.status === 'scheduled'
+                                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                                  : 'bg-green-100 text-green-700 hover:bg-green-200'
+                              } border-0`}
                             >
                               {consultation.status === 'active' ? 'Active Now' : (
                                 <span className="capitalize">{consultation.status}</span>
@@ -1392,46 +1386,42 @@ export default function LegalConsultation() {
                         <CardContent className="p-4 space-y-3">
                           <div className="flex flex-wrap gap-2">
                             {consultation.type === 'expert' && (
-                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5 shadow-sm">
-                                <CalendarIcon className="h-3.5 w-3.5 text-black/70" />
-                                <span className="text-gray-700 font-medium">
+                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-orange-50 border border-orange-100 rounded-full">
+                                <CalendarIcon className="h-3 w-3 text-orange-600" />
+                                <span className="text-orange-700 font-medium">
                                   {new Date(consultation.date || '').toLocaleDateString()} at {consultation.time}
                                 </span>
                               </div>
                             )}
                             
                             {consultation.documents && consultation.documents.length > 0 && (
-                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5 shadow-sm">
-                                <FileText className="h-3.5 w-3.5 text-black/70" />
-                                <span className="text-gray-700 font-medium">
+                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-purple-50 border border-purple-100 rounded-full">
+                                <FileText className="h-3 w-3 text-purple-600" />
+                                <span className="text-purple-700 font-medium">
                                   {consultation.documents.length} document{consultation.documents.length > 1 ? 's' : ''}
                                 </span>
                               </div>
                             )}
                             
-                            <div className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-black/5 rounded-full border border-black/5 shadow-sm">
-                              <Clock className="h-3.5 w-3.5 text-black/70" />
-                              <span className="text-gray-700 font-medium">
+                            <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-green-50 border border-green-100 rounded-full">
+                              <Clock className="h-3 w-3 text-green-600" />
+                              <span className="text-green-700 font-medium">
                                 {new Date(consultation.createdAt).toLocaleDateString()}
                               </span>
                             </div>
                           </div>
                           
-                          <div className={`border rounded-xl p-3.5 max-h-20 overflow-hidden relative shadow-sm
-                            ${consultation.status === 'active' 
-                              ? 'border-black/20 bg-black/10' 
-                              : 'border-black/10 bg-black/5'}`}
-                          >
+                          <div className="border border-gray-200 rounded-lg p-3 max-h-20 overflow-hidden relative shadow-sm bg-gray-50">
                             <div className="flex items-start gap-2 mb-1.5">
                               <div className={`min-w-fit mt-0.5 flex items-center justify-center rounded-full shadow-sm
                                 ${consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' 
-                                  ? 'h-6 w-6 bg-black' 
-                                  : 'h-6 w-6 bg-black/80'}`}
+                                  ? 'h-5 w-5 bg-gray-700' 
+                                  : 'h-5 w-5 bg-blue-600'}`}
                               >
                                 {consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' ? (
-                                  <User className="h-3.5 w-3.5 text-white" />
+                                  <User className="h-3 w-3 text-white" />
                                 ) : (
-                                  <Bot className="h-3.5 w-3.5 text-white" />
+                                  <Bot className="h-3 w-3 text-white" />
                                 )}
                               </div>
                               <div>
@@ -1448,27 +1438,27 @@ export default function LegalConsultation() {
                           </div>
                           
                           {consultation.type === 'expert' && consultation.status === 'scheduled' && (
-                            <div className="flex items-center justify-between text-xs text-gray-500 mt-1 font-medium">
-                              <div className="flex items-center gap-1.5">
-                                <Video className="h-3.5 w-3.5" />
-                                <span>Video consultation</span>
+                            <div className="flex items-center justify-between text-xs mt-2 font-medium">
+                              <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md border border-blue-100">
+                                <Video className="h-3 w-3 text-blue-600" />
+                                <span className="text-blue-700">Video consultation</span>
                               </div>
-                              <div className="flex items-center gap-1.5">
-                                <Clock className="h-3.5 w-3.5" />
-                                <span>60 minutes</span>
+                              <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md border border-blue-100">
+                                <Clock className="h-3 w-3 text-blue-600" />
+                                <span className="text-blue-700">60 minutes</span>
                               </div>
                             </div>
                           )}
                         </CardContent>
                         <CardFooter className="px-4 pb-4 pt-1">
                           <Button 
-                            className="w-full shadow-md transition-all font-semibold rounded-xl h-11" 
+                            className="w-full font-medium rounded-md h-10" 
                             variant={consultation.status === 'active' ? "default" : "outline"}
                             onClick={() => setActiveConsultation(consultation)}
                             style={{
-                              backgroundColor: consultation.status === 'active' ? '#000000' : 'transparent',
-                              borderColor: consultation.status === 'active' ? 'transparent' : '#00000033',
-                              color: consultation.status === 'active' ? '#FFFFFF' : '#000000'
+                              backgroundColor: consultation.status === 'active' ? '#3b82f6' : 'transparent',
+                              borderColor: consultation.status === 'active' ? 'transparent' : '#d1d5db',
+                              color: consultation.status === 'active' ? '#FFFFFF' : '#4b5563'
                             }}
                           >
                             {consultation.status === 'active' ? (
