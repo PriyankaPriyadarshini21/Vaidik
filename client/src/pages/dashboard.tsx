@@ -26,7 +26,15 @@ export default function Dashboard() {
     <div className="space-y-6 transition-colors duration-300 dark:bg-gray-900">
       {/* Top navigation & theme toggle */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight dark:text-white">Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2.5 rounded-lg shadow-md">
+            <LayoutDashboard className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight dark:text-white">Dashboard</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Welcome to your legal workspace</p>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <Tabs defaultValue="dashboard" className="mr-4">
             <TabsList className="grid w-full grid-cols-3 h-9">
