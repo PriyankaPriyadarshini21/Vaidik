@@ -1,143 +1,131 @@
 import { DocumentList } from "@/components/documents/document-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "wouter";
-import { Plus, Upload, FileText, Users, Activity } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-// Mock data for the chart
-const data = [
-  { name: 'Mon', value: 12 },
-  { name: 'Tue', value: 15 },
-  { name: 'Wed', value: 10 },
-  { name: 'Thu', value: 22 },
-  { name: 'Fri', value: 25 },
-  { name: 'Sat', value: 20 },
-  { name: 'Sun', value: 18 },
-];
-
-const upcomingConsultations = [
-  { title: "Contract Review", time: "Today at 2:00 PM" },
-  { title: "Legal Advisory", time: "Tomorrow at 10:00 AM" },
-];
-
-const activityTimeline = [
-  { type: "document", title: "Contract.pdf", action: "created", time: "1h ago" },
-  { type: "review", title: "NDA.docx", action: "completed", time: "3h ago" },
-];
+import { ArrowRight, LayoutDashboard, File, FileText, Plus, Upload, UserCircle } from "lucide-react";
+import { NextConsultation } from "@/components/consultations/next-consultation";
+import { ConsultationSummary } from "@/components/consultations/consultation-summary";
+import { ConsultationCalendar } from "@/components/ui/consultation-calendar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useState, useEffect } from "react";
 
 export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
+
+  // This is needed to ensure component only renders client-side to prevent SSR hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="space-y-6">
-      {/* System Status */}
-      <div className="bg-blue-50 p-4 rounded-lg flex gap-4 items-center">
+    <div className="space-y-6 transition-colors duration-300 dark:bg-gray-900">
+      {/* Top navigation & theme toggle */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold tracking-tight dark:text-white">Dashboard</h1>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full" />
-          <span className="text-sm">AI System Status: Active</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-blue-500 rounded-full" />
-          <span className="text-sm">Processing Documents: 2</span>
+          <Tabs defaultValue="dashboard" className="mr-4">
+            <TabsList className="grid w-full grid-cols-3 h-9">
+              <TabsTrigger value="dashboard" className="text-xs flex items-center gap-1.5">
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="documents" className="text-xs flex items-center gap-1.5">
+                <File className="h-3.5 w-3.5" />
+                Documents
+              </TabsTrigger>
+              <TabsTrigger value="profile" className="text-xs flex items-center gap-1.5">
+                <UserCircle className="h-3.5 w-3.5" />
+                Profile
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <ThemeToggle />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Column */}
-        <div className="space-y-6 md:col-span-2">
+      {/* Next Consultation Highlight */}
+      <NextConsultation />
+
+      {/* System Status */}
+      <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg flex gap-4 items-center shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <div className="w-2 h-2 bg-green-500 rounded-full" />
+            <div className="w-2 h-2 bg-green-500 rounded-full absolute inset-0 animate-ping opacity-75" />
+          </div>
+          <span className="text-sm dark:text-white">AI System Status: Active</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+          <span className="text-sm dark:text-white">Processing Documents: 2</span>
+        </div>
+      </div>
+
+      {/* Main Layout: Two-column with consultation summary and calendar */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Left Column - Consultation Summary */}
+        <div className="space-y-6 lg:col-span-2">
           {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+          <Card className="overflow-hidden dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="dark:text-white">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link href="/ai-documents">
-                  <Button className="w-full flex items-center gap-2">
+                  <Button className="w-full flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-all shadow-sm hover:shadow">
                     <Plus className="h-4 w-4" />
                     New Document
                   </Button>
                 </Link>
-                <Link href="/review">
-                  <Button variant="outline" className="w-full flex items-center gap-2">
+                <Link href="/legal-consultation">
+                  <Button variant="outline" className="w-full flex items-center gap-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 dark:border-blue-700 dark:hover:border-blue-600 dark:hover:bg-blue-900/30 transition-all">
                     <Upload className="h-4 w-4" />
-                    Upload Document
+                    Book Consultation
                   </Button>
                 </Link>
               </div>
             </CardContent>
           </Card>
 
-          {/* Document Analytics */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Document Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data}>
-                    <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0056B3" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#0056B3" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="value" stroke="#0056B3" fillOpacity={1} fill="url(#colorValue)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-          <DocumentList/>
+          {/* Consultation Summary */}
+          <ConsultationSummary />
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-6">
-          {/* Upcoming Consultations */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-lg font-medium">Upcoming Consultations</CardTitle>
+        {/* Right Column - Calendar */}
+        <div className="space-y-6 lg:col-span-3">
+          <ConsultationCalendar />
+          
+          {/* Recent Documents */}
+          <Card className="dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="dark:text-white">Recent Documents</CardTitle>
+              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1.5">
+                View All 
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {upcomingConsultations.map((consultation, i) => (
-                  <div key={i} className="flex items-start space-x-4">
-                    <Users className="h-5 w-5 text-primary mt-0.5" />
-                    <div>
-                      <p className="font-medium">{consultation.title}</p>
-                      <p className="text-sm text-muted-foreground">{consultation.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Activity Timeline */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-lg font-medium">Activity Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activityTimeline.map((activity, i) => (
-                  <div key={i} className="flex items-start space-x-4">
-                    {activity.type === "document" ? (
-                      <FileText className="h-5 w-5 text-primary mt-0.5" />
-                    ) : (
-                      <Activity className="h-5 w-5 text-primary mt-0.5" />
-                    )}
-                    <div>
-                      <p className="font-medium">
-                        Document <span className="font-semibold">{activity.title}</span> {activity.action}
-                      </p>
-                      <p className="text-sm text-muted-foreground">{activity.time}</p>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array(3).fill(0).map((_, i) => (
+                  <Card key={i} className="bg-gray-50 dark:bg-gray-800 shadow-none hover:shadow-sm transition-all cursor-pointer border dark:border-gray-700">
+                    <CardContent className="p-4 flex items-start gap-3">
+                      <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/50">
+                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm dark:text-white">
+                          {i === 0 ? "Employment Contract" : i === 1 ? "NDA Agreement" : "Service Contract"}
+                        </h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Updated {i + 1} day{i > 0 ? "s" : ""} ago</p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </CardContent>
