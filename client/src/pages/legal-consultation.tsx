@@ -454,7 +454,10 @@ export default function LegalConsultation() {
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <MyConsultationsHeader />
+          <MyConsultationsHeader 
+            onNewAIConsultation={startAiConsultation}
+            onScheduleWithExpert={() => setActiveTab("experts")}
+          />
           
           <TabsList className="bg-white border border-gray-200 p-1 shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <TabsTrigger 
@@ -475,7 +478,13 @@ export default function LegalConsultation() {
         <TabsContent value="consultations" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="md:col-span-1">
-              <ConsultationStats />
+              <ConsultationStats 
+                stats={{
+                  active: consultations.filter(c => c.status === 'active').length,
+                  scheduled: consultations.filter(c => c.status === 'scheduled').length,
+                  completed: consultations.filter(c => c.status === 'completed').length
+                }}
+              />
               
               <div className="mt-6 space-y-3">
                 <h3 className="text-lg font-semibold mb-3 dark:text-white">Quick Actions</h3>
@@ -635,28 +644,28 @@ export default function LegalConsultation() {
                   <CardContent className="p-0">
                   <div className="h-[600px] flex flex-col dark:bg-gray-900">
                     <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-gradient-to-b from-blue-50/30 to-blue-50/80 dark:from-blue-900/10 dark:to-blue-900/20">
-                      {activeConsultation.messages.length === 0 ? (
+                      {activeConsultation && activeConsultation.messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center p-8">
                           <div className="bg-gradient-to-b from-blue-100 to-blue-200 dark:from-blue-800/30 dark:to-blue-700/30 p-6 rounded-full shadow-lg mb-6 border border-blue-100 dark:border-blue-800/30">
-                            {activeConsultation.type === 'ai' ? (
+                            {activeConsultation && activeConsultation.type === 'ai' ? (
                               <Bot className="h-10 w-10 text-blue-600 dark:text-blue-400" />
                             ) : (
                               <User className="h-10 w-10 text-blue-600 dark:text-blue-400" />
                             )}
                           </div>
                           <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                            {activeConsultation.type === 'ai' 
+                            {activeConsultation && activeConsultation.type === 'ai' 
                               ? 'Chat with our AI Legal Assistant' 
-                              : `Chat with ${activeConsultation.expertName}`
+                              : `Chat with ${activeConsultation && activeConsultation.expertName}`
                             }
                           </h3>
                           <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md text-sm leading-relaxed">
-                            {activeConsultation.type === 'ai'
+                            {activeConsultation && activeConsultation.type === 'ai'
                               ? 'Ask any legal question to get instant information and guidance based on legal knowledge and best practices.'
                               : 'Send a message to begin your consultation. You can share documents and ask specific questions about your legal matters.'
                             }
                           </p>
-                          {activeConsultation.type === 'ai' && (
+                          {activeConsultation && activeConsultation.type === 'ai' && (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
                               {[
                                 "How do I register a trademark?",
@@ -678,7 +687,7 @@ export default function LegalConsultation() {
                           )}
                         </div>
                       ) : (
-                        activeConsultation.messages.map(message => (
+                        activeConsultation && activeConsultation.messages.map(message => (
                           <div 
                             key={message.id} 
                             className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-6`}
@@ -691,11 +700,11 @@ export default function LegalConsultation() {
                                   ) : (
                                     <Avatar className="h-9 w-9 border-2 border-white dark:border-gray-800">
                                       <AvatarImage 
-                                        src={experts.find(e => e.id === activeConsultation.expertId)?.image} 
-                                        alt={activeConsultation.expertName} 
+                                        src={activeConsultation && experts.find(e => e.id === activeConsultation.expertId)?.image} 
+                                        alt={activeConsultation && activeConsultation.expertName} 
                                       />
                                       <AvatarFallback className="text-xs bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
-                                        {activeConsultation.expertName?.substring(0, 2)}
+                                        {activeConsultation && activeConsultation.expertName?.substring(0, 2)}
                                       </AvatarFallback>
                                     </Avatar>
                                   )}
@@ -712,7 +721,7 @@ export default function LegalConsultation() {
                               {message.sender !== 'user' && (
                                 <div className="mb-1.5">
                                   <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                    {message.sender === 'ai' ? 'AI Legal Assistant' : activeConsultation.expertName}
+                                    {message.sender === 'ai' ? 'AI Legal Assistant' : (activeConsultation && activeConsultation.expertName)}
                                   </span>
                                 </div>
                               )}
@@ -761,7 +770,7 @@ export default function LegalConsultation() {
                       )}
                       <div ref={messagesEndRef} />
                       
-                      {isLoading && activeConsultation.type === 'ai' && (
+                      {isLoading && activeConsultation && activeConsultation.type === 'ai' && (
                         <div className="flex justify-start">
                           <div className="ml-12 message-bubble ai max-w-[85%] md:max-w-[70%] shadow-sm">
                             <div className="mb-1.5">
@@ -779,7 +788,7 @@ export default function LegalConsultation() {
                     <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-inner">
                       <div className="flex items-end gap-3 max-w-screen-lg mx-auto">
                         <Textarea 
-                          placeholder={`Type your message to ${activeConsultation.type === 'ai' ? 'AI Legal Assistant' : activeConsultation.expertName}...`}
+                          placeholder={`Type your message to ${activeConsultation && activeConsultation.type === 'ai' ? 'AI Legal Assistant' : (activeConsultation && activeConsultation.expertName) || 'expert'}...`}
                           className="min-h-12 resize-none bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus-visible:ring-blue-500 dark:text-white"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
@@ -808,7 +817,7 @@ export default function LegalConsultation() {
                           </Button>
                         </div>
                       </div>
-                      {activeConsultation.type === 'ai' && (
+                      {activeConsultation && activeConsultation.type === 'ai' && (
                         <div className="mt-3 text-xs text-center text-gray-500 dark:text-gray-400 max-w-screen-lg mx-auto">
                           AI responses are generated based on legal knowledge but should not replace professional legal advice
                         </div>

@@ -103,15 +103,15 @@
 
 /* Message bubbles in consultation chat */
 .message-bubble {
-  @apply rounded-lg p-3 max-w-[85%] dark:text-white;
+  @apply rounded-xl p-4 shadow-sm transition-all;
 }
 
 .message-bubble.user {
-  @apply bg-blue-100 dark:bg-blue-900/50 ml-auto;
+  @apply bg-blue-600 text-white ml-auto rounded-br-none dark:bg-blue-700;
   border-bottom-right-radius: 0;
 }
 
 .message-bubble.ai {
-  @apply bg-gray-100 dark:bg-gray-800 mr-auto;
+  @apply bg-white text-gray-800 mr-auto rounded-bl-none border border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700;
   border-bottom-left-radius: 0;
 }
