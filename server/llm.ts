@@ -229,12 +229,17 @@ export const extractTextFromPDF = async (filePath: string): Promise<string> => {
     // Try to extract text content between PDF markers
     // Remove binary content and PDF syntax as much as possible
     content = content.replace(/^\%PDF\-\d+\.\d+/, '');
-    content = content.replace(/\%\%EOF.*$/s, '');
+    
+    // Find the EOF marker if it exists and truncate content
+    const eofIndex = content.indexOf('%%EOF');
+    if (eofIndex > -1) {
+      content = content.substring(0, eofIndex);
+    }
     
     // Extract text that looks like actual content (simplified)
     const textMatches = content.match(/\(([^\)]+)\)/g) || [];
     const extractedText = textMatches
-      .map(match => match.slice(1, -1))
+      .map((match: string) => match.slice(1, -1))
       .join(' ')
       .replace(/\\r|\\n/g, '\n')
       .replace(/\\\\/g, '\\')

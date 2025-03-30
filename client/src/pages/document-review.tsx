@@ -54,6 +54,8 @@ export default function DocumentReview() {
   const [newTag, setNewTag] = useState("");
   const [editingFileName, setEditingFileName] = useState("");
   const [selectedModel, setSelectedModel] = useState<'openai' | 'claude' | 'ollama'>('openai');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [analysis, setAnalysis] = useState<AnalysisResult>({
     status: 'analyzing',
@@ -72,6 +74,19 @@ export default function DocumentReview() {
 
     const formData = new FormData();
     formData.append('file', droppedFiles[0]);
+    
+    // Display upload progress and status
+    setIsUploading(true);
+    setUploadProgress(0);
+    
+    // Start progress simulation for upload
+    const uploadInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        // Cap at 95% until actual completion
+        if (prev >= 95) return prev;
+        return prev + 5;
+      });
+    }, 150);
 
     try {
       const response = await fetch('/api/documents/upload', {
@@ -79,18 +94,29 @@ export default function DocumentReview() {
         body: formData,
       });
 
+      // Clear the upload progress interval
+      clearInterval(uploadInterval);
+      setUploadProgress(100);
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Upload failed');
       }
 
       const document = await response.json();
+      
+      // Reset upload state
+      setTimeout(() => {
+        setIsUploading(false);
+      }, 500); // Brief delay to show 100% completion
+      
       setCurrentFile({
-        name: document.filename,
-        size: document.fileSize,
+        id: document.id, // Make sure to include the ID
+        name: document.title || document.filename,
+        size: document.fileSize || (droppedFiles[0].size ? `${Math.round(droppedFiles[0].size / 1024)} KB` : 'Unknown'),
         uploadedAt: 'Just now',
         tags: [],
-        fileUrl: document.fileUrl // Added fileUrl
+        fileUrl: document.fileUrl || `/api/preview/${document.filename}`
       });
 
       // Start AI analysis
@@ -102,6 +128,10 @@ export default function DocumentReview() {
         description: 'Document uploaded successfully',
       });
     } catch (error: any) {
+      // Clear the upload progress interval and reset states
+      clearInterval(uploadInterval);
+      setIsUploading(false);
+      
       toast({
         title: 'Error',
         description: error.message || 'An error occurred during upload',
@@ -303,16 +333,17 @@ NOW, THEREFORE, in consideration of the mutual promises and covenants contained 
 
       {!currentFile ? (
         <Card
-          className="border-dashed cursor-pointer"
-          onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
-          onClick={() => document.getElementById('file-upload')?.click()}
+          className={`border-dashed ${isUploading ? '' : 'cursor-pointer'}`}
+          onDrop={isUploading ? undefined : handleDrop}
+          onDragOver={isUploading ? undefined : (e) => e.preventDefault()}
+          onClick={isUploading ? undefined : () => document.getElementById('file-upload')?.click()}
         >
           <input
             type="file"
             id="file-upload"
             className="hidden"
-            accept=".pdf,.doc,.docx"
+            accept=".pdf,.doc,.docx,.txt"
+            disabled={isUploading}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
@@ -323,16 +354,39 @@ NOW, THEREFORE, in consideration of the mutual promises and covenants contained 
             }}
           />
           <CardContent className="py-12 flex flex-col items-center justify-center text-center">
-            <Upload className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">
-              Drag and drop your files here
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              or click to browse
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Supported formats: PDF, DOCX, DOC
-            </p>
+            {isUploading ? (
+              <>
+                <div className="mb-4 text-center">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+                <h3 className="text-lg font-medium mb-2">
+                  Uploading document...
+                </h3>
+                <div className="w-full max-w-xs mx-auto mb-2">
+                  <Progress value={uploadProgress} className="mb-2" />
+                  <p className="text-sm text-muted-foreground">{uploadProgress}%</p>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Larger files may take some time to process
+                </p>
+              </>
+            ) : (
+              <>
+                <Upload className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">
+                  Drag and drop your files here
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  or click to browse
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Supported formats: PDF, DOCX, DOC, TXT
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Max file size: 15MB
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       ) : (
