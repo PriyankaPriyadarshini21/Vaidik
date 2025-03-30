@@ -2,6 +2,8 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import * as ollama from 'ollama';
 import 'dotenv/config';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Define the generic response structure for legal document analysis
 interface LegalAnalysis {
@@ -209,6 +211,115 @@ export const analyzeLegalDocument = async (
       return await analyzeWithOllama(documentContent);
     default:
       return await analyzeWithOpenAI(documentContent);
+  }
+};
+
+// Legal consultation response interface
+interface LegalConsultationResponse {
+  answer: string;
+  references?: string[];
+  followupQuestions?: string[];
+}
+
+// Get legal advice from AI for consultation
+export const getLegalConsultation = async (
+  query: string,
+  model: 'openai' | 'claude' | 'ollama' = 'openai',
+  context?: string
+): Promise<LegalConsultationResponse> => {
+  let prompt = `
+  You are an expert legal AI assistant providing consultation to users.
+  
+  User question: ${query}
+  `;
+  
+  if (context) {
+    prompt += `\nAdditional context: ${context}\n`;
+  }
+  
+  prompt += `
+  Please provide a helpful, accurate, and detailed response to the user's legal question.
+  Structure your response in JSON format with:
+  {
+    "answer": "Your detailed answer here",
+    "references": ["Relevant legal statute or principle 1", "Reference 2", ...],
+    "followupQuestions": ["Suggested follow-up question 1", "Question 2", ...]
+  }
+  
+  Make sure your answer is accurate, ethically sound, and notes any jurisdictional limitations.
+  `;
+  
+  try {
+    let response;
+    switch (model) {
+      case 'openai':
+        const openai = initOpenAI();
+        const openaiResponse = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.3,
+          response_format: { type: 'json_object' }
+        });
+        response = JSON.parse(openaiResponse.choices[0]?.message.content || '{}');
+        break;
+        
+      case 'claude':
+        const anthropic = initAnthropic();
+        const claudeMessage = await anthropic.messages.create({
+          model: 'claude-3-opus-20240229',
+          max_tokens: 2000,
+          system: "You are a helpful legal expert AI assistant that always provides output as valid JSON.",
+          messages: [{ role: 'user', content: prompt }],
+        });
+        const contentBlock = claudeMessage.content[0];
+        if (contentBlock && typeof contentBlock === 'object' && 'text' in contentBlock) {
+          response = JSON.parse(contentBlock.text);
+        } else {
+          throw new Error('No valid content in response from Claude');
+        }
+        break;
+        
+      case 'ollama':
+        const ollamaEndpoint = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
+        const ollamaResponse = await fetch(`${ollamaEndpoint}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'llama3',
+            messages: [{ role: 'user', content: prompt }],
+          }),
+        }).then(res => res.json());
+        
+        if (ollamaResponse && ollamaResponse.message && ollamaResponse.message.content) {
+          const jsonMatch = ollamaResponse.message.content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            response = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error('Could not extract JSON from Ollama response');
+          }
+        } else {
+          throw new Error('Invalid response structure from Ollama API');
+        }
+        break;
+        
+      default:
+        throw new Error('Unsupported model type');
+    }
+    
+    // Ensure response has the required structure
+    return {
+      answer: response.answer || 'No answer provided',
+      references: Array.isArray(response.references) ? response.references : [],
+      followupQuestions: Array.isArray(response.followupQuestions) ? response.followupQuestions : [],
+    };
+  } catch (error: any) {
+    console.error(`Legal consultation error (${model}):`, error);
+    // Provide a graceful fallback response
+    return {
+      answer: `I apologize, but I encountered an issue while processing your legal question. Please try rephrasing your question or try again later.`,
+      references: [],
+      followupQuestions: ['Could you rephrase your question?', 'Would you like to try a different legal topic?']
+    };
   }
 };
 

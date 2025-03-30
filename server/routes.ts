@@ -319,6 +319,76 @@ export function registerRoutes(app: Express): Server {
     const consultation = await storage.createConsultation(parsed.data);
     res.status(201).json(consultation);
   });
+  
+  // New endpoint for AI legal consultation
+  app.post("/api/legal-consultation", isAuthenticated, async (req, res) => {
+    try {
+      const { question, model, context } = req.body;
+      
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ message: "Question is required" });
+      }
+      
+      // Validate model if provided
+      const validModels = ['openai', 'claude', 'ollama'];
+      const selectedModel = model && validModels.includes(model) ? model : 'openai';
+      
+      // Get response from LLM service
+      const { getLegalConsultation } = require('./llm');
+      const consultationResponse = await getLegalConsultation(
+        question, 
+        selectedModel, 
+        context
+      );
+      
+      // Log the consultation (optional)
+      try {
+        await storage.createConsultation({
+          userId: req.user!.id,
+          question,
+          response: JSON.stringify(consultationResponse),
+          status: 'completed',
+        });
+      } catch (logError) {
+        console.error('Error saving consultation log:', logError);
+        // Continue even if logging fails
+      }
+      
+      res.json(consultationResponse);
+    } catch (error: any) {
+      console.error('Legal consultation error:', error);
+      res.status(500).json({ 
+        message: "Error processing legal consultation",
+        error: error.message,
+      });
+    }
+  });
+  
+  // Get expert availability
+  app.get("/api/experts/:expertId/availability", isAuthenticated, async (req, res) => {
+    try {
+      const { expertId } = req.params;
+      const { date } = req.query;
+      
+      // In a real app, this would fetch from the database
+      // For now, return mock data
+      res.json({
+        expertId: Number(expertId),
+        date: date || new Date().toISOString().split('T')[0],
+        availableSlots: [
+          "09:00 AM", 
+          "10:00 AM", 
+          "02:00 PM", 
+          "03:00 PM"
+        ]
+      });
+    } catch (error: any) {
+      res.status(500).json({ 
+        message: "Error fetching expert availability",
+        error: error.message,
+      });
+    }
+  });
 
   // Public pricing plans endpoints
   app.get("/api/pricing-plans", async (_req, res) => {
