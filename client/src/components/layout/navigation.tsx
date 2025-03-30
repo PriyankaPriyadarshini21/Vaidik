@@ -15,6 +15,9 @@ import {
   Lock,
   Settings,
   Bell,
+  LayoutDashboard,
+  CreditCard,
+  Gavel,
 } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -80,10 +83,38 @@ export default function Navigation() {
     logoutMutation.mutate();
   };
 
+  // Custom Dashboard NavLink with enhanced styling
+  const DashboardNavLink = () => {
+    const [location] = useLocation();
+    const isActive = location === '/';
+    
+    return (
+      <Link href="/">
+        <div className={`flex items-center mb-2 p-2 rounded-lg transition-all ${
+          isActive 
+            ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+            : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+        }`}>
+          <div className={`flex items-center justify-center h-8 w-8 rounded-md mr-3 ${
+            isActive 
+              ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
+              : 'bg-gray-100 dark:bg-gray-800'
+          }`}>
+            <LayoutDashboard className={`h-4 w-4 ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-400'}`} />
+          </div>
+          <div>
+            <div className="font-medium">Dashboard</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Overview & analytics</div>
+          </div>
+        </div>
+      </Link>
+    );
+  };
+
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="space-y-2 flex-1">
-        <NavLink href="/" icon={Home}>Dashboard</NavLink>
+        <DashboardNavLink />
         <NavLink href="/profile" icon={User}>Profile</NavLink>
         <NavLink href="/ai-documents" icon={FileText}>AI-Written Documents</NavLink>
         <NavLink href="/ai-consultation" icon={Users}>AI Consultation</NavLink>
@@ -100,7 +131,13 @@ export default function Navigation() {
     <nav className="border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center border-b px-4 justify-between">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold">Vidhik AI</span>
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-sm">
+            <Gavel className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <span className="font-bold text-lg">Vidhik AI</span>
+            <div className="text-xs text-gray-500 leading-none">Legal Assistant</div>
+          </div>
         </Link>
 
         <div className="flex items-center gap-2">
