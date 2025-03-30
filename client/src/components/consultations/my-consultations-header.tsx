@@ -11,9 +11,9 @@ export function MyConsultationsHeader({
   onScheduleWithExpert 
 }: MyConsultationsHeaderProps) {
   return (
-    <div className="flex justify-between rounded-lg bg-black text-white p-6">
-      <div className="flex items-center gap-4">
-        <div className="bg-white p-3 rounded-lg">
+    <div className="flex flex-col md:flex-row justify-between items-center rounded-lg bg-black text-white p-6">
+      <div className="flex items-center gap-4 mb-4 md:mb-0">
+        <div className="bg-white p-3 rounded-lg shadow-md">
           <MessageSquare className="h-6 w-6 text-black" />
         </div>
         <div>
@@ -24,17 +24,17 @@ export function MyConsultationsHeader({
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <Button 
           onClick={onNewAIConsultation}
-          className="bg-white text-black hover:bg-white/90"
+          className="bg-white text-black hover:bg-white/90 font-medium shadow-md transition-all duration-200 px-5 py-2 h-auto"
         >
           New AI Consultation
         </Button>
         <Button 
           onClick={onScheduleWithExpert}
           variant="outline"
-          className="border-white text-white hover:bg-white/10"
+          className="bg-transparent border-white text-white hover:bg-white/20 font-medium shadow-md transition-all duration-200 px-5 py-2 h-auto"
         >
           Schedule With Expert
         </Button>
