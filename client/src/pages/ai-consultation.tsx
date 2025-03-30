@@ -221,7 +221,7 @@ export default function AIConsultation() {
               <SelectValue placeholder="Legal Topic" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Topics</SelectItem>
+              <SelectItem value="all">All Topics</SelectItem>
               {legalCategories.map(cat => (
                 <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
               ))}
