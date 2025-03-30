@@ -3,8 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MyConsultationsHeader } from "@/components/consultations/my-consultations-header";
-import { ConsultationStats } from "@/components/consultations/consultation-stats";
 import { 
   Select, 
   SelectContent, 
@@ -850,18 +848,6 @@ export default function LegalConsultation() {
         </TabsContent>
         
         <TabsContent value="consultations" className="space-y-6">
-          {/* Import these components at the top of the file */}
-          <MyConsultationsHeader 
-            onNewAIConsultation={startAiConsultation}
-            onScheduleWithExpert={() => setActiveTab("experts")}
-          />
-          <ConsultationStats 
-            stats={{
-              active: consultations.filter(c => c.status === 'active').length,
-              scheduled: consultations.filter(c => c.status === 'scheduled').length,
-              completed: consultations.filter(c => c.status === 'completed').length
-            }}
-          />
           {activeConsultation ? (
             <div className="grid grid-cols-1 gap-4">
               <Card className="overflow-hidden shadow-lg border-black/10 rounded-xl">
