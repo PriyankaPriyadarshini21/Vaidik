@@ -1301,14 +1301,14 @@ export default function LegalConsultation() {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-lg font-semibold text-black flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5" />
+                <div className="px-1 py-2">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2.5">
+                      <MessageCircle className="h-5 w-5 text-blue-600" />
                       Recent Consultations
                     </h3>
                     <Select defaultValue="all">
-                      <SelectTrigger className="w-[140px] border-black/10 bg-white">
+                      <SelectTrigger className="w-[160px] border-gray-200 bg-white shadow-sm rounded-md h-9">
                         <SelectValue placeholder="Filter by" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1319,11 +1319,12 @@ export default function LegalConsultation() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {consultations.map((consultation) => (
                       <Card 
                         key={consultation.id} 
-                        className="overflow-hidden transition-all hover:shadow-md relative rounded-lg border border-gray-200 bg-white"
+                        className="overflow-hidden transition-all hover:shadow-md relative rounded-lg border border-gray-200 bg-white mb-5"
+                        style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}
                       >
                         {consultation.status === 'active' && (
                           <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-black/0 to-black/5 pointer-events-none" />
@@ -1336,7 +1337,7 @@ export default function LegalConsultation() {
                               : 'bg-gradient-to-b from-green-400 to-green-600'
                           }`}
                         />
-                        <CardHeader className="pb-3 border-b border-gray-100">
+                        <CardHeader className="pb-4 pt-5 px-5 border-b border-gray-100">
                           <div className="flex justify-between items-start">
                             <div className="flex items-center gap-3">
                               {consultation.type === 'ai' ? (
@@ -1383,8 +1384,8 @@ export default function LegalConsultation() {
                             </Badge>
                           </div>
                         </CardHeader>
-                        <CardContent className="p-4 space-y-3">
-                          <div className="flex flex-wrap gap-2">
+                        <CardContent className="px-5 py-5 space-y-4">
+                          <div className="flex flex-wrap gap-2.5">
                             {consultation.type === 'expert' && (
                               <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-orange-50 border border-orange-100 rounded-full">
                                 <CalendarIcon className="h-3 w-3 text-orange-600" />
@@ -1411,21 +1412,21 @@ export default function LegalConsultation() {
                             </div>
                           </div>
                           
-                          <div className="border border-gray-200 rounded-lg p-3 max-h-20 overflow-hidden relative shadow-sm bg-gray-50">
-                            <div className="flex items-start gap-2 mb-1.5">
+                          <div className="border border-gray-200 rounded-lg p-3.5 max-h-24 overflow-hidden relative shadow-sm bg-gray-50/80">
+                            <div className="flex items-start gap-2.5 mb-2">
                               <div className={`min-w-fit mt-0.5 flex items-center justify-center rounded-full shadow-sm
                                 ${consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' 
-                                  ? 'h-5 w-5 bg-gray-700' 
-                                  : 'h-5 w-5 bg-blue-600'}`}
+                                  ? 'h-6 w-6 bg-gray-700 ring-2 ring-gray-200' 
+                                  : 'h-6 w-6 bg-blue-600 ring-2 ring-blue-100'}`}
                               >
                                 {consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' ? (
-                                  <User className="h-3 w-3 text-white" />
+                                  <User className="h-3.5 w-3.5 text-white" />
                                 ) : (
-                                  <Bot className="h-3 w-3 text-white" />
+                                  <Bot className="h-3.5 w-3.5 text-white" />
                                 )}
                               </div>
                               <div>
-                                <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                <p className="text-xs text-gray-700 leading-relaxed font-medium tracking-wide">
                                   {consultation.messages.length > 0 
                                     ? consultation.messages[consultation.messages.length - 1].content.substring(0, 150) + 
                                       (consultation.messages[consultation.messages.length - 1].content.length > 150 ? '...' : '')
@@ -1434,31 +1435,32 @@ export default function LegalConsultation() {
                                 </p>
                               </div>
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/90 to-transparent" />
+                            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-50/95 via-gray-50/80 to-transparent" />
                           </div>
                           
                           {consultation.type === 'expert' && consultation.status === 'scheduled' && (
-                            <div className="flex items-center justify-between text-xs mt-2 font-medium">
-                              <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md border border-blue-100">
+                            <div className="flex items-center justify-between text-xs mt-3 font-medium">
+                              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-md border border-blue-100 shadow-sm">
                                 <Video className="h-3 w-3 text-blue-600" />
                                 <span className="text-blue-700">Video consultation</span>
                               </div>
-                              <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md border border-blue-100">
+                              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-md border border-blue-100 shadow-sm">
                                 <Clock className="h-3 w-3 text-blue-600" />
                                 <span className="text-blue-700">60 minutes</span>
                               </div>
                             </div>
                           )}
                         </CardContent>
-                        <CardFooter className="px-4 pb-4 pt-1">
+                        <CardFooter className="px-5 pb-4 pt-2">
                           <Button 
-                            className="w-full font-medium rounded-md h-10" 
+                            className="w-full font-medium rounded-md h-10 transition-all" 
                             variant={consultation.status === 'active' ? "default" : "outline"}
                             onClick={() => setActiveConsultation(consultation)}
                             style={{
                               backgroundColor: consultation.status === 'active' ? '#3b82f6' : 'transparent',
                               borderColor: consultation.status === 'active' ? 'transparent' : '#d1d5db',
-                              color: consultation.status === 'active' ? '#FFFFFF' : '#4b5563'
+                              color: consultation.status === 'active' ? '#FFFFFF' : '#4b5563',
+                              boxShadow: consultation.status === 'active' ? '0 2px 5px rgba(59, 130, 246, 0.25)' : 'none'
                             }}
                           >
                             {consultation.status === 'active' ? (
