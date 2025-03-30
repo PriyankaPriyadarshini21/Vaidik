@@ -129,7 +129,7 @@ export default function DocumentReview() {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [analysis, setAnalysis] = useState<AnalysisResult>({
-    status: 'analyzing',
+    status: 'complete', // Initially set to 'complete' to show model selection UI instead of analysis progress
     progress: 0,
     keyClauses: [],
     strengths: [],
@@ -190,8 +190,7 @@ export default function DocumentReview() {
         fileUrl: document.fileUrl || `/api/preview/${document.filename}`
       });
 
-      // Start AI analysis
-      startAnalysis();
+      // Don't automatically start analysis - let user choose model first
 
       queryClient.invalidateQueries({ queryKey: ['/api/documents'] });
       toast({
@@ -576,6 +575,78 @@ NOW, THEREFORE, in consideration of the mutual promises and covenants contained 
                   <p className="text-xs text-muted-foreground italic">
                     Our AI is carefully analyzing your document for legal insights and potential issues
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : analysis.keyClauses.length === 0 && currentFile ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Select AI Model for Analysis</CardTitle>
+                <CardDescription>Choose an AI model to analyze your document and start the review process</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-muted/40 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium mb-2">Selected Document:</h3>
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span>{currentFile.name}</span>
+                    <Badge variant="outline" className="ml-2">{currentFile.size}</Badge>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="ai-model-selection" className="text-sm font-medium">Select AI Model:</label>
+                    <Select 
+                      value={selectedModel} 
+                      onValueChange={(value: 'openai' | 'claude' | 'ollama') => setSelectedModel(value)}
+                    >
+                      <SelectTrigger id="ai-model-selection" className="w-[200px]">
+                        <SelectValue placeholder="Select AI Model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="openai">
+                          <div className="flex items-center gap-2">
+                            <span>OpenAI GPT-4</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="claude">
+                          <div className="flex items-center gap-2">
+                            <span>Anthropic Claude</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="ollama">
+                          <div className="flex items-center gap-2">
+                            <span>Ollama (Local Model)</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="bg-muted/20 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium mb-1">About the selected model:</h4>
+                    {selectedModel === 'openai' && (
+                      <p className="text-sm text-muted-foreground">OpenAI GPT-4 provides sophisticated legal analysis with advanced reasoning capabilities.</p>
+                    )}
+                    {selectedModel === 'claude' && (
+                      <p className="text-sm text-muted-foreground">Anthropic Claude excels at understanding complex legal contexts and nuanced interpretations.</p>
+                    )}
+                    {selectedModel === 'ollama' && (
+                      <p className="text-sm text-muted-foreground">Ollama runs locally on your server for complete privacy and data sovereignty.</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="pt-4 flex justify-center">
+                  <Button 
+                    onClick={startAnalysis} 
+                    size="lg" 
+                    className="gap-2"
+                  >
+                    <Bot className="h-5 w-5" />
+                    Start Document Analysis
+                  </Button>
                 </div>
               </CardContent>
             </Card>
