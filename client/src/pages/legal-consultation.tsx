@@ -458,16 +458,25 @@ export default function LegalConsultation() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="flex justify-between items-center">
-          <TabsList className="grid grid-cols-3 w-[450px] p-1 shadow-sm bg-muted/40">
-            <TabsTrigger value="experts" className="gap-2 data-[state=active]:shadow-sm">
+          <TabsList className="grid grid-cols-3 w-[450px] p-1 shadow-sm bg-white border border-black/10">
+            <TabsTrigger 
+              value="experts" 
+              className="gap-2 data-[state=active]:shadow-sm data-[state=active]:bg-black data-[state=active]:text-white text-black"
+            >
               <Users className="h-4 w-4" />
               <span className="font-medium">Expert Advisors</span>
             </TabsTrigger>
-            <TabsTrigger value="ai" className="gap-2 data-[state=active]:shadow-sm">
+            <TabsTrigger 
+              value="ai" 
+              className="gap-2 data-[state=active]:shadow-sm data-[state=active]:bg-black data-[state=active]:text-white text-black"
+            >
               <Bot className="h-4 w-4" />
               <span className="font-medium">AI Consultation</span>
             </TabsTrigger>
-            <TabsTrigger value="consultations" className="gap-2 data-[state=active]:shadow-sm">
+            <TabsTrigger 
+              value="consultations" 
+              className="gap-2 data-[state=active]:shadow-sm data-[state=active]:bg-black data-[state=active]:text-white text-black"
+            >
               <MessagesSquare className="h-4 w-4" />
               <span className="font-medium">My Consultations</span>
             </TabsTrigger>
@@ -840,14 +849,14 @@ export default function LegalConsultation() {
         <TabsContent value="consultations" className="space-y-6">
           {activeConsultation ? (
             <div className="grid grid-cols-1 gap-4">
-              <Card className="overflow-hidden shadow-sm border-primary/10">
-                <CardHeader className="pb-3 flex flex-row items-center justify-between border-b bg-muted/30">
+              <Card className="overflow-hidden shadow-sm border-black/10">
+                <CardHeader className="pb-3 flex flex-row items-center justify-between border-b bg-white">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-md ${activeConsultation.type === 'ai' ? 'bg-primary/10' : 'bg-secondary/10'}`}>
+                    <div className={`p-2 rounded-md ${activeConsultation.type === 'ai' ? 'bg-black/5' : 'bg-black/5'}`}>
                       {activeConsultation.type === 'ai' ? (
-                        <Bot className="h-5 w-5 text-primary" />
+                        <Bot className="h-5 w-5 text-black" />
                       ) : (
-                        <User className="h-5 w-5 text-secondary" />
+                        <User className="h-5 w-5 text-black" />
                       )}
                     </div>
                     <div>
@@ -899,13 +908,13 @@ export default function LegalConsultation() {
                           {message.sender !== 'user' && (
                             <div className="mr-2 mt-1">
                               {message.sender === 'ai' ? (
-                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <Bot className="h-4 w-4 text-primary" />
+                                <div className="h-8 w-8 rounded-full bg-black/5 flex items-center justify-center">
+                                  <Bot className="h-4 w-4 text-black/70" />
                                 </div>
                               ) : (
-                                <Avatar className="h-8 w-8 border-2 border-primary/10">
+                                <Avatar className="h-8 w-8 border-2 border-black/10">
                                   <AvatarImage src={experts.find(e => e.name === activeConsultation.expertName)?.image} />
-                                  <AvatarFallback className="bg-secondary/10 text-secondary">{activeConsultation.expertName?.substring(0, 2)}</AvatarFallback>
+                                  <AvatarFallback className="bg-black/5 text-black">{activeConsultation.expertName?.substring(0, 2)}</AvatarFallback>
                                 </Avatar>
                               )}
                             </div>
@@ -914,10 +923,10 @@ export default function LegalConsultation() {
                           <div 
                             className={`max-w-[75%] rounded-2xl p-3.5 shadow-sm ${
                               message.sender === 'user' 
-                                ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground' 
+                                ? 'bg-black text-white' 
                                 : message.sender === 'ai'
-                                  ? 'bg-muted/70 border'
-                                  : 'bg-secondary/10'
+                                  ? 'bg-white border border-black/10'
+                                  : 'bg-black/5'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2 mb-1">
@@ -961,8 +970,8 @@ export default function LegalConsultation() {
                           
                           {message.sender === 'user' && (
                             <div className="ml-2 mt-1">
-                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                <User className="h-4 w-4 text-primary" />
+                              <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center">
+                                <User className="h-4 w-4 text-white" />
                               </div>
                             </div>
                           )}
@@ -971,11 +980,11 @@ export default function LegalConsultation() {
                       {isLoading && activeConsultation.type === 'ai' && (
                         <div className="flex justify-start mb-4">
                           <div className="mr-2 mt-1">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Bot className="h-4 w-4 text-primary" />
+                            <div className="h-8 w-8 rounded-full bg-black/5 flex items-center justify-center">
+                              <Bot className="h-4 w-4 text-black/70" />
                             </div>
                           </div>
-                          <div className="max-w-[75%] rounded-2xl p-3.5 bg-muted/70 border shadow-sm">
+                          <div className="max-w-[75%] rounded-2xl p-3.5 bg-white border border-black/10 shadow-sm">
                             <div className="flex items-center justify-between gap-2 mb-1">
                               <span className="text-xs font-medium">AI Legal Assistant</span>
                               <span className="text-xs opacity-70">
@@ -987,20 +996,20 @@ export default function LegalConsultation() {
                             </div>
                             <div className="flex items-center gap-2 h-8">
                               <div className="flex gap-1">
-                                <div className="bg-primary/20 h-2 w-2 rounded-full animate-pulse"></div>
-                                <div className="bg-primary/30 h-2 w-2 rounded-full animate-pulse delay-150"></div>
-                                <div className="bg-primary/40 h-2 w-2 rounded-full animate-pulse delay-300"></div>
+                                <div className="bg-black/20 h-2 w-2 rounded-full animate-pulse"></div>
+                                <div className="bg-black/30 h-2 w-2 rounded-full animate-pulse delay-150"></div>
+                                <div className="bg-black/40 h-2 w-2 rounded-full animate-pulse delay-300"></div>
                               </div>
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs text-gray-600">
                                 Processing your legal question...
                               </span>
                             </div>
                             {aiProgress > 0 && (
                               <div className="mt-2 space-y-1.5">
-                                <Progress value={aiProgress} className="h-1.5 rounded-full bg-primary/10" />
-                                <div className="flex justify-between text-xs text-muted-foreground">
+                                <Progress value={aiProgress} className="h-1.5 rounded-full bg-black/10" />
+                                <div className="flex justify-between text-xs text-gray-600">
                                   <span className="flex items-center gap-1">
-                                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-black animate-pulse"></span>
                                     Analyzing legal context
                                   </span>
                                   <span>{aiProgress}%</span>
@@ -1012,11 +1021,11 @@ export default function LegalConsultation() {
                       )}
                       <div ref={messagesEndRef} />
                     </div>
-                    <div className="p-4 border-t bg-muted/30">
+                    <div className="p-4 border-t bg-white">
                       <div className="flex gap-3">
                         <Textarea 
                           placeholder="Type your legal question..." 
-                          className="min-h-[50px] px-4 py-3 resize-none rounded-xl border-muted bg-background focus-visible:ring-primary"
+                          className="min-h-[50px] px-4 py-3 resize-none rounded-xl border-black/10 bg-white focus-visible:ring-black/30"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onKeyDown={(e) => {
@@ -1031,17 +1040,17 @@ export default function LegalConsultation() {
                             onClick={sendMessage} 
                             disabled={!newMessage.trim() || isLoading}
                             size="icon"
-                            className={`rounded-xl ${!newMessage.trim() || isLoading ? '' : 'bg-primary hover:bg-primary/90'}`}
+                            className={`rounded-xl ${!newMessage.trim() || isLoading ? 'bg-black/40' : 'bg-black hover:bg-black/90'}`}
                           >
-                            <Send className="h-4 w-4" />
+                            <Send className="h-4 w-4 text-white" />
                           </Button>
-                          <Button variant="outline" size="icon" className="rounded-xl border-muted">
+                          <Button variant="outline" size="icon" className="rounded-xl border-black/10 hover:bg-black/5 hover:border-black/20">
                             <Paperclip className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                       {activeConsultation.type === 'ai' && (
-                        <div className="mt-2 text-xs text-center text-muted-foreground">
+                        <div className="mt-2 text-xs text-center text-gray-500">
                           AI responses are generated based on legal knowledge but should not replace professional legal advice
                         </div>
                       )}
@@ -1052,17 +1061,17 @@ export default function LegalConsultation() {
             </div>
           ) : (
             <>
-              <div className="bg-muted/20 p-6 rounded-lg border border-muted/30 mb-6 relative overflow-hidden">
-                <div className="absolute -right-24 -top-16 w-64 h-48 bg-primary/5 rounded-full blur-3xl"></div>
-                <div className="absolute -left-24 -bottom-16 w-64 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+              <div className="bg-black/5 p-6 rounded-lg border border-black/10 mb-6 relative overflow-hidden">
+                <div className="absolute -right-24 -top-16 w-64 h-48 bg-black/5 rounded-full blur-3xl"></div>
+                <div className="absolute -left-24 -bottom-16 w-64 h-48 bg-black/5 rounded-full blur-3xl"></div>
                 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                   <div>
-                    <h2 className="text-xl font-bold text-foreground mb-1 flex items-center gap-2">
-                      <MessagesSquare className="h-5 w-5 text-primary" />
+                    <h2 className="text-2xl font-semibold text-black mb-2 flex items-center gap-2 tracking-tight">
+                      <MessagesSquare className="h-5 w-5 text-black" />
                       My Legal Consultations
                     </h2>
-                    <p className="text-sm text-muted-foreground max-w-xl">
+                    <p className="text-sm text-gray-600 max-w-xl leading-relaxed font-light">
                       Access your past and upcoming consultations with AI assistants and legal experts. Continue active conversations or schedule new consultations.
                     </p>
                   </div>
@@ -1070,25 +1079,25 @@ export default function LegalConsultation() {
                   <div className="flex flex-wrap gap-3">
                     <Button 
                       onClick={startAiConsultation} 
-                      className="gap-2 shadow-sm bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90"
+                      className="gap-2 shadow-sm bg-black hover:bg-black/90 text-white"
                     >
                       <Bot className="h-4 w-4" />
                       New AI Consultation
                     </Button>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" className="gap-2 bg-background shadow-sm border-primary/20 hover:border-primary/30">
+                        <Button variant="outline" className="gap-2 bg-white shadow-sm border-black/10 hover:border-black/30 text-black">
                           <Calendar className="h-4 w-4" />
                           Schedule With Expert
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[500px]">
                         <DialogHeader>
-                          <DialogTitle className="text-xl flex items-center gap-2">
-                            <Users className="h-5 w-5 text-primary" />
+                          <DialogTitle className="text-xl flex items-center gap-2 font-semibold text-black tracking-tight">
+                            <Users className="h-5 w-5 text-black" />
                             Select Legal Expert
                           </DialogTitle>
-                          <DialogDescription>
+                          <DialogDescription className="text-gray-600 font-light">
                             Choose a legal professional to schedule a personalized consultation
                           </DialogDescription>
                         </DialogHeader>
@@ -1097,23 +1106,23 @@ export default function LegalConsultation() {
                             <Button 
                               key={expert.id} 
                               variant="outline" 
-                              className="justify-start h-auto p-3 hover:border-primary/30 hover:bg-muted/30 transition-all"
+                              className="justify-start h-auto p-3 hover:border-black/30 hover:bg-black/5 transition-all border-black/10 bg-white"
                               onClick={() => {
                                 setSelectedExpert(expert);
                                 setActiveTab("experts");
                               }}
                             >
-                              <Avatar className="h-10 w-10 mr-3 border border-primary/10">
+                              <Avatar className="h-10 w-10 mr-3 border border-black/10">
                                 <AvatarImage src={expert.image} alt={expert.name} />
-                                <AvatarFallback className="bg-primary/10 text-primary">{expert.name.substring(0, 2)}</AvatarFallback>
+                                <AvatarFallback className="bg-black/5 text-black">{expert.name.substring(0, 2)}</AvatarFallback>
                               </Avatar>
                               <div className="text-left">
-                                <p className="font-medium">{expert.name}</p>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="text-primary">{expert.specialization}</span>
+                                <p className="font-semibold text-black">{expert.name}</p>
+                                <div className="flex items-center gap-2 text-xs text-gray-600">
+                                  <span className="text-black font-medium">{expert.specialization}</span>
                                   <span>•</span>
                                   <span className="flex items-center gap-0.5">
-                                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                    <Star className="h-3 w-3 fill-black text-black" />
                                     {expert.rating}
                                   </span>
                                 </div>
@@ -1128,16 +1137,16 @@ export default function LegalConsultation() {
               </div>
 
               {consultations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 px-4 border border-dashed rounded-lg bg-muted/10">
-                  <div className="bg-primary/10 p-3 rounded-full mb-4">
-                    <MessagesSquare className="h-8 w-8 text-primary/70" />
+                <div className="flex flex-col items-center justify-center py-12 px-4 border border-dashed border-black/10 rounded-lg bg-white">
+                  <div className="bg-black/5 p-3 rounded-full mb-4">
+                    <MessagesSquare className="h-8 w-8 text-black/70" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">No consultations yet</h3>
-                  <p className="text-muted-foreground text-center max-w-md mb-6">
+                  <h3 className="text-lg font-medium mb-2 text-black">No consultations yet</h3>
+                  <p className="text-gray-600 text-center max-w-md mb-6 leading-relaxed font-light">
                     You haven't started any legal consultations. Begin with an AI consultation for instant assistance or schedule time with a legal expert.
                   </p>
                   <div className="flex gap-3">
-                    <Button onClick={startAiConsultation} className="gap-2">
+                    <Button onClick={startAiConsultation} className="gap-2 bg-black hover:bg-black/90 text-white">
                       <Bot className="h-4 w-4" />
                       Start AI Consultation
                     </Button>
@@ -1148,35 +1157,35 @@ export default function LegalConsultation() {
                   {consultations.map((consultation) => (
                     <Card 
                       key={consultation.id} 
-                      className={`overflow-hidden transition-all hover:shadow-md ${
+                      className={`overflow-hidden transition-all hover:shadow-md bg-white ${
                         consultation.status === 'active' 
-                          ? 'border-primary/30' 
+                          ? 'border-black/20' 
                           : consultation.status === 'scheduled' 
-                            ? 'border-blue-200/70'
-                            : 'border-muted/50'
+                            ? 'border-black/15'
+                            : 'border-black/10'
                       }`}
                     >
-                      <CardHeader className="pb-3 border-b border-muted/30">
+                      <CardHeader className="pb-3 border-b border-black/10">
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-3">
                             {consultation.type === 'ai' ? (
-                              <div className="bg-gradient-to-br from-primary/90 to-primary/70 p-2 rounded-lg shadow-sm">
+                              <div className="bg-black p-2 rounded-lg shadow-sm">
                                 <Bot className="h-5 w-5 text-white" />
                               </div>
                             ) : (
-                              <Avatar className="h-10 w-10 border-2 border-primary/10">
+                              <Avatar className="h-10 w-10 border-2 border-black/10">
                                 <AvatarImage 
                                   src={experts.find(e => e.id === consultation.expertId)?.image} 
                                   alt={consultation.expertName} 
                                 />
-                                <AvatarFallback className="bg-secondary/10 text-secondary">{consultation.expertName?.substring(0, 2)}</AvatarFallback>
+                                <AvatarFallback className="bg-black/5 text-black">{consultation.expertName?.substring(0, 2)}</AvatarFallback>
                               </Avatar>
                             )}
                             <div>
-                              <CardTitle className="text-base">
+                              <CardTitle className="text-base font-semibold text-black">
                                 {consultation.type === 'ai' ? 'AI Legal Assistant' : `Consultation with ${consultation.expertName}`}
                               </CardTitle>
-                              <CardDescription className="text-xs flex items-center gap-1.5">
+                              <CardDescription className="text-xs flex items-center gap-1.5 text-gray-600">
                                 <FileText className="h-3 w-3" />
                                 {consultation.topic || 'Legal Consultation'}
                               </CardDescription>
@@ -1185,64 +1194,66 @@ export default function LegalConsultation() {
                           <Badge 
                             variant="outline"
                             className={`
-                              ${consultation.status === 'active' ? 'bg-green-500/10 text-green-600 border-green-200' : ''}
-                              ${consultation.status === 'scheduled' ? 'bg-blue-500/10 text-blue-600 border-blue-200' : ''}
-                              ${consultation.status === 'completed' ? 'bg-muted text-muted-foreground' : ''}
-                              ${consultation.status === 'cancelled' ? 'bg-red-500/10 text-red-600 border-red-200' : ''}
+                              ${consultation.status === 'active' ? 'bg-black/5 text-black border-black/20' : ''}
+                              ${consultation.status === 'scheduled' ? 'bg-black/5 text-black border-black/20' : ''}
+                              ${consultation.status === 'completed' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
+                              ${consultation.status === 'cancelled' ? 'bg-gray-100 text-gray-700 border-gray-200' : ''}
                             `}
                           >
                             {consultation.status === 'active' && (
                               <span className="flex items-center gap-1">
                                 <span className="relative flex h-2 w-2 mr-0.5">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-30"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
                                 </span>
                                 Active
                               </span>
                             )}
-                            {consultation.status !== 'active' && consultation.status}
+                            {consultation.status !== 'active' && (
+                              <span className="capitalize">{consultation.status}</span>
+                            )}
                           </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="p-4 space-y-3">
                         <div className="flex flex-wrap gap-3">
                           {consultation.type === 'expert' && (
-                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-muted/30 rounded-full">
-                              <CalendarIcon className="h-3.5 w-3.5 text-primary/70" />
-                              <span>
+                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                              <CalendarIcon className="h-3.5 w-3.5 text-black/70" />
+                              <span className="text-gray-700">
                                 {new Date(consultation.date || '').toLocaleDateString()} at {consultation.time}
                               </span>
                             </div>
                           )}
                           
                           {consultation.documents && consultation.documents.length > 0 && (
-                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-muted/30 rounded-full">
-                              <FileText className="h-3.5 w-3.5 text-primary/70" />
-                              <span>
+                            <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                              <FileText className="h-3.5 w-3.5 text-black/70" />
+                              <span className="text-gray-700">
                                 {consultation.documents.length} document{consultation.documents.length > 1 ? 's' : ''}
                               </span>
                             </div>
                           )}
                           
-                          <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-muted/30 rounded-full">
-                            <Clock className="h-3.5 w-3.5 text-primary/70" />
-                            <span>
+                          <div className="flex items-center gap-1.5 text-xs px-2 py-1 bg-black/5 rounded-full">
+                            <Clock className="h-3.5 w-3.5 text-black/70" />
+                            <span className="text-gray-700">
                               {new Date(consultation.createdAt).toLocaleDateString()}
                             </span>
                           </div>
                         </div>
                         
-                        <div className="border rounded-lg p-3 bg-muted/10 max-h-20 overflow-hidden relative">
+                        <div className="border border-black/10 rounded-lg p-3 bg-black/5 max-h-20 overflow-hidden relative">
                           <div className="flex items-start gap-2 mb-1">
                             <div className="min-w-fit mt-0.5">
                               {consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' ? (
-                                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                                <User className="h-3.5 w-3.5 text-black/60" />
                               ) : (
-                                <Bot className="h-3.5 w-3.5 text-muted-foreground" />
+                                <Bot className="h-3.5 w-3.5 text-black/60" />
                               )}
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
+                              <p className="text-xs text-gray-700 leading-relaxed">
                                 {consultation.messages.length > 0 
                                   ? consultation.messages[consultation.messages.length - 1].content.substring(0, 150) + 
                                     (consultation.messages[consultation.messages.length - 1].content.length > 150 ? '...' : '')
@@ -1251,14 +1262,19 @@ export default function LegalConsultation() {
                               </p>
                             </div>
                           </div>
-                          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background/90 to-transparent" />
+                          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/90 to-transparent" />
                         </div>
                       </CardContent>
                       <CardFooter className="px-4 pb-4 pt-1">
                         <Button 
-                          className="w-full shadow-sm transition-all" 
+                          className="w-full shadow-sm transition-all font-medium" 
                           variant={consultation.status === 'active' ? "default" : "outline"}
                           onClick={() => setActiveConsultation(consultation)}
+                          style={{
+                            backgroundColor: consultation.status === 'active' ? '#000000' : 'transparent',
+                            borderColor: consultation.status === 'active' ? 'transparent' : '#00000033',
+                            color: consultation.status === 'active' ? '#FFFFFF' : '#000000'
+                          }}
                         >
                           {consultation.status === 'active' ? (
                             <>
