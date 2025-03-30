@@ -445,27 +445,31 @@ export default function LegalConsultation() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold mb-2">Legal Consultation</h1>
-        <p className="text-muted-foreground">
-          Get expert legal advice through AI-powered consultations or schedule sessions with verified legal professionals
-        </p>
+      <div className="pb-4 relative overflow-hidden">
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">Legal Consultation</h1>
+          <p className="text-muted-foreground max-w-3xl">
+            Get expert legal advice through AI-powered consultations or schedule sessions with verified legal professionals. Our platform offers personalized guidance for your legal needs.
+          </p>
+        </div>
+        <div className="absolute -right-10 -top-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute -left-10 -bottom-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="flex justify-between items-center">
-          <TabsList className="grid grid-cols-3 w-[400px]">
-            <TabsTrigger value="experts">
-              <Users className="mr-2 h-4 w-4" />
-              Expert Advisors
+          <TabsList className="grid grid-cols-3 w-[450px] p-1 shadow-sm bg-muted/40">
+            <TabsTrigger value="experts" className="gap-2 data-[state=active]:shadow-sm">
+              <Users className="h-4 w-4" />
+              <span className="font-medium">Expert Advisors</span>
             </TabsTrigger>
-            <TabsTrigger value="ai">
-              <Bot className="mr-2 h-4 w-4" />
-              AI Consultation
+            <TabsTrigger value="ai" className="gap-2 data-[state=active]:shadow-sm">
+              <Bot className="h-4 w-4" />
+              <span className="font-medium">AI Consultation</span>
             </TabsTrigger>
-            <TabsTrigger value="consultations">
-              <MessagesSquare className="mr-2 h-4 w-4" />
-              My Consultations
+            <TabsTrigger value="consultations" className="gap-2 data-[state=active]:shadow-sm">
+              <MessagesSquare className="h-4 w-4" />
+              <span className="font-medium">My Consultations</span>
             </TabsTrigger>
           </TabsList>
           
@@ -671,53 +675,63 @@ export default function LegalConsultation() {
         <TabsContent value="ai" className="grid gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* AI Legal Assistant Card */}
-            <Card className="md:col-span-2">
-              <CardHeader className="pb-2">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-full">
-                    <Bot className="h-6 w-6 text-primary" />
+            <Card className="md:col-span-2 overflow-hidden relative border-primary/10">
+              <div className="absolute -right-24 -top-24 w-64 h-64 bg-primary/5 rounded-full blur-2xl"></div>
+              <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-primary/5 rounded-full blur-2xl"></div>
+              
+              <CardHeader className="pb-2 relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="bg-gradient-to-br from-primary to-primary/80 p-3 rounded-lg shadow-md">
+                    <Bot className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <CardTitle>AI Legal Assistant</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-xl">AI Legal Assistant</CardTitle>
+                    <CardDescription className="text-sm">
                       Get instant legal guidance and document analysis from our AI assistant
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              
+              <CardContent className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex flex-col items-center text-center p-4 border rounded-lg">
-                    <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <div className="flex flex-col items-center text-center p-5 border rounded-lg hover:border-primary/30 hover:bg-muted/30 transition-all group">
+                    <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-all">
                       <FileText className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="font-medium text-sm">Document Analysis</h3>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <h3 className="font-medium text-sm mb-1">Document Analysis</h3>
+                    <p className="text-xs text-muted-foreground">
                       Upload and analyze legal documents instantly
                     </p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-4 border rounded-lg">
-                    <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  
+                  <div className="flex flex-col items-center text-center p-5 border rounded-lg hover:border-primary/30 hover:bg-muted/30 transition-all group">
+                    <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-all">
                       <MessagesSquare className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="font-medium text-sm">Legal Q&A</h3>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <h3 className="font-medium text-sm mb-1">Legal Q&A</h3>
+                    <p className="text-xs text-muted-foreground">
                       Ask questions and get immediate legal insights
                     </p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-4 border rounded-lg">
-                    <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  
+                  <div className="flex flex-col items-center text-center p-5 border rounded-lg hover:border-primary/30 hover:bg-muted/30 transition-all group">
+                    <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-all">
                       <ShieldCheck className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="font-medium text-sm">Private & Secure</h3>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <h3 className="font-medium text-sm mb-1">Private & Secure</h3>
+                    <p className="text-xs text-muted-foreground">
                       Your information is encrypted and confidential
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex justify-center pt-2">
-                  <Button onClick={startAiConsultation} size="lg" className="gap-2">
+                <div className="flex justify-center pt-3">
+                  <Button 
+                    onClick={startAiConsultation} 
+                    size="lg" 
+                    className="gap-2 px-8 py-6 shadow-md hover:shadow-lg transition-all bg-gradient-to-r from-primary to-primary/90"
+                  >
                     <Bot className="h-5 w-5" />
                     Start AI Consultation
                   </Button>
@@ -726,25 +740,39 @@ export default function LegalConsultation() {
             </Card>
             
             {/* FAQ Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Frequently Asked Questions</CardTitle>
+            <Card className="border-muted/50 hover:border-primary/20 transition-colors">
+              <CardHeader className="pb-3 border-b border-muted/30">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <div className="bg-primary/10 p-1.5 rounded-md">
+                    <BookOpen className="h-4 w-4 text-primary" />
+                  </div>
+                  Frequently Asked Questions
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h3 className="font-medium text-sm">What legal topics can the AI assistant help with?</h3>
+              <CardContent className="pt-4 space-y-4">
+                <div className="space-y-2 p-3 border border-transparent hover:border-muted/60 hover:bg-muted/5 rounded-lg transition-all">
+                  <h3 className="font-medium text-sm flex items-center gap-1.5">
+                    <span className="text-primary">•</span>
+                    What legal topics can the AI assistant help with?
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     Our AI can assist with business law, contracts, intellectual property, employment law, and many other legal areas. It provides guidance but not legal representation.
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <h3 className="font-medium text-sm">How accurate is the AI legal advice?</h3>
+                <div className="space-y-2 p-3 border border-transparent hover:border-muted/60 hover:bg-muted/5 rounded-lg transition-all">
+                  <h3 className="font-medium text-sm flex items-center gap-1.5">
+                    <span className="text-primary">•</span>
+                    How accurate is the AI legal advice?
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     The AI provides general information based on legal principles. For specific legal advice tailored to your situation, we recommend consulting with our human experts.
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <h3 className="font-medium text-sm">Is my information confidential?</h3>
+                <div className="space-y-2 p-3 border border-transparent hover:border-muted/60 hover:bg-muted/5 rounded-lg transition-all">
+                  <h3 className="font-medium text-sm flex items-center gap-1.5">
+                    <span className="text-primary">•</span>
+                    Is my information confidential?
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     Yes, all conversations and documents shared with our AI are encrypted and kept confidential in accordance with our privacy policy.
                   </p>
@@ -753,15 +781,20 @@ export default function LegalConsultation() {
             </Card>
             
             {/* Testimonials */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">What Users Say</CardTitle>
+            <Card className="border-muted/50 hover:border-primary/20 transition-colors">
+              <CardHeader className="pb-3 border-b border-muted/30">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <div className="bg-primary/10 p-1.5 rounded-md">
+                    <Star className="h-4 w-4 text-primary" />
+                  </div>
+                  What Users Say
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>JD</AvatarFallback>
+              <CardContent className="pt-4 space-y-4">
+                <div className="p-3 border border-transparent hover:border-muted/60 bg-muted/5 rounded-lg transition-all">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Avatar className="h-10 w-10 border-2 border-primary/10">
+                      <AvatarFallback className="bg-primary/10 text-primary">JD</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm font-medium">John Doe</p>
@@ -772,14 +805,17 @@ export default function LegalConsultation() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground italic">
-                    "The AI assistant helped me understand my contract terms quickly. I followed up with an expert consultation for detailed advice."
-                  </p>
+                  <div className="relative pl-2 border-l-2 border-primary/20">
+                    <p className="text-sm text-muted-foreground">
+                      "The AI assistant helped me understand my contract terms quickly. I followed up with an expert consultation for detailed advice."
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>AS</AvatarFallback>
+                
+                <div className="p-3 border border-transparent hover:border-muted/60 bg-muted/5 rounded-lg transition-all">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Avatar className="h-10 w-10 border-2 border-primary/10">
+                      <AvatarFallback className="bg-primary/10 text-primary">AS</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm font-medium">Amy Smith</p>
@@ -790,9 +826,11 @@ export default function LegalConsultation() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground italic">
-                    "Being able to chat with the AI about my legal questions saved me time and money before hiring a lawyer."
-                  </p>
+                  <div className="relative pl-2 border-l-2 border-primary/20">
+                    <p className="text-sm text-muted-foreground">
+                      "Being able to chat with the AI about my legal questions saved me time and money before hiring a lawyer."
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -802,67 +840,92 @@ export default function LegalConsultation() {
         <TabsContent value="consultations" className="space-y-6">
           {activeConsultation ? (
             <div className="grid grid-cols-1 gap-4">
-              <Card>
-                <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg flex items-center gap-2">
+              <Card className="overflow-hidden shadow-sm border-primary/10">
+                <CardHeader className="pb-3 flex flex-row items-center justify-between border-b bg-muted/30">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-md ${activeConsultation.type === 'ai' ? 'bg-primary/10' : 'bg-secondary/10'}`}>
                       {activeConsultation.type === 'ai' ? (
-                        <Bot className="h-5 w-5" />
+                        <Bot className="h-5 w-5 text-primary" />
                       ) : (
-                        <User className="h-5 w-5" />
+                        <User className="h-5 w-5 text-secondary" />
                       )}
-                      {activeConsultation.type === 'ai' ? 'AI Consultation' : `Consultation with ${activeConsultation.expertName}`}
-                    </CardTitle>
-                    <CardDescription>
-                      {activeConsultation.topic || 'Legal Consultation'} • 
-                      {activeConsultation.type === 'expert' && 
-                        ` ${new Date(activeConsultation.date || '').toLocaleDateString()} at ${activeConsultation.time}`
-                      }
-                    </CardDescription>
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {activeConsultation.type === 'ai' ? 'AI Legal Consultation' : `Consultation with ${activeConsultation.expertName}`}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center">
+                          <FileText className="h-3 w-3 mr-1" />
+                          {activeConsultation.topic || 'Legal Consultation'}
+                        </span>
+                        {activeConsultation.type === 'expert' && (
+                          <>
+                            <span>•</span>
+                            <span className="inline-flex items-center">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              {new Date(activeConsultation.date || '').toLocaleDateString()}
+                            </span>
+                            <span>•</span>
+                            <span className="inline-flex items-center">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {activeConsultation.time}
+                            </span>
+                          </>
+                        )}
+                      </CardDescription>
+                    </div>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setActiveConsultation(null)}
+                    className="rounded-full hover:bg-muted"
                   >
                     <XCircle className="h-5 w-5" />
                   </Button>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="border-t border-b h-[400px] flex flex-col">
+                  <div className="h-[450px] flex flex-col relative">
+                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-muted/20 to-transparent opacity-60 h-8 z-10"></div>
                     <div className="flex-1 p-4 overflow-y-auto">
                       {activeConsultation.messages.map((message) => (
                         <div 
                           key={message.id} 
-                          className={`flex mb-4 ${
+                          className={`flex mb-6 ${
                             message.sender === 'user' ? 'justify-end' : 'justify-start'
-                          }`}
+                          } group`}
                         >
-                          <div 
-                            className={`max-w-[80%] rounded-lg p-3 ${
-                              message.sender === 'user' 
-                                ? 'bg-primary text-primary-foreground ml-12' 
-                                : message.sender === 'ai'
-                                  ? 'bg-muted border mr-12'
-                                  : 'bg-secondary text-secondary-foreground mr-12'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 mb-1">
-                              {message.sender === 'user' ? (
-                                <User className="h-4 w-4" />
-                              ) : message.sender === 'ai' ? (
-                                <Bot className="h-4 w-4" />
+                          {message.sender !== 'user' && (
+                            <div className="mr-2 mt-1">
+                              {message.sender === 'ai' ? (
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Bot className="h-4 w-4 text-primary" />
+                                </div>
                               ) : (
-                                <Avatar className="h-5 w-5">
+                                <Avatar className="h-8 w-8 border-2 border-primary/10">
                                   <AvatarImage src={experts.find(e => e.name === activeConsultation.expertName)?.image} />
-                                  <AvatarFallback>{activeConsultation.expertName?.substring(0, 2)}</AvatarFallback>
+                                  <AvatarFallback className="bg-secondary/10 text-secondary">{activeConsultation.expertName?.substring(0, 2)}</AvatarFallback>
                                 </Avatar>
                               )}
+                            </div>
+                          )}
+                          
+                          <div 
+                            className={`max-w-[75%] rounded-2xl p-3.5 shadow-sm ${
+                              message.sender === 'user' 
+                                ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground' 
+                                : message.sender === 'ai'
+                                  ? 'bg-muted/70 border'
+                                  : 'bg-secondary/10'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2 mb-1">
                               <span className="text-xs font-medium">
                                 {message.sender === 'user' 
                                   ? 'You' 
                                   : message.sender === 'ai' 
-                                    ? 'AI Assistant' 
+                                    ? 'AI Legal Assistant' 
                                     : activeConsultation.expertName
                                 }
                               </span>
@@ -873,7 +936,7 @@ export default function LegalConsultation() {
                                 })}
                               </span>
                             </div>
-                            <div className="whitespace-pre-line">
+                            <div className="whitespace-pre-line text-sm">
                               {message.content}
                             </div>
                             {message.status === 'sending' && (
@@ -882,27 +945,40 @@ export default function LegalConsultation() {
                               </div>
                             )}
                             {message.attachments && message.attachments.length > 0 && (
-                              <div className="mt-2 space-y-1">
+                              <div className="mt-3 space-y-1.5">
                                 {message.attachments.map((attachment, index) => (
                                   <div 
                                     key={index} 
-                                    className="flex items-center gap-2 text-xs p-1.5 rounded bg-background/50"
+                                    className="flex items-center gap-2 text-xs p-2 rounded bg-background/50 border border-muted hover:border-primary/20 transition-colors cursor-pointer"
                                   >
                                     <FileText className="h-3.5 w-3.5" />
-                                    <span>{attachment.name}</span>
+                                    <span className="flex-1 truncate">{attachment.name}</span>
+                                    <span className="text-xs opacity-60">{attachment.size}</span>
                                   </div>
                                 ))}
                               </div>
                             )}
                           </div>
+                          
+                          {message.sender === 'user' && (
+                            <div className="ml-2 mt-1">
+                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <User className="h-4 w-4 text-primary" />
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                       {isLoading && activeConsultation.type === 'ai' && (
                         <div className="flex justify-start mb-4">
-                          <div className="max-w-[80%] rounded-lg p-3 bg-muted border mr-12">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Bot className="h-4 w-4" />
-                              <span className="text-xs font-medium">AI Assistant</span>
+                          <div className="mr-2 mt-1">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Bot className="h-4 w-4 text-primary" />
+                            </div>
+                          </div>
+                          <div className="max-w-[75%] rounded-2xl p-3.5 bg-muted/70 border shadow-sm">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="text-xs font-medium">AI Legal Assistant</span>
                               <span className="text-xs opacity-70">
                                 {new Date().toLocaleTimeString([], {
                                   hour: '2-digit', 
@@ -910,19 +986,24 @@ export default function LegalConsultation() {
                                 })}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 h-10">
-                              <div className="bg-primary/10 h-2 w-2 rounded-full animate-pulse"></div>
-                              <div className="bg-primary/10 h-2 w-2 rounded-full animate-pulse delay-150"></div>
-                              <div className="bg-primary/10 h-2 w-2 rounded-full animate-pulse delay-300"></div>
-                              <span className="text-xs text-muted-foreground ml-1">
-                                AI is thinking...
+                            <div className="flex items-center gap-2 h-8">
+                              <div className="flex gap-1">
+                                <div className="bg-primary/20 h-2 w-2 rounded-full animate-pulse"></div>
+                                <div className="bg-primary/30 h-2 w-2 rounded-full animate-pulse delay-150"></div>
+                                <div className="bg-primary/40 h-2 w-2 rounded-full animate-pulse delay-300"></div>
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                Processing your legal question...
                               </span>
                             </div>
                             {aiProgress > 0 && (
-                              <div className="mt-1 space-y-1">
-                                <Progress value={aiProgress} className="h-1" />
+                              <div className="mt-2 space-y-1.5">
+                                <Progress value={aiProgress} className="h-1.5 rounded-full bg-primary/10" />
                                 <div className="flex justify-between text-xs text-muted-foreground">
-                                  <span>Analyzing your question</span>
+                                  <span className="flex items-center gap-1">
+                                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    Analyzing legal context
+                                  </span>
                                   <span>{aiProgress}%</span>
                                 </div>
                               </div>
@@ -932,11 +1013,11 @@ export default function LegalConsultation() {
                       )}
                       <div ref={messagesEndRef} />
                     </div>
-                    <div className="p-3 border-t">
-                      <div className="flex gap-2">
+                    <div className="p-4 border-t bg-muted/30">
+                      <div className="flex gap-3">
                         <Textarea 
-                          placeholder="Type your message..." 
-                          className="min-h-10 resize-none"
+                          placeholder="Type your legal question..." 
+                          className="min-h-[50px] px-4 py-3 resize-none rounded-xl border-muted bg-background focus-visible:ring-primary"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onKeyDown={(e) => {
@@ -951,14 +1032,20 @@ export default function LegalConsultation() {
                             onClick={sendMessage} 
                             disabled={!newMessage.trim() || isLoading}
                             size="icon"
+                            className={`rounded-xl ${!newMessage.trim() || isLoading ? '' : 'bg-primary hover:bg-primary/90'}`}
                           >
                             <Send className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" size="icon">
+                          <Button variant="outline" size="icon" className="rounded-xl border-muted">
                             <Paperclip className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
+                      {activeConsultation.type === 'ai' && (
+                        <div className="mt-2 text-xs text-center text-muted-foreground">
+                          AI responses are generated based on legal knowledge but should not replace professional legal advice
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
