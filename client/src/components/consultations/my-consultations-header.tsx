@@ -27,16 +27,18 @@ export function MyConsultationsHeader({
       <div className="flex items-center gap-4">
         <Button 
           onClick={onNewAIConsultation}
-          className="bg-white text-black hover:bg-white/90 font-medium shadow-md transition-all duration-200 px-5 py-2 h-auto"
+          className="relative overflow-hidden bg-white text-black font-medium shadow-md transition-all duration-300 px-5 py-2 h-auto group"
         >
-          New AI Consultation
+          <span className="absolute inset-0 w-0 bg-gray-100 transition-all duration-300 ease-out group-hover:w-full"></span>
+          <span className="relative z-10">New AI Consultation</span>
         </Button>
         <Button 
           onClick={onScheduleWithExpert}
           variant="outline"
-          className="bg-transparent border-white text-white hover:bg-white/20 font-medium shadow-md transition-all duration-200 px-5 py-2 h-auto"
+          className="relative overflow-hidden bg-transparent border-white text-white font-medium shadow-md transition-all duration-300 px-5 py-2 h-auto group"
         >
-          Schedule With Expert
+          <span className="absolute inset-0 w-0 bg-white/30 transition-all duration-300 ease-out group-hover:w-full"></span>
+          <span className="relative z-10">Schedule With Expert</span>
         </Button>
       </div>
     </div>
