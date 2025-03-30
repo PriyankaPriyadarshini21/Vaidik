@@ -444,502 +444,220 @@ export default function LegalConsultation() {
     } else if (query.toLowerCase().includes('business') || query.toLowerCase().includes('company')) {
       return "When setting up a business, you'll need to consider the legal structure (LLC, corporation, partnership, etc.), regulatory compliance, tax obligations, employment laws, and contractual relationships. Each of these aspects has different implications for liability and taxation. Could you tell me more about your business so I can provide more targeted guidance?";
     } else {
-      return "Thank you for your legal question. To provide you with the most accurate information, I'd need a few more details about your specific situation. Could you tell me more about the context and your specific concerns?";
+      return "Thank you for your legal question. To provide you with the most accurate information, I'd need a few more details about your specific situation. Could you tell me more about the context and your main concerns? This will help me tailor my response to your needs.";
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="pb-4 relative overflow-hidden">
-        <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-black to-gray-500">Legal Consultations</h1>
-          <p className="text-gray-600 max-w-3xl">
-            Get expert legal advice from qualified professionals or use our AI-powered assistant for instant guidance. Browse by specialty, book appointments, or start an AI consultation right away.
-          </p>
-        </div>
-      </div>
+    <div className="container mx-auto py-6 max-w-screen-xl">
+      <h1 className="sr-only">Legal Consultation</h1>
       
-      <Tabs 
-        defaultValue="experts" 
-        value={activeTab} 
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
-        <TabsList className="grid w-full grid-cols-3 mb-4">
-          <TabsTrigger value="experts" className="text-sm">
-            <Users className="h-4 w-4 mr-2" />
-            Legal Experts
-          </TabsTrigger>
-          <TabsTrigger value="ai" className="text-sm">
-            <Bot className="h-4 w-4 mr-2" />
-            AI Assistance
-          </TabsTrigger>
-          <TabsTrigger value="consultations" className="text-sm">
-            <MessagesSquare className="h-4 w-4 mr-2" />
-            My Consultations
-          </TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <MyConsultationsHeader />
+          
+          <TabsList className="bg-white border border-gray-200 p-1 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <TabsTrigger 
+              value="consultations"
+              className="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
+            >
+              My Consultations
+            </TabsTrigger>
+            <TabsTrigger 
+              value="experts"
+              className="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
+            >
+              Find Experts
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
-        <TabsContent value="experts" className="space-y-6">
-          {selectedExpert ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 space-y-5">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12 border-2 border-black/10">
-                          <AvatarImage src={selectedExpert.image} alt={selectedExpert.name} />
-                          <AvatarFallback className="bg-black/5">{selectedExpert.name.substring(0, 2)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <CardTitle className="text-xl">{selectedExpert.name}</CardTitle>
-                          <CardDescription className="text-sm">{selectedExpert.title} • {selectedExpert.specialization}</CardDescription>
-                          <div className="flex items-center mt-1 gap-2">
-                            <div className="flex items-center">
-                              <Star className="h-3.5 w-3.5 fill-black text-black" />
-                              <span className="text-sm ml-1 font-medium">{selectedExpert.rating}</span>
-                              <span className="text-xs text-gray-500 ml-1">({selectedExpert.reviews} reviews)</span>
+        <TabsContent value="consultations" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="md:col-span-1">
+              <ConsultationStats />
+              
+              <div className="mt-6 space-y-3">
+                <h3 className="text-lg font-semibold mb-3 dark:text-white">Quick Actions</h3>
+                <Button 
+                  onClick={startAiConsultation}
+                  className="w-full bg-blue-600 hover:bg-blue-700 flex items-center gap-2 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+                >
+                  <Bot className="h-4 w-4" />
+                  New AI Consultation
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300 flex items-center gap-2 dark:border-blue-800 dark:hover:border-blue-700 dark:hover:bg-blue-900/30 dark:text-white transition-colors"
+                  onClick={() => {
+                    setActiveTab("experts");
+                  }}
+                >
+                  <User className="h-4 w-4" />
+                  Book Expert Consultation
+                </Button>
+              </div>
+              
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-3 dark:text-white">My Consultations</h3>
+                <div className="space-y-3">
+                  {consultations.map(consultation => (
+                    <Card 
+                      key={consultation.id} 
+                      className={`
+                        cursor-pointer transition-all hover:shadow
+                        ${activeConsultation?.id === consultation.id 
+                          ? 'border-blue-300 ring-1 ring-blue-300 dark:border-blue-700 dark:ring-blue-700' 
+                          : 'border-gray-200 hover:border-blue-200 dark:border-gray-700 dark:hover:border-blue-800'}
+                      `}
+                      onClick={() => setActiveConsultation(consultation)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              {consultation.type === 'ai' ? (
+                                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center dark:bg-blue-900/30">
+                                  <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                </div>
+                              ) : (
+                                <div className="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center dark:bg-orange-900/30">
+                                  <User className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                                </div>
+                              )}
+                              <div>
+                                <h4 className="font-medium text-sm dark:text-white">
+                                  {consultation.topic || (consultation.type === 'ai' ? 'AI Consultation' : `Consultation with ${consultation.expertName}`)}
+                                </h4>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  {consultation.date 
+                                    ? `${new Date(consultation.date).toLocaleDateString()} at ${consultation.time}` 
+                                    : consultation.createdAt.toLocaleDateString()}
+                                </p>
+                              </div>
                             </div>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-medium">{selectedExpert.rate}</span>
                           </div>
+                          <Badge 
+                            variant="outline" 
+                            className={`
+                              text-xs px-2
+                              ${consultation.status === 'active' 
+                                ? 'bg-green-100 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
+                                : consultation.status === 'scheduled'
+                                  ? 'bg-blue-100 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400'
+                                  : 'bg-gray-100 border-gray-200 text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400'
+                              }
+                            `}
+                          >
+                            {consultation.status.charAt(0).toUpperCase() + consultation.status.slice(1)}
+                          </Badge>
                         </div>
+                        
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {consultation.messages.length} message{consultation.messages.length !== 1 ? 's' : ''}
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7 px-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveConsultation(consultation);
+                            }}
+                          >
+                            Continue
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="md:col-span-3">
+              {activeConsultation ? (
+                <Card className="h-full dark:bg-gray-800 dark:border-gray-700">
+                  <CardHeader className="flex flex-row items-start justify-between pb-2 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-start gap-4">
+                      <div className={`
+                        h-12 w-12 rounded-full flex items-center justify-center shrink-0
+                        ${activeConsultation.type === 'ai' 
+                          ? 'bg-blue-100 dark:bg-blue-900/30' 
+                          : 'bg-orange-100 dark:bg-orange-900/30'
+                        }
+                      `}>
+                        {activeConsultation.type === 'ai' ? (
+                          <Bot className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                        ) : (
+                          <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800">
+                            <AvatarImage 
+                              src={experts.find(e => e.id === activeConsultation.expertId)?.image} 
+                              alt={activeConsultation.expertName} 
+                            />
+                            <AvatarFallback>
+                              {activeConsultation.expertName?.substring(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                       </div>
+                      <div>
+                        <CardTitle className="text-xl dark:text-white">
+                          {activeConsultation.type === 'ai' 
+                            ? 'AI Legal Assistant' 
+                            : activeConsultation.expertName
+                          }
+                        </CardTitle>
+                        <CardDescription>
+                          {activeConsultation.topic || (
+                            activeConsultation.type === 'ai' 
+                              ? 'Ask any legal questions' 
+                              : experts.find(e => e.id === activeConsultation.expertId)?.specialization
+                          )}
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="bg-blue-600 text-white border-0 font-medium dark:bg-blue-700">
+                        {activeConsultation.status === 'active' ? 'Live' : 'Archived'}
+                      </Badge>
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="bg-white border-black/10 hover:bg-black/5"
-                        onClick={() => setSelectedExpert(null)}
+                        className="h-9 w-9 p-0 rounded-full border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700" 
+                        onClick={() => setActiveConsultation(null)}
                       >
-                        <XCircle className="h-3.5 w-3.5 mr-1" />
-                        Back to List
+                        <XCircle className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">About</h3>
-                      <p className="text-sm text-gray-600">{selectedExpert.description}</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="text-sm font-medium mb-2">Experience</h3>
-                        <p className="text-sm text-gray-600">{selectedExpert.experience}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium mb-2">Languages</h3>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedExpert.languages.map((lang, idx) => (
-                            <span key={idx} className="text-xs px-2 py-0.5 rounded-full bg-black/5">{lang}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Availability</h3>
-                      <div className="flex flex-wrap gap-1">
-                        {selectedExpert.availability.map((day, idx) => (
-                          <span key={idx} className="text-xs px-2 py-0.5 rounded-full bg-black/5">{day}s</span>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <div>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Schedule Consultation</CardTitle>
-                    <CardDescription>Book a session with {selectedExpert.name}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-medium">Select Date</h3>
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        className="border rounded-md p-3"
-                        disabled={(date) => {
-                          // Disable past dates and days the expert isn't available
-                          const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-                          return date < new Date() || !selectedExpert.availability.includes(dayName);
-                        }}
-                      />
-                    </div>
-                    
-                    {selectedDay && (
-                      <div className="space-y-2">
-                        <h3 className="text-sm font-medium">Available Times on {selectedDay}</h3>
-                        {timeSlots.length > 0 ? (
-                          <div className="grid grid-cols-3 gap-2">
-                            {timeSlots.map((time, idx) => (
-                              <Button
-                                key={idx}
-                                variant={selectedTimeSlot === time ? "default" : "outline"}
-                                className={`text-xs py-1 px-2 h-auto ${selectedTimeSlot === time ? 'bg-black text-white' : 'bg-white text-black border-black/10'}`}
-                                onClick={() => setSelectedTimeSlot(time)}
-                              >
-                                {time}
-                              </Button>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">No time slots available on this day.</p>
-                        )}
-                      </div>
-                    )}
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-medium">Consultation Topic</h3>
-                      <Textarea
-                        placeholder="Briefly describe what you'd like to discuss"
-                        value={consultationTopic}
-                        onChange={(e) => setConsultationTopic(e.target.value)}
-                        className="resize-none h-20 bg-white border-black/10"
-                      />
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full gap-2 bg-black text-white hover:bg-black/90"
-                      onClick={handleBookConsultation}
-                      disabled={!selectedTimeSlot || !consultationTopic}
-                    >
-                      <Calendar className="h-4 w-4" />
-                      Book Consultation
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-black/5 p-4 rounded-lg">
-                <div>
-                  <h2 className="text-lg font-medium mb-1 flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Find a Legal Expert
-                  </h2>
-                  <p className="text-sm text-gray-600 max-w-xl">
-                    Browse our network of qualified legal professionals and book a personalized consultation.
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="w-full md:w-[180px] bg-white border-black/10">
-                      <SelectValue placeholder="Select specialty" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Specialties</SelectItem>
-                      <SelectItem value="Business Law">Business Law</SelectItem>
-                      <SelectItem value="Intellectual Property">Intellectual Property</SelectItem>
-                      <SelectItem value="Tax Law">Tax Law</SelectItem>
-                      <SelectItem value="Employment Law">Employment Law</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredExperts.map((expert) => (
-                  <Card key={expert.id} className="overflow-hidden">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12 border-2 border-black/10">
-                          <AvatarImage src={expert.image} alt={expert.name} />
-                          <AvatarFallback className="bg-black/5">{expert.name.substring(0, 2)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <CardTitle className="text-base font-semibold">{expert.name}</CardTitle>
-                          <CardDescription className="text-xs">{expert.title} • {expert.specialization}</CardDescription>
-                          <div className="flex items-center mt-1 gap-2">
-                            <div className="flex items-center">
-                              <Star className="h-3.5 w-3.5 fill-black text-black" />
-                              <span className="text-sm ml-1 font-medium">{expert.rating}</span>
-                              <span className="text-xs text-gray-500 ml-1">({expert.reviews})</span>
-                            </div>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-medium">{expert.rate}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                      <p className="text-gray-600">{expert.description.substring(0, 150)}...</p>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 flex items-center gap-1">
-                          <Briefcase className="h-3 w-3" />
-                          {expert.experience}
-                        </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 flex items-center gap-1">
-                          <Clock3 className="h-3 w-3" />
-                          {expert.availability.length} days/week
-                        </span>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="pt-0">
-                      <Button
-                        className="w-full shadow-sm bg-white border border-black/10 hover:bg-black/5 text-black"
-                        onClick={() => setSelectedExpert(expert)}
-                      >
-                        View Profile & Book
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            </>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="ai" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="md:col-span-2 bg-gradient-to-br from-black/5 to-black/10 border-black/10">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="bg-black/10 p-3 rounded-lg">
-                    <Bot className="h-6 w-6 text-black" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl flex items-center gap-2">
-                      AI Legal Assistant
-                      <Badge variant="outline" className="ml-2 text-xs font-normal bg-black/5 text-black border-black/20">
-                        <ShieldCheck className="h-3 w-3 mr-1" />
-                        Confidential
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      Get instant answers to your legal questions powered by artificial intelligence
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-white p-4 rounded-lg border border-black/10">
-                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-black" />
-                    How It Works
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div className="bg-black/5 p-3 rounded-lg">
-                      <div className="bg-black/10 w-8 h-8 flex items-center justify-center rounded-full mb-2">
-                        <MessagesSquare className="h-4 w-4 text-black" />
-                      </div>
-                      <h4 className="font-medium mb-1">Ask Questions</h4>
-                      <p className="text-xs text-gray-600">Type your legal questions in natural language</p>
-                    </div>
-                    <div className="bg-black/5 p-3 rounded-lg">
-                      <div className="bg-black/10 w-8 h-8 flex items-center justify-center rounded-full mb-2">
-                        <Bot className="h-4 w-4 text-black" />
-                      </div>
-                      <h4 className="font-medium mb-1">Instant Analysis</h4>
-                      <p className="text-xs text-gray-600">Our AI analyzes your questions using legal knowledge</p>
-                    </div>
-                    <div className="bg-black/5 p-3 rounded-lg">
-                      <div className="bg-black/10 w-8 h-8 flex items-center justify-center rounded-full mb-2">
-                        <FileText className="h-4 w-4 text-black" />
-                      </div>
-                      <h4 className="font-medium mb-1">Clear Guidance</h4>
-                      <p className="text-xs text-gray-600">Receive informative answers with relevant legal context</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-4">
-                <Button 
-                  onClick={startAiConsultation} 
-                  className="w-full gap-2 bg-black text-white hover:bg-black/90"
-                >
-                  <Bot className="h-4 w-4" />
-                  Start AI Consultation
-                </Button>
-                <p className="text-xs text-center text-gray-500 max-w-lg mx-auto">
-                  While our AI provides legal information based on its training, it does not replace professional legal advice. For specific legal matters, consider booking a consultation with one of our experts.
-                </p>
-              </CardFooter>
-            </Card>
-            
-            <Card className="bg-white overflow-hidden">
-              <CardHeader className="bg-black/5 pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-black" />
-                  Popular Legal Topics
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-black/5">
-                  {[
-                    "Business Formation & Structures",
-                    "Contract Review & Negotiation",
-                    "Intellectual Property Protection",
-                    "Employment Law & Regulations",
-                    "Tax Planning & Compliance"
-                  ].map((topic, idx) => (
-                    <Button
-                      key={idx}
-                      variant="ghost"
-                      className="w-full justify-start rounded-none h-auto py-3 px-4 text-left text-black hover:bg-black/5"
-                      onClick={() => {
-                        startAiConsultation();
-                        setNewMessage(`I have a question about ${topic}`);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Plus className="h-3.5 w-3.5 text-black" />
-                        <span>{topic}</span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white overflow-hidden">
-              <CardHeader className="bg-black/5 pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Star className="h-4 w-4 text-black" />
-                  User Testimonials
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-black/5">
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-black/5 text-black">JD</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">James D.</p>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-black text-black" />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      "The AI assistant helped me understand the basics of trademark registration before I spoke with a specialist. Saved me time and money."
-                    </p>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-black/5 text-black">MT</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">Michelle T.</p>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`h-3 w-3 ${i < 4 ? 'fill-black text-black' : 'text-gray-300'}`} />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      "Being able to chat with the AI about my legal questions saved me time and money before hiring a lawyer."
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="consultations" className="space-y-6">
-          <MyConsultationsHeader 
-            onNewAIConsultation={startAiConsultation}
-            onScheduleWithExpert={() => setActiveTab("experts")}
-          />
-          <ConsultationStats 
-            stats={{
-              active: consultations.filter(c => c.status === 'active').length,
-              scheduled: consultations.filter(c => c.status === 'scheduled').length,
-              completed: consultations.filter(c => c.status === 'completed').length
-            }}
-          />
-          {activeConsultation ? (
-            <div className="grid grid-cols-1 gap-4">
-              <Card className="overflow-hidden shadow-lg border-black/10 rounded-xl">
-                <CardHeader className="pb-3 flex flex-row items-center justify-between border-b bg-gradient-to-r from-black/5 to-black/0">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg shadow-md ${activeConsultation.type === 'ai' ? 'bg-black' : 'bg-black/80'}`}>
-                      {activeConsultation.type === 'ai' ? (
-                        <Bot className="h-5 w-5 text-white" />
-                      ) : (
-                        <User className="h-5 w-5 text-white" />
-                      )}
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg flex items-center gap-2 font-bold">
-                        {activeConsultation.type === 'ai' ? 'AI Legal Consultation' : `Consultation with ${activeConsultation.expertName}`}
-                        {activeConsultation.status === 'active' && (
-                          <span className="inline-flex h-2.5 w-2.5 relative">
-                            <span className="absolute inline-flex h-full w-full rounded-full bg-black opacity-50 animate-ping"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-black"></span>
-                          </span>
-                        )}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-1.5 text-sm">
-                        <span className="inline-flex items-center">
-                          <FileText className="h-3.5 w-3.5 mr-1" />
-                          {activeConsultation.topic || 'Legal Consultation'}
-                        </span>
-                        {activeConsultation.type === 'expert' && (
-                          <>
-                            <span>•</span>
-                            <span className="inline-flex items-center">
-                              <Calendar className="h-3.5 w-3.5 mr-1" />
-                              {activeConsultation.date} at {activeConsultation.time}
-                            </span>
-                          </>
-                        )}
-                      </CardDescription>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-black text-white border-0 font-semibold">
-                      {activeConsultation.status === 'active' ? 'Live' : 'Archived'}
-                    </Badge>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="h-9 w-9 p-0 rounded-full border-black/10 bg-white hover:bg-black/5" 
-                      onClick={() => setActiveConsultation(null)}
-                    >
-                      <XCircle className="h-5 w-5" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="h-[500px] flex flex-col">
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-black/0 to-black/5">
+                  <CardContent className="p-0">
+                  <div className="h-[600px] flex flex-col dark:bg-gray-900">
+                    <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-gradient-to-b from-blue-50/30 to-blue-50/80 dark:from-blue-900/10 dark:to-blue-900/20">
                       {activeConsultation.messages.length === 0 ? (
-                        <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                          <div className="bg-gradient-to-b from-black/5 to-black/10 p-5 rounded-full shadow-md mb-5 border border-black/5">
+                        <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                          <div className="bg-gradient-to-b from-blue-100 to-blue-200 dark:from-blue-800/30 dark:to-blue-700/30 p-6 rounded-full shadow-lg mb-6 border border-blue-100 dark:border-blue-800/30">
                             {activeConsultation.type === 'ai' ? (
-                              <Bot className="h-9 w-9 text-black" />
+                              <Bot className="h-10 w-10 text-blue-600 dark:text-blue-400" />
                             ) : (
-                              <User className="h-9 w-9 text-black" />
+                              <User className="h-10 w-10 text-blue-600 dark:text-blue-400" />
                             )}
                           </div>
-                          <h3 className="text-xl font-bold text-black mb-3">
+                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                             {activeConsultation.type === 'ai' 
                               ? 'Chat with our AI Legal Assistant' 
                               : `Chat with ${activeConsultation.expertName}`
                             }
                           </h3>
-                          <p className="text-gray-600 mb-6 max-w-md text-sm leading-relaxed">
+                          <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md text-sm leading-relaxed">
                             {activeConsultation.type === 'ai'
                               ? 'Ask any legal question to get instant information and guidance based on legal knowledge and best practices.'
                               : 'Send a message to begin your consultation. You can share documents and ask specific questions about your legal matters.'
                             }
                           </p>
                           {activeConsultation.type === 'ai' && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
                               {[
                                 "How do I register a trademark?",
                                 "What should be in my privacy policy?",
@@ -949,10 +667,10 @@ export default function LegalConsultation() {
                                 <Button
                                   key={idx}
                                   variant="outline"
-                                  className="h-auto py-2.5 px-3.5 text-sm text-left justify-start border-black/10 bg-white hover:bg-black/5 shadow-sm"
+                                  className="h-auto py-3 px-4 text-sm text-left justify-start border-blue-200 bg-white hover:bg-blue-50 shadow-sm dark:bg-gray-800 dark:border-blue-800/50 dark:hover:bg-blue-900/30 dark:text-gray-200 transition-colors"
                                   onClick={() => setNewMessage(question)}
                                 >
-                                  <Plus className="h-3.5 w-3.5 mr-2 flex-shrink-0" />
+                                  <Plus className="h-3.5 w-3.5 mr-2.5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
                                   <span className="truncate">{question}</span>
                                 </Button>
                               ))}
@@ -963,51 +681,53 @@ export default function LegalConsultation() {
                         activeConsultation.messages.map(message => (
                           <div 
                             key={message.id} 
-                            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-6`}
                           >
+                            {message.sender !== 'user' && (
+                              <div className="mr-3 mt-1">
+                                <div className="h-9 w-9 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shadow-sm">
+                                  {message.sender === 'ai' ? (
+                                    <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                  ) : (
+                                    <Avatar className="h-9 w-9 border-2 border-white dark:border-gray-800">
+                                      <AvatarImage 
+                                        src={experts.find(e => e.id === activeConsultation.expertId)?.image} 
+                                        alt={activeConsultation.expertName} 
+                                      />
+                                      <AvatarFallback className="text-xs bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+                                        {activeConsultation.expertName?.substring(0, 2)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                            
                             <div 
                               className={`
-                                max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 space-y-2 shadow-sm
-                                ${message.sender === 'user' 
-                                  ? 'bg-black text-white rounded-tr-none' 
-                                  : message.sender === 'ai'
-                                    ? 'bg-white border border-black/10 rounded-tl-none' 
-                                    : 'bg-white border border-black/10 rounded-tl-none'
-                                }
+                                message-bubble ${message.sender === 'user' ? 'user' : 'ai'}
+                                max-w-[85%] md:max-w-[70%] shadow-sm
                               `}
                             >
                               {message.sender !== 'user' && (
-                                <div className="flex items-center gap-2">
-                                  <div className="h-7 w-7 rounded-full bg-black/5 flex items-center justify-center shadow-sm">
-                                    {message.sender === 'ai' ? (
-                                      <Bot className="h-3.5 w-3.5 text-black" />
-                                    ) : (
-                                      <Avatar className="h-7 w-7">
-                                        <AvatarImage 
-                                          src={experts.find(e => e.id === activeConsultation.expertId)?.image} 
-                                          alt={activeConsultation.expertName} 
-                                        />
-                                        <AvatarFallback className="text-[10px] bg-black/5 text-black">
-                                          {activeConsultation.expertName?.substring(0, 2)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                    )}
-                                  </div>
-                                  <span className="text-xs font-semibold text-black">
+                                <div className="mb-1.5">
+                                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                                     {message.sender === 'ai' ? 'AI Legal Assistant' : activeConsultation.expertName}
                                   </span>
                                 </div>
                               )}
-                              <div className="space-y-2">
-                                <div className={`text-sm ${message.sender === 'user' ? 'text-white' : 'text-black'} whitespace-pre-line leading-relaxed`}>
+                              
+                              <div className="space-y-3">
+                                <div className={`text-sm ${message.sender === 'user' ? 'text-white dark:text-white' : 'text-gray-800 dark:text-gray-200'} whitespace-pre-line leading-relaxed`}>
                                   {message.content}
                                 </div>
+                                
                                 {message.attachments && message.attachments.length > 0 && (
-                                  <div className="flex flex-wrap gap-2">
+                                  <div className="flex flex-wrap gap-2 pt-1">
                                     {message.attachments.map((file, idx) => (
                                       <div 
                                         key={idx} 
-                                        className="text-xs flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-black/10 text-gray-800 border border-black/5"
+                                        className="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/30 text-gray-800 dark:bg-white/10 dark:text-gray-200 border border-white/20 dark:border-white/10 backdrop-blur-sm"
                                       >
                                         <FileText className="h-3 w-3" />
                                         {file.name}
@@ -1015,18 +735,27 @@ export default function LegalConsultation() {
                                     ))}
                                   </div>
                                 )}
-                                <div className="flex justify-between items-center">
-                                  <span className="text-xs opacity-70 font-medium">
+                                
+                                <div className="flex justify-between items-center pt-1">
+                                  <span className="text-[10px] opacity-70 font-medium">
                                     {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                   </span>
                                   {message.status && (
-                                    <span className="text-xs opacity-70">
+                                    <span className="text-[10px] opacity-70">
                                       {message.status === 'sending' ? 'Sending...' : message.status === 'sent' ? 'Delivered' : message.status}
                                     </span>
                                   )}
                                 </div>
                               </div>
                             </div>
+                            
+                            {message.sender === 'user' && (
+                              <div className="ml-3 mt-1">
+                                <div className="h-9 w-9 rounded-full bg-blue-600 dark:bg-blue-700 flex items-center justify-center shadow-md">
+                                  <User className="h-4 w-4 text-white" />
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))
                       )}
@@ -1034,34 +763,24 @@ export default function LegalConsultation() {
                       
                       {isLoading && activeConsultation.type === 'ai' && (
                         <div className="flex justify-start">
-                          <div className="max-w-[85%] md:max-w-[70%] bg-white border border-black/10 rounded-2xl rounded-tl-none px-4 py-3 space-y-3 shadow-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-7 w-7 rounded-full bg-black/5 flex items-center justify-center shadow-sm">
-                                <Bot className="h-3.5 w-3.5 text-black" />
-                              </div>
-                              <span className="text-xs font-semibold text-black">AI Legal Assistant</span>
+                          <div className="ml-12 message-bubble ai max-w-[85%] md:max-w-[70%] shadow-sm">
+                            <div className="mb-1.5">
+                              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">AI Legal Assistant</span>
                             </div>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2">
-                                <div className="flex space-x-1">
-                                  <div className="h-2 w-2 bg-black/60 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                  <div className="h-2 w-2 bg-black/60 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                  <div className="h-2 w-2 bg-black/60 rounded-full animate-bounce"></div>
-                                </div>
-                                <span className="text-xs text-gray-600 font-medium">AI is drafting a response</span>
-                              </div>
-                              <Progress value={aiProgress} className="h-1.5 w-[200px]" />
+                            <div className="flex items-center gap-2">
+                              <Progress value={aiProgress} className="h-1.5 w-40" />
+                              <span className="text-xs text-gray-500 dark:text-gray-400">Thinking...</span>
                             </div>
                           </div>
                         </div>
                       )}
                     </div>
                     
-                    <div className="p-4 border-t border-black/10 bg-white shadow-inner">
-                      <div className="flex items-end gap-2">
+                    <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-inner">
+                      <div className="flex items-end gap-3 max-w-screen-lg mx-auto">
                         <Textarea 
                           placeholder={`Type your message to ${activeConsultation.type === 'ai' ? 'AI Legal Assistant' : activeConsultation.expertName}...`}
-                          className="min-h-10 resize-none bg-white border-black/10 rounded-xl shadow-sm focus-visible:ring-black"
+                          className="min-h-12 resize-none bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus-visible:ring-blue-500 dark:text-white"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onKeyDown={(e) => {
@@ -1075,13 +794,13 @@ export default function LegalConsultation() {
                           <Button 
                             size="icon"
                             variant="outline"
-                            className="rounded-full h-10 w-10 shrink-0 bg-white border-black/10 shadow-sm"
+                            className="rounded-full h-12 w-12 shrink-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors"
                           >
-                            <Paperclip className="h-5 w-5 text-black/70" />
+                            <Paperclip className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                           </Button>
                           <Button 
                             size="icon"
-                            className="rounded-full h-10 w-10 shrink-0 bg-black text-white shadow-md"
+                            className="rounded-full h-12 w-12 shrink-0 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white shadow-md transition-colors"
                             onClick={sendMessage}
                             disabled={isLoading || !newMessage.trim()}
                           >
@@ -1090,404 +809,348 @@ export default function LegalConsultation() {
                         </div>
                       </div>
                       {activeConsultation.type === 'ai' && (
-                        <div className="mt-2 text-xs text-center text-gray-500">
+                        <div className="mt-3 text-xs text-center text-gray-500 dark:text-gray-400 max-w-screen-lg mx-auto">
                           AI responses are generated based on legal knowledge but should not replace professional legal advice
                         </div>
                       )}
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <>
-              <div className="bg-gradient-to-br from-black to-black/80 p-8 rounded-xl text-white mb-8 relative overflow-hidden shadow-lg">
-                <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent"></div>
-                <div className="absolute -right-24 -top-16 w-64 h-48 bg-white/5 rounded-full blur-3xl"></div>
-                <div className="absolute -left-24 -bottom-16 w-64 h-48 bg-white/5 rounded-full blur-3xl"></div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                  <div className="md:col-span-2">
-                    <div className="flex items-start gap-5">
-                      <div className="bg-white p-4 rounded-xl shadow-lg">
-                        <MessagesSquare className="h-8 w-8 text-black" />
-                      </div>
-                      <div>
-                        <h2 className="text-3xl font-bold mb-3 tracking-tight">
-                          My Legal Consultations
-                        </h2>
-                        <p className="text-white/80 max-w-xl leading-relaxed text-sm">
-                          Access your past and upcoming consultations with AI assistants and legal experts. Continue active conversations or schedule new consultations.
-                        </p>
-                        
-                        <div className="mt-6 flex items-center gap-6">
-                          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 flex items-center gap-3">
-                            <div className="relative flex h-2.5 w-2.5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
-                            </div>
-                            <div>
-                              <div className="text-lg font-bold">{consultations.filter(c => c.status === 'active').length}</div>
-                              <div className="text-xs text-white/70">Active</div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 flex items-center gap-3">
-                            <div className="h-2.5 w-2.5 rounded-full bg-white/70"></div>
-                            <div>
-                              <div className="text-lg font-bold">{consultations.filter(c => c.status === 'scheduled').length}</div>
-                              <div className="text-xs text-white/70">Scheduled</div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 flex items-center gap-3">
-                            <div className="h-2.5 w-2.5 rounded-full bg-white/50"></div>
-                            <div>
-                              <div className="text-lg font-bold">{consultations.filter(c => c.status === 'completed').length}</div>
-                              <div className="text-xs text-white/70">Completed</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                </Card>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-center p-12 bg-gray-50 rounded-xl border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700">
+                  <div className="rounded-full bg-blue-100 p-4 mb-4 dark:bg-blue-900/30">
+                    <MessageCircle className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  
-                  <div className="flex flex-col justify-between gap-4">
-                    <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Button 
-                          onClick={startAiConsultation} 
-                          className="gap-2 shadow-lg bg-white text-black hover:bg-white/90 font-semibold px-4 h-12"
-                        >
-                          <Bot className="h-5 w-5" />
-                          New AI Consultation
-                        </Button>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" className="gap-2 bg-transparent hover:bg-white/20 text-white shadow-lg border-white/20 font-semibold px-4 h-12">
-                              <Calendar className="h-5 w-5" />
-                              Schedule With Expert
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[500px]">
-                            <DialogHeader>
-                              <DialogTitle className="text-xl flex items-center gap-2 font-semibold text-black tracking-tight">
-                                <Users className="h-5 w-5 text-black" />
-                                Select Legal Expert
-                              </DialogTitle>
-                              <DialogDescription className="text-gray-600 font-light">
-                                Choose a legal professional to schedule a personalized consultation
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              {experts.map((expert) => (
-                                <Button 
-                                  key={expert.id} 
-                                  variant="outline" 
-                                  className="justify-start h-auto p-3 hover:border-black/30 hover:bg-black/5 transition-all border-black/10 bg-white"
-                                  onClick={() => {
-                                    setSelectedExpert(expert);
-                                    setActiveTab("experts");
-                                  }}
-                                >
-                                  <Avatar className="h-10 w-10 mr-3 border border-black/10">
-                                    <AvatarImage src={expert.image} alt={expert.name} />
-                                    <AvatarFallback className="bg-black/5 text-black">{expert.name.substring(0, 2)}</AvatarFallback>
-                                  </Avatar>
-                                  <div className="text-left">
-                                    <p className="font-semibold text-black">{expert.name}</p>
-                                    <div className="flex items-center gap-2 text-xs text-gray-600">
-                                      <span className="text-black font-medium">{expert.specialization}</span>
-                                      <span>•</span>
-                                      <span className="flex items-center gap-0.5">
-                                        <Star className="h-3 w-3 fill-black text-black" />
-                                        {expert.rating}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </Button>
-                              ))}
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                      
-                      {/* Next appointment */}
-                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 shadow-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="text-white text-sm font-medium">Next Consultation</div>
-                          <Badge variant="outline" className="bg-transparent text-white/80 border-white/20 text-xs">
-                            In 22 hours
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10 border-2 border-white/20">
-                            <AvatarImage src={experts[0].image} alt={experts[0].name} />
-                            <AvatarFallback className="bg-white/10 text-white">{experts[0].name.substring(0, 2)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <h4 className="text-sm font-semibold text-white">Consultation with {experts[0].name}</h4>
-                            <div className="text-xs text-white/70 flex items-center mt-0.5">
-                              <Calendar className="h-3 w-3 mr-1" />
-                              Tomorrow, 10:00 AM
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Mini Calendar */}
-                    <div className="hidden lg:block bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 shadow-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-sm font-medium text-white">March 2025</div>
-                        <div className="flex gap-1">
-                          <Button variant="outline" size="icon" className="h-6 w-6 p-0 bg-transparent hover:bg-white/20 border-white/20 text-white">
-                            <ChevronLeft className="h-3 w-3" />
-                          </Button>
-                          <Button variant="outline" size="icon" className="h-6 w-6 p-0 bg-transparent hover:bg-white/20 border-white/20 text-white">
-                            <ChevronRight className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-7 gap-1 mb-2">
-                        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
-                          <div key={i} className="text-[10px] text-center text-white/50 font-medium">{day}</div>
-                        ))}
-                      </div>
-                      <div className="grid grid-cols-7 gap-1">
-                        {Array.from({ length: 14 }, (_, i) => {
-                          const date = new Date();
-                          date.setDate(date.getDate() + i);
-                          const hasConsultation = consultations.some(c => 
-                            c.date && new Date(c.date).toDateString() === date.toDateString()
-                          );
-                          return (
-                            <div 
-                              key={i} 
-                              className={`
-                                text-[10px] flex items-center justify-center rounded-full 
-                                aspect-square w-6 font-medium transition-all
-                                ${hasConsultation 
-                                  ? 'bg-white text-black shadow-md' 
-                                  : i < 3 
-                                    ? 'text-white hover:bg-white/20 cursor-pointer bg-white/10'
-                                    : 'text-white hover:bg-white/20 cursor-pointer'}
-                              `}
-                            >
-                              {date.getDate()}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {consultations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-14 px-4 border border-dashed border-black/10 rounded-xl bg-white shadow-md">
-                  <div className="bg-black p-5 rounded-full mb-5 text-white">
-                    <MessagesSquare className="h-10 w-10" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 text-black">No consultations yet</h3>
-                  <p className="text-gray-600 text-center max-w-md mb-6 leading-relaxed">
-                    You haven't started any legal consultations. Begin with an AI consultation for instant assistance or schedule time with a legal expert.
+                  <h3 className="text-xl font-bold mb-2 dark:text-white">No consultation selected</h3>
+                  <p className="text-gray-600 mb-6 max-w-md dark:text-gray-300">
+                    Select a consultation from the list or start a new one with our AI assistant for instant legal guidance
                   </p>
                   <div className="flex gap-4">
-                    <Button onClick={startAiConsultation} className="gap-2 bg-black hover:bg-black/90 text-white px-5 h-11 shadow-md">
-                      <Bot className="h-5 w-5" />
+                    <Button
+                      onClick={startAiConsultation}
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+                    >
                       Start AI Consultation
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="border-blue-200 hover:bg-blue-50 hover:border-blue-300 dark:border-blue-800 dark:hover:border-blue-700 dark:hover:bg-blue-900/30 dark:text-white transition-colors"
+                      onClick={() => {
+                        setActiveTab("experts");
+                      }}
+                    >
+                      Book Expert Consultation
                     </Button>
                   </div>
                 </div>
-              ) : (
-                <div className="px-1 py-2">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2.5">
-                      <MessageCircle className="h-5 w-5 text-blue-600" />
-                      Recent Consultations
-                    </h3>
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[160px] border-gray-200 bg-white shadow-sm rounded-md h-9">
-                        <SelectValue placeholder="Filter by" />
+              )}
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="experts" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="md:col-span-1 space-y-6">
+              <Card className="dark:bg-gray-800 dark:border-gray-700">
+                <CardHeader>
+                  <CardTitle className="dark:text-white">Filter Experts</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium dark:text-white">Legal Category</label>
+                    <Select
+                      value={category}
+                      onValueChange={setCategory}
+                    >
+                      <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <SelectValue placeholder="Select category" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="ai">AI Only</SelectItem>
-                        <SelectItem value="expert">Expert Only</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
+                      <SelectContent className="dark:border-gray-700 dark:bg-gray-800">
+                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="Business Law">Business Law</SelectItem>
+                        <SelectItem value="Intellectual Property">Intellectual Property</SelectItem>
+                        <SelectItem value="Tax Law">Tax Law</SelectItem>
+                        <SelectItem value="Employment Law">Employment Law</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {consultations.map((consultation) => (
-                      <Card 
-                        key={consultation.id} 
-                        className="overflow-hidden transition-all hover:shadow-md relative rounded-lg border border-gray-200 bg-white mb-5"
-                        style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}
-                      >
-                        {consultation.status === 'active' && (
-                          <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-black/0 to-black/5 pointer-events-none" />
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium dark:text-white">Experience Level</label>
+                    <Select
+                      value={experienceLevel}
+                      onValueChange={setExperienceLevel}
+                    >
+                      <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <SelectValue placeholder="Select level" />
+                      </SelectTrigger>
+                      <SelectContent className="dark:border-gray-700 dark:bg-gray-800">
+                        <SelectItem value="all">All Levels</SelectItem>
+                        <SelectItem value="junior">Up to 5 years</SelectItem>
+                        <SelectItem value="mid">5-10 years</SelectItem>
+                        <SelectItem value="senior">10+ years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="dark:bg-gray-800 dark:border-gray-700">
+                <CardHeader>
+                  <CardTitle className="dark:text-white">Why Choose an Expert?</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-blue-100 rounded-full p-2 dark:bg-blue-900/30">
+                      <ShieldCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold mb-1 dark:text-white">Verified Professionals</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">All experts are thoroughly vetted and have verified credentials</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="bg-blue-100 rounded-full p-2 dark:bg-blue-900/30">
+                      <Briefcase className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold mb-1 dark:text-white">Specialized Knowledge</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">Access specialists in various legal fields with deep expertise</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="bg-blue-100 rounded-full p-2 dark:bg-blue-900/30">
+                      <Clock3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold mb-1 dark:text-white">Flexible Scheduling</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">Book consultations that fit your schedule, with quick response times</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="md:col-span-3">
+              {selectedExpert ? (
+                <Card className="dark:bg-gray-800 dark:border-gray-700">
+                  <CardHeader className="flex flex-row items-start justify-between">
+                    <div className="flex items-start gap-4">
+                      <Avatar className="h-16 w-16 border-2 border-white rounded-xl shadow-md dark:border-gray-800">
+                        <AvatarImage src={selectedExpert.image} alt={selectedExpert.name} />
+                        <AvatarFallback className="rounded-xl">{selectedExpert.name.substring(0, 2)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="dark:text-white">{selectedExpert.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{selectedExpert.title}</p>
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full dark:bg-blue-900/30 dark:text-blue-300">
+                            {selectedExpert.specialization}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`h-3.5 w-3.5 ${i < Math.floor(selectedExpert.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium">{selectedExpert.rating}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">({selectedExpert.reviews} reviews)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="dark:text-white dark:border-gray-700 dark:hover:bg-gray-700"
+                      onClick={() => setSelectedExpert(null)}
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      Back to list
+                    </Button>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="md:col-span-2 space-y-4">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">About</h3>
+                          <p className="text-sm text-gray-600 leading-relaxed dark:text-gray-300">{selectedExpert.description}</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="text-sm font-semibold mb-1 dark:text-white">Experience</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{selectedExpert.experience}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-semibold mb-1 dark:text-white">Rate</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{selectedExpert.rate}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-semibold mb-1 dark:text-white">Languages</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {selectedExpert.languages.map((language, idx) => (
+                                <Badge key={idx} variant="outline" className="bg-gray-100 border-gray-200 text-gray-800 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                                  {language}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4 dark:bg-gray-800">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">Book a Consultation</h3>
+                        </div>
+                        
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5 dark:text-white">Select date</label>
+                          <div className="border rounded-md p-2 dark:border-gray-700">
+                            <Calendar 
+                              mode="single"
+                              selected={selectedDate}
+                              onSelect={setSelectedDate}
+                              className="mx-auto"
+                              disabled={(date) => {
+                                // Disable dates in the past
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                if (date < today) return true;
+                                
+                                // Disable days that aren't in the expert's availability
+                                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                                return !selectedExpert.availability.includes(dayName);
+                              }}
+                              classNames={{
+                                day_today: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
+                                day_selected: "bg-blue-600 text-white hover:bg-blue-700 hover:text-white",
+                                day: "text-sm dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                              }}
+                            />
+                          </div>
+                        </div>
+                        
+                        {selectedDay && (
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5 dark:text-white">Select time ({selectedDay})</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {timeSlots.map((slot, idx) => (
+                                <Button
+                                  key={idx}
+                                  variant="outline"
+                                  className={`
+                                    text-sm border-gray-200 hover:bg-blue-50 hover:border-blue-200 dark:border-gray-700 dark:hover:bg-blue-900/20 dark:hover:border-blue-800 dark:text-white 
+                                    ${selectedTimeSlot === slot ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : ''}
+                                  `}
+                                  onClick={() => setSelectedTimeSlot(slot)}
+                                >
+                                  {slot}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
                         )}
-                        <div className={`absolute top-0 left-0 w-[3px] h-full 
-                          ${consultation.status === 'active' 
-                            ? 'bg-gradient-to-b from-blue-400 to-blue-600' 
-                            : consultation.status === 'scheduled' 
-                              ? 'bg-gradient-to-b from-orange-400 to-orange-600' 
-                              : 'bg-gradient-to-b from-green-400 to-green-600'
-                          }`}
-                        />
-                        <CardHeader className="pb-4 pt-5 px-5 border-b border-gray-100">
-                          <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-3">
-                              {consultation.type === 'ai' ? (
-                                <div className="p-2 rounded-full shadow-sm bg-gradient-to-r from-blue-500 to-blue-600">
-                                  <Bot className="h-5 w-5 text-white" />
+                        
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5 dark:text-white">Consultation topic</label>
+                          <Textarea 
+                            placeholder="Briefly describe what you'd like to discuss..."
+                            value={consultationTopic}
+                            onChange={(e) => setConsultationTopic(e.target.value)}
+                            className="resize-none dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                          />
+                        </div>
+                        
+                        <Button 
+                          onClick={handleBookConsultation}
+                          disabled={!selectedDate || !selectedTimeSlot || !consultationTopic}
+                          className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                        >
+                          Book Consultation
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold dark:text-white">Available Legal Experts</h2>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        Showing {filteredExperts.length} experts
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredExperts.map(expert => (
+                      <Card 
+                        key={expert.id} 
+                        className="cursor-pointer transition-all hover:shadow-md dark:bg-gray-800 dark:border-gray-700"
+                        onClick={() => setSelectedExpert(expert)}
+                      >
+                        <CardContent className="p-5">
+                          <div className="flex items-start gap-4">
+                            <Avatar className="h-14 w-14 rounded-full border-2 border-white shadow-sm dark:border-gray-800">
+                              <AvatarImage src={expert.image} alt={expert.name} />
+                              <AvatarFallback>{expert.name.substring(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg dark:text-white">{expert.name}</h3>
+                              <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">{expert.title}</span>
+                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full flex items-center dark:bg-blue-900/30 dark:text-blue-300">
+                                  {expert.specialization}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-1">
+                                  <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star 
+                                        key={i} 
+                                        className={`h-3.5 w-3.5 ${i < Math.floor(expert.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-sm font-medium">{expert.rating}</span>
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">({expert.reviews})</span>
                                 </div>
-                              ) : (
-                                <Avatar className="h-10 w-10 border border-gray-200 shadow-sm">
-                                  <AvatarImage 
-                                    src={experts.find(e => e.id === consultation.expertId)?.image} 
-                                    alt={consultation.expertName} 
-                                  />
-                                  <AvatarFallback className="bg-gray-50 text-gray-600">{consultation.expertName?.substring(0, 2)}</AvatarFallback>
-                                </Avatar>
-                              )}
-                              <div>
-                                <CardTitle className="text-base font-bold text-black flex items-center gap-2">
-                                  {consultation.type === 'ai' ? 'AI Legal Assistant' : `Consultation with ${consultation.expertName}`}
-                                  {consultation.status === 'active' && (
-                                    <span className="relative flex h-2 w-2">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                    </span>
-                                  )}
-                                </CardTitle>
-                                <CardDescription className="text-xs flex items-center gap-1.5 text-gray-600">
-                                  <FileText className="h-3.5 w-3.5" />
-                                  {consultation.topic || 'Legal Consultation'}
-                                </CardDescription>
+                                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{expert.rate}</span>
                               </div>
                             </div>
-                            <Badge
-                              className={`${
-                                consultation.status === 'active'
-                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                                : consultation.status === 'scheduled'
-                                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-                                  : 'bg-green-100 text-green-700 hover:bg-green-200'
-                              } border-0`}
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center dark:border-gray-700">
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {expert.experience} experience
+                            </div>
+                            <Button
+                              size="sm"
+                              className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedExpert(expert);
+                              }}
                             >
-                              {consultation.status === 'active' ? 'Active Now' : (
-                                <span className="capitalize">{consultation.status}</span>
-                              )}
-                            </Badge>
+                              View Profile
+                            </Button>
                           </div>
-                        </CardHeader>
-                        <CardContent className="px-5 py-5 space-y-4">
-                          <div className="flex flex-wrap gap-2.5">
-                            {consultation.type === 'expert' && (
-                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-orange-50 border border-orange-100 rounded-full">
-                                <CalendarIcon className="h-3 w-3 text-orange-600" />
-                                <span className="text-orange-700 font-medium">
-                                  {new Date(consultation.date || '').toLocaleDateString()} at {consultation.time}
-                                </span>
-                              </div>
-                            )}
-                            
-                            {consultation.documents && consultation.documents.length > 0 && (
-                              <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-purple-50 border border-purple-100 rounded-full">
-                                <FileText className="h-3 w-3 text-purple-600" />
-                                <span className="text-purple-700 font-medium">
-                                  {consultation.documents.length} document{consultation.documents.length > 1 ? 's' : ''}
-                                </span>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-green-50 border border-green-100 rounded-full">
-                              <Clock className="h-3 w-3 text-green-600" />
-                              <span className="text-green-700 font-medium">
-                                {new Date(consultation.createdAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          <div className="border border-gray-200 rounded-lg p-3.5 max-h-24 overflow-hidden relative shadow-sm bg-gray-50/80">
-                            <div className="flex items-start gap-2.5 mb-2">
-                              <div className={`min-w-fit mt-0.5 flex items-center justify-center rounded-full shadow-sm
-                                ${consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' 
-                                  ? 'h-6 w-6 bg-gray-700 ring-2 ring-gray-200' 
-                                  : 'h-6 w-6 bg-blue-600 ring-2 ring-blue-100'}`}
-                              >
-                                {consultation.messages.length > 0 && consultation.messages[consultation.messages.length - 1].sender === 'user' ? (
-                                  <User className="h-3.5 w-3.5 text-white" />
-                                ) : (
-                                  <Bot className="h-3.5 w-3.5 text-white" />
-                                )}
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-700 leading-relaxed font-medium tracking-wide">
-                                  {consultation.messages.length > 0 
-                                    ? consultation.messages[consultation.messages.length - 1].content.substring(0, 150) + 
-                                      (consultation.messages[consultation.messages.length - 1].content.length > 150 ? '...' : '')
-                                    : 'No messages yet'
-                                  }
-                                </p>
-                              </div>
-                            </div>
-                            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-50/95 via-gray-50/80 to-transparent" />
-                          </div>
-                          
-                          {consultation.type === 'expert' && consultation.status === 'scheduled' && (
-                            <div className="flex items-center justify-between text-xs mt-3 font-medium">
-                              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-md border border-blue-100 shadow-sm">
-                                <Video className="h-3 w-3 text-blue-600" />
-                                <span className="text-blue-700">Video consultation</span>
-                              </div>
-                              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-md border border-blue-100 shadow-sm">
-                                <Clock className="h-3 w-3 text-blue-600" />
-                                <span className="text-blue-700">60 minutes</span>
-                              </div>
-                            </div>
-                          )}
                         </CardContent>
-                        <CardFooter className="px-5 pb-4 pt-2">
-                          <Button 
-                            className="w-full font-medium rounded-md h-10 transition-all" 
-                            variant={consultation.status === 'active' ? "default" : "outline"}
-                            onClick={() => setActiveConsultation(consultation)}
-                            style={{
-                              backgroundColor: consultation.status === 'active' ? '#3b82f6' : 'transparent',
-                              borderColor: consultation.status === 'active' ? 'transparent' : '#d1d5db',
-                              color: consultation.status === 'active' ? '#FFFFFF' : '#4b5563',
-                              boxShadow: consultation.status === 'active' ? '0 2px 5px rgba(59, 130, 246, 0.25)' : 'none'
-                            }}
-                          >
-                            {consultation.status === 'active' ? (
-                              <>
-                                <MessagesSquare className="mr-2 h-4 w-4" />
-                                Continue Consultation
-                              </>
-                            ) : consultation.status === 'scheduled' ? (
-                              <>
-                                <Video className="mr-2 h-4 w-4" />
-                                Join Meeting
-                              </>
-                            ) : (
-                              <>
-                                <FileText className="mr-2 h-4 w-4" />
-                                View Details
-                              </>
-                            )}
-                          </Button>
-                        </CardFooter>
                       </Card>
                     ))}
                   </div>
                 </div>
               )}
-            </>
-          )}
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
