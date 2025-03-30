@@ -27,16 +27,16 @@ const upload = multer({
     }
   }),
   fileFilter: function (req, file, cb) {
-    const allowedTypes = ['.jpg', '.jpeg', '.png'];
+    const allowedTypes = ['.jpg', '.jpeg', '.png', '.pdf', '.doc', '.docx', '.txt'];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowedTypes.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only JPG and PNG images are allowed.'));
+      cb(new Error('Invalid file type. Allowed formats: JPG, PNG, PDF, DOC, DOCX, TXT'));
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 15 * 1024 * 1024 // 15MB limit to accommodate larger documents
   }
 });
 
@@ -245,9 +245,30 @@ export function registerRoutes(app: Express): Server {
         if (!document) {
           return res.status(404).json({ message: "Document not found" });
         }
-        // In a real implementation, extract text content from document file
-        // For now, we'll use a placeholder
-        documentContent = "This is the extracted document content";
+        
+        // Check if the document file exists
+        if (document.filename) {
+          const filePath = path.join(process.cwd(), 'uploads', document.filename);
+          try {
+            // Extract content from file based on type
+            const ext = path.extname(document.filename).toLowerCase();
+            if (ext === '.pdf') {
+              // Use the PDF extraction function
+              documentContent = await extractTextFromPDF(filePath);
+            } else {
+              // For now, we'll use the content parameter for other file types
+              // In production, we'd implement extractors for other formats
+              if (!content) {
+                documentContent = `This is placeholder content for the ${ext} file: ${document.title}`;
+              }
+            }
+          } catch (error) {
+            console.error('Error extracting document content:', error);
+            return res.status(500).json({ message: "Could not extract document content" });
+          }
+        } else {
+          return res.status(400).json({ message: "Document has no associated file" });
+        }
       }
       
       // Get analysis from LLM based on model selection

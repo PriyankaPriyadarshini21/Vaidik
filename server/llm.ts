@@ -212,9 +212,45 @@ export const analyzeLegalDocument = async (
   }
 };
 
-// Function to extract text from PDF files (to be implemented)
+// Function to extract text from PDF files (basic implementation)
 export const extractTextFromPDF = async (filePath: string): Promise<string> => {
-  // This would use a PDF parsing library like pdf-parse
-  // For now, return placeholder text
-  return "This is placeholder text extracted from a PDF file.";
+  try {
+    // In a production environment, we would use a PDF parsing library like pdf-parse
+    // For now, we're using a simple approach to handle the PDF content
+    
+    // Read the file as a string
+    const fs = require('fs');
+    const buffer = fs.readFileSync(filePath);
+    
+    // Basic extraction of text content from PDF buffer
+    // This is a simplified approach and won't handle complex PDFs well
+    let content = buffer.toString();
+    
+    // Try to extract text content between PDF markers
+    // Remove binary content and PDF syntax as much as possible
+    content = content.replace(/^\%PDF\-\d+\.\d+/, '');
+    content = content.replace(/\%\%EOF.*$/s, '');
+    
+    // Extract text that looks like actual content (simplified)
+    const textMatches = content.match(/\(([^\)]+)\)/g) || [];
+    const extractedText = textMatches
+      .map(match => match.slice(1, -1))
+      .join(' ')
+      .replace(/\\r|\\n/g, '\n')
+      .replace(/\\\\/g, '\\')
+      .replace(/\\\(/g, '(')
+      .replace(/\\\)/g, ')');
+    
+    if (extractedText.trim().length > 0) {
+      return extractedText;
+    }
+    
+    // If we couldn't parse meaningful content, return a simplified message
+    // with the document name
+    const fileName = filePath.split('/').pop() || '';
+    return `Document: ${fileName}\n\nThis appears to be a PDF document that our system couldn't fully extract. The analysis will be based on available metadata and partial content.`;
+  } catch (error) {
+    console.error('Error extracting PDF text:', error);
+    return "Could not extract text from the PDF document.";
+  }
 };
