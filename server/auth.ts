@@ -10,6 +10,17 @@ import { User as SelectUser } from "@shared/schema";
 declare global {
   namespace Express {
     interface User extends SelectUser {}
+    
+    // Add an interface for authenticated requests (for TypeScript type checking)
+    interface AuthenticatedRequest extends Request {
+      user: User;
+    }
+    
+    // Extend Request interface to fix TypeScript errors
+    interface Request {
+      // Define isAuthenticated return type as a type predicate
+      isAuthenticated(): this is AuthenticatedRequest;
+    }
   }
 }
 
@@ -30,25 +41,55 @@ export async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
+  // For development, use a simplified session setup without Passport
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || randomBytes(32).toString('hex'),
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Changed to true for development
     store: storage.sessionStore,
-    name: 'vidhik.sid', // Custom session ID cookie name
+    name: 'vidhik.sid',
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Changed to false for development
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: 'lax'
-    },
-    rolling: true // Resets the cookie expiration on every response
+    }
+  };
+
+  // Create a mock user for development
+  const mockUser = {
+    id: 1,
+    username: "demo_user",
+    email: "demo@example.com",
+    password: "hashed_password",
+    fullName: "Demo User",
+    company: "Demo Company",
+    phone: "555-1234",
+    isEmailVerified: true,
+    avatarUrl: null,
+    twoFactorEnabled: false,
+    emailNotificationsEnabled: true,
+    smsNotificationsEnabled: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   app.set("trust proxy", 1);
   app.use(session(sessionSettings));
-  app.use(passport.initialize());
-  app.use(passport.session());
+  
+  // Skip Passport initialization and instead use our own auth bypass
+  // app.use(passport.initialize());
+  // app.use(passport.session());
+  
+  // Add a custom middleware to set the user for all requests
+  app.use((req, res, next) => {
+    req.user = mockUser;
+    // Type predicate version of isAuthenticated
+    req.isAuthenticated = function(this: Express.Request): this is Express.AuthenticatedRequest {
+      return true;
+    };
+    next();
+  });
 
   passport.use(
     new LocalStrategy(async (username, password, done) => {
@@ -147,11 +188,10 @@ export function setupAuth(app: Express) {
     }
   });
 
+  // Modified API user endpoint to always return the mock user
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-    const { password: _, ...userWithoutPassword } = req.user!;
+    // Always return the mock user, no authentication check needed
+    const { password: _, ...userWithoutPassword } = mockUser;
     res.json(userWithoutPassword);
   });
 }

@@ -31,10 +31,18 @@ const mockUser = {
   updatedAt: new Date()
 };
 
-// Bypass authentication completely and use mock user
+// Authentication bypass middleware with type predicate
 function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  // Simply attach the mock user to the request and continue
+  // Make sure the user is attached to the request
   req.user = mockUser;
+  
+  // Make sure isAuthenticated is properly defined with type predicate
+  if (typeof req.isAuthenticated !== 'function') {
+    req.isAuthenticated = function(this: Express.Request): this is Express.AuthenticatedRequest {
+      return true;
+    };
+  }
+  
   next();
 }
 
@@ -79,8 +87,10 @@ export function registerRoutes(app: Express): Server {
   app.use((req, res, next) => {
     // Bypass authentication by setting the user object directly
     req.user = mockUser;
-    // Add a mock isAuthenticated function that always returns true
-    req.isAuthenticated = function() { return true; };
+    // Type predicate version of isAuthenticated that satisfies TypeScript
+    req.isAuthenticated = function(this: Express.Request): this is Express.AuthenticatedRequest {
+      return true;
+    };
     next();
   });
   
