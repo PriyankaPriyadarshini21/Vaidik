@@ -11,15 +11,16 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState, useEffect } from "react";
 
 export default function Dashboard() {
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(true); // Changed to default true to avoid returning null
 
   // This is needed to ensure component only renders client-side to prevent SSR hydration issues
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Always render an empty div at minimum
   if (!mounted) {
-    return null;
+    return <div>Loading dashboard...</div>;
   }
 
   return (
