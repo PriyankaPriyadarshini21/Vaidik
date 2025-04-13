@@ -1,5 +1,8 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+
+// NOTE: We don't need to modify the Request interface as passport already extends it
+// This is just a simple mock solution for development
 import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
@@ -10,28 +13,28 @@ import * as z from 'zod';
 // Import LLM functions
 import { analyzeLegalDocument, extractTextFromPDF } from "./llm";
 
-// Authentication middleware (modified to bypass authentication)
+// Create a mock user object for development
+const mockUser = {
+  id: 1,
+  username: "demo_user",
+  email: "demo@example.com",
+  password: "hashed_password",
+  fullName: "Demo User",
+  company: "Demo Company",
+  phone: "555-1234",
+  isEmailVerified: true,
+  avatarUrl: null,
+  twoFactorEnabled: false,
+  emailNotificationsEnabled: true,
+  smsNotificationsEnabled: false,
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
+
+// Bypass authentication completely and use mock user
 function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  // Bypass authentication check and provide a mock user
-  if (!req.user) {
-    // Create a mock user for development purposes
-    req.user = {
-      id: 1,
-      username: "demo_user",
-      email: "demo@example.com",
-      password: "hashed_password",
-      fullName: "Demo User",
-      company: "Demo Company",
-      phone: "555-1234",
-      isEmailVerified: true,
-      avatarUrl: null,
-      twoFactorEnabled: false,
-      emailNotificationsEnabled: true,
-      smsNotificationsEnabled: false,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-  }
+  // Simply attach the mock user to the request and continue
+  req.user = mockUser;
   next();
 }
 
