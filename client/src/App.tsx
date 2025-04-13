@@ -26,9 +26,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 function Router() {
   return (
     <Switch>
-      <Route path="/auth">
-        <Auth />
-      </Route>
+      {/* Removed Auth route and going directly to the main content */}
       <Route path="*">
         <AnimatePresence mode="wait">
           <motion.div 

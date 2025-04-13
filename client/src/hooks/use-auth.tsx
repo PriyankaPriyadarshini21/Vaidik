@@ -1,13 +1,7 @@
 import { createContext, ReactNode, useContext } from "react";
-import {
-  useQuery,
-  useMutation,
-} from "@tanstack/react-query";
-import { insertUserSchema, type User as SelectUser, type InsertUser } from "@shared/schema";
-import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
+import { type User as SelectUser, type InsertUser } from "@shared/schema";
 
+// Mock auth context type
 type AuthContextType = {
   user: SelectUser | null;
   isLoading: boolean;
@@ -17,110 +11,57 @@ type AuthContextType = {
   registerMutation: any;
 };
 
-type LoginData = Pick<InsertUser, "username" | "password">;
+// Mock user data
+const mockUser: SelectUser = {
+  id: 1,
+  username: "demo_user",
+  email: "demo@example.com",
+  password: "hashed_password",
+  fullName: "Demo User",
+  company: "Demo Company",
+  phone: "555-1234",
+  isEmailVerified: true,
+  avatarUrl: null,
+  twoFactorEnabled: false,
+  emailNotificationsEnabled: true,
+  smsNotificationsEnabled: false,
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
 
-const AuthContext = createContext<AuthContextType | null>(null);
+// Mock authentication context
+const mockAuthContext: AuthContextType = {
+  user: mockUser,
+  isLoading: false,
+  error: null,
+  loginMutation: {
+    mutate: () => {},
+    isPending: false,
+    error: null
+  },
+  logoutMutation: {
+    mutate: () => {},
+    isPending: false,
+    error: null
+  },
+  registerMutation: {
+    mutate: () => {},
+    isPending: false,
+    error: null 
+  }
+};
+
+// Create auth context with mock data
+const AuthContext = createContext<AuthContextType>(mockAuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { toast } = useToast();
-  const [, setLocation] = useLocation();
-
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery<SelectUser | null>({
-    queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return res.json();
-    },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const registerMutation = useMutation({
-    mutationFn: async (credentials: InsertUser) => {
-      const res = await apiRequest("POST", "/api/register", credentials);
-      return res.json();
-    },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Registration successful",
-        description: "Welcome to Vidhik AI!",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Registration failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/logout");
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Logout failed");
-      }
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      queryClient.setQueryData(["/api/user"], null);
-      setTimeout(() => {
-        setLocation("/auth");
-        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      }, 300);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
   return (
-    <AuthContext.Provider
-      value={{
-        user: user ?? null,
-        isLoading,
-        error,
-        loginMutation,
-        logoutMutation,
-        registerMutation,
-      }}
-    >
+    <AuthContext.Provider value={mockAuthContext}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 }
