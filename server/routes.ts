@@ -71,8 +71,18 @@ const updatePasswordSchema = z.object({
 });
 
 export function registerRoutes(app: Express): Server {
-  // Set up authentication routes
-  setupAuth(app);
+  // Instead of using Passport's authentication, we'll use our own bypass middleware
+  // This will replace the usual setupAuth(app) which configures Passport sessions
+  
+  // Add a middleware that will run for all routes that checks for req.isAuthenticated
+  // and replaces it with our mock authentication
+  app.use((req, res, next) => {
+    // Bypass authentication by setting the user object directly
+    req.user = mockUser;
+    // Add a mock isAuthenticated function that always returns true
+    req.isAuthenticated = function() { return true; };
+    next();
+  });
   
   // User profile endpoint
   app.get("/api/user", isAuthenticated, async (req, res) => {
