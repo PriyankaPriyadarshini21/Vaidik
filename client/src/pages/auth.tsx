@@ -56,9 +56,10 @@ export default function Auth() {
     }
   };
 
-  // Return null if we're already logged in
-  if (user) {
-    return null;
+  // Bypass auth check - always proceed to main content
+  // Previously: Return null if we're already logged in
+  if (false) { // Changed to always false so this code is never reached
+    return <div>Loading...</div>;
   }
 
   return (
