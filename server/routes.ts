@@ -10,10 +10,27 @@ import * as z from 'zod';
 // Import LLM functions
 import { analyzeLegalDocument, extractTextFromPDF } from "./llm";
 
-// Authentication middleware
+// Authentication middleware (modified to bypass authentication)
 function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: "Not authenticated" });
+  // Bypass authentication check and provide a mock user
+  if (!req.user) {
+    // Create a mock user for development purposes
+    req.user = {
+      id: 1,
+      username: "demo_user",
+      email: "demo@example.com",
+      password: "hashed_password",
+      fullName: "Demo User",
+      company: "Demo Company",
+      phone: "555-1234",
+      isEmailVerified: true,
+      avatarUrl: null,
+      twoFactorEnabled: false,
+      emailNotificationsEnabled: true,
+      smsNotificationsEnabled: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
   }
   next();
 }
@@ -53,6 +70,18 @@ const updatePasswordSchema = z.object({
 export function registerRoutes(app: Express): Server {
   // Set up authentication routes
   setupAuth(app);
+  
+  // User profile endpoint
+  app.get("/api/user", isAuthenticated, async (req, res) => {
+    try {
+      // Return the authenticated user from the session
+      res.json(req.user);
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message || "Failed to get user profile"
+      });
+    }
+  });
 
   // Profile update endpoint
   app.patch("/api/user/profile", isAuthenticated, async (req, res) => {
