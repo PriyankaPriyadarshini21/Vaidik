@@ -326,6 +326,66 @@ export default function LegalConsultation() {
     setActiveConsultation(newAiConsultation);
     setActiveTab("consultations");
   };
+  
+  // State for new consultation dialog
+  const [showNewConsultationDialog, setShowNewConsultationDialog] = useState(false);
+  const [newConsultationTopic, setNewConsultationTopic] = useState("");
+  const [newConsultationType, setNewConsultationType] = useState<'ai' | 'expert'>('ai');
+  
+  // Function to open the new consultation dialog
+  const startNewConsultation = () => {
+    setNewConsultationTopic("");
+    setNewConsultationType('ai');
+    setShowNewConsultationDialog(true);
+  };
+  
+  // Function to create a new consultation
+  const createNewConsultation = async () => {
+    try {
+      // Create a new consultation
+      const newConsultation: Consultation = {
+        id: consultations.length + 1,
+        status: 'active',
+        type: newConsultationType,
+        topic: newConsultationTopic || "General Legal Consultation",
+        messages: [],
+        createdAt: new Date()
+      };
+      
+      // Add to consultations list
+      setConsultations([...consultations, newConsultation]);
+      
+      // Make it the active consultation
+      setActiveConsultation(newConsultation);
+      
+      // Close the dialog
+      setShowNewConsultationDialog(false);
+      
+      // Show success message
+      toast({
+        title: "Consultation Created",
+        description: "Your new consultation has been started."
+      });
+      
+      // Optionally, we could also call the server API to save the consultation
+      // For example:
+      // await apiRequest('/api/consultations', {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     topic: newConsultationTopic,
+      //     type: newConsultationType
+      //   })
+      // });
+      
+    } catch (error) {
+      console.error("Error creating consultation:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create consultation. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Send a message in a consultation
   const sendMessage = async () => {
@@ -508,7 +568,16 @@ export default function LegalConsultation() {
               </div>
               
               <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-3 dark:text-white">My Consultations</h3>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-lg font-semibold dark:text-white">My Consultations</h3>
+                  <Button 
+                    size="sm" 
+                    onClick={startNewConsultation}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Plus className="h-4 w-4 mr-1" /> New Consultation
+                  </Button>
+                </div>
                 <div className="space-y-3">
                   {consultations.map(consultation => (
                     <Card 
