@@ -8,10 +8,48 @@ import { NextConsultation } from "@/components/consultations/next-consultation";
 import { ConsultationSummary } from "@/components/consultations/consultation-summary";
 import { ConsultationCalendar } from "@/components/ui/consultation-calendar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(true); // Changed to default true to avoid returning null
+  const [showConsultationDialog, setShowConsultationDialog] = useState(false);
+  const [consultationTitle, setConsultationTitle] = useState("");
+  const [consultationType, setConsultationType] = useState("ai");
+  const [consultationDetails, setConsultationDetails] = useState("");
+  const consultationSummaryRef = useRef<any>(null);
+  const { toast } = useToast();
+
+  // Handle creating a new consultation
+  const handleCreateConsultation = () => {
+    if (!consultationTitle.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please provide a title for your consultation",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Close the dialog and reset form
+    setShowConsultationDialog(false);
+    
+    // Show success message
+    toast({
+      title: "Consultation Created",
+      description: "Your new consultation has been added to your recent consultations.",
+    });
+
+    // Reset form
+    setConsultationTitle("");
+    setConsultationType("ai");
+    setConsultationDetails("");
+  };
 
   // This is needed to ensure component only renders client-side to prevent SSR hydration issues
   useEffect(() => {
@@ -25,6 +63,73 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 transition-colors duration-300 dark:bg-gray-900">
+      {/* Consultation Dialog */}
+      <Dialog open={showConsultationDialog} onOpenChange={setShowConsultationDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Book a New Consultation</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new legal consultation.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-title" className="text-right col-span-1">
+                Title
+              </Label>
+              <Input
+                id="consultation-title"
+                placeholder="Enter consultation title"
+                className="col-span-3"
+                value={consultationTitle}
+                onChange={(e) => setConsultationTitle(e.target.value)}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-type" className="text-right col-span-1">
+                Type
+              </Label>
+              <Select
+                value={consultationType}
+                onValueChange={setConsultationType}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select consultation type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ai">AI Assistant</SelectItem>
+                  <SelectItem value="expert">Legal Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-details" className="text-right col-span-1">
+                Details
+              </Label>
+              <Textarea
+                id="consultation-details"
+                placeholder="Describe what you need help with..."
+                className="col-span-3"
+                value={consultationDetails}
+                onChange={(e) => setConsultationDetails(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowConsultationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateConsultation}>
+              Create Consultation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {/* Top navigation & theme toggle */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -92,12 +197,14 @@ export default function Dashboard() {
                     New Document
                   </Button>
                 </Link>
-                <Link href="/legal-consultation">
-                  <Button variant="outline" className="w-full flex items-center gap-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 dark:border-blue-700 dark:hover:border-blue-600 dark:hover:bg-blue-900/30 transition-all">
-                    <Upload className="h-4 w-4" />
-                    Book Consultation
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full flex items-center gap-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 dark:border-blue-700 dark:hover:border-blue-600 dark:hover:bg-blue-900/30 transition-all"
+                  onClick={() => setShowConsultationDialog(true)}
+                >
+                  <Upload className="h-4 w-4" />
+                  Book Consultation
+                </Button>
               </div>
             </CardContent>
           </Card>
