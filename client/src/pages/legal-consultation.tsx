@@ -517,6 +517,72 @@ export default function LegalConsultation() {
 
   return (
     <div className="container mx-auto py-6 max-w-screen-xl">
+      {/* New Consultation Dialog */}
+      <Dialog open={showNewConsultationDialog} onOpenChange={setShowNewConsultationDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Start New Consultation</DialogTitle>
+            <DialogDescription>
+              Create a new legal consultation and get assistance with your legal questions.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label className="text-sm font-medium col-span-4">
+                Consultation Topic
+              </label>
+              <Input
+                id="topic"
+                placeholder="Enter topic (e.g., Contract Review, Trademark Question)"
+                className="col-span-4"
+                value={newConsultationTopic}
+                onChange={(e) => setNewConsultationTopic(e.target.value)}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label className="text-sm font-medium col-span-4">
+                Consultation Type
+              </label>
+              <div className="col-span-4 flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="ai-consultation"
+                    name="consultation-type"
+                    checked={newConsultationType === 'ai'}
+                    onChange={() => setNewConsultationType('ai')}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="ai-consultation" className="text-sm">AI Assistant</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="expert-consultation"
+                    name="consultation-type"
+                    checked={newConsultationType === 'expert'}
+                    onChange={() => setNewConsultationType('expert')}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="expert-consultation" className="text-sm">Expert Consultation</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNewConsultationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={createNewConsultation}>
+              Create Consultation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <h1 className="sr-only">Legal Consultation</h1>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
