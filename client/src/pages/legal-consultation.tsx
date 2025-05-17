@@ -223,6 +223,10 @@ const sampleConsultations: Consultation[] = [
 ];
 
 export default function LegalConsultation() {
+  // New consultation dialog state
+  const [showNewConsultationDialog, setShowNewConsultationDialog] = useState(false);
+  const [newConsultationTopic, setNewConsultationTopic] = useState("");
+  const [newConsultationType, setNewConsultationType] = useState<'ai' | 'expert'>('ai');
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("experts");
@@ -327,10 +331,13 @@ export default function LegalConsultation() {
     setActiveTab("consultations");
   };
   
-  // State for new consultation dialog
-  const [showNewConsultationDialog, setShowNewConsultationDialog] = useState(false);
-  const [newConsultationTopic, setNewConsultationTopic] = useState("");
-  const [newConsultationType, setNewConsultationType] = useState<'ai' | 'expert'>('ai');
+  // Function to check if today is available for expert's schedule
+  const isExpertAvailableOnDay = (date: Date) => {
+    if (!selectedExpert) return true;
+    
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    return selectedExpert.availability.includes(dayName);
+  };
   
   // Function to open the new consultation dialog
   const startNewConsultation = () => {
