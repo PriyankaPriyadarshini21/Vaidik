@@ -3,6 +3,13 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recha
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { FileText, MessageCircle, MessageSquare, MoreHorizontal, Plus, Users } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Sample data for the summary - in a real app, this would be fetched from API
 const consultationData = [
@@ -11,7 +18,8 @@ const consultationData = [
   { name: "Document Reviews", value: 15, color: "#10B981" },
 ];
 
-const recentConsultations = [
+// Initial consultation data - in a real app, this would come from API
+const initialConsultations = [
   { 
     id: 1, 
     title: "IP Rights Discussion", 
@@ -43,8 +51,119 @@ const recentConsultations = [
 ];
 
 export function ConsultationSummary() {
+  // State for dialog and form
+  const [showConsultationDialog, setShowConsultationDialog] = useState(false);
+  const [consultationTitle, setConsultationTitle] = useState("");
+  const [consultationType, setConsultationType] = useState("ai");
+  const [consultationDetails, setConsultationDetails] = useState("");
+  const [recentConsultations, setRecentConsultations] = useState(initialConsultations);
+  const { toast } = useToast();
+
+  // Handle creating a new consultation
+  const handleCreateConsultation = () => {
+    if (!consultationTitle.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please provide a title for your consultation",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Create a new consultation
+    const newConsultation = {
+      id: recentConsultations.length + 1,
+      title: consultationTitle,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      type: consultationType,
+      status: "scheduled"
+    };
+
+    // Add the new consultation to the top of the list
+    setRecentConsultations([newConsultation, ...recentConsultations]);
+
+    // Close the dialog and reset form
+    setShowConsultationDialog(false);
+    setConsultationTitle("");
+    setConsultationType("ai");
+    setConsultationDetails("");
+
+    // Show success message
+    toast({
+      title: "Consultation Created",
+      description: "Your new consultation has been added to your recent consultations.",
+    });
+  };
+
   return (
     <div className="space-y-5">
+      {/* Consultation Dialog */}
+      <Dialog open={showConsultationDialog} onOpenChange={setShowConsultationDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Book a New Consultation</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new legal consultation.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-title" className="text-right col-span-1">
+                Title
+              </Label>
+              <Input
+                id="consultation-title"
+                placeholder="Enter consultation title"
+                className="col-span-3"
+                value={consultationTitle}
+                onChange={(e) => setConsultationTitle(e.target.value)}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-type" className="text-right col-span-1">
+                Type
+              </Label>
+              <Select
+                value={consultationType}
+                onValueChange={setConsultationType}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select consultation type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ai">AI Assistant</SelectItem>
+                  <SelectItem value="expert">Legal Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="consultation-details" className="text-right col-span-1">
+                Details
+              </Label>
+              <Textarea
+                id="consultation-details"
+                placeholder="Describe what you need help with..."
+                className="col-span-3"
+                value={consultationDetails}
+                onChange={(e) => setConsultationDetails(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowConsultationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateConsultation}>
+              Create Consultation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {/* Activity Stats Card */}
       <Card className="shadow-sm">
         <CardHeader className="pb-2">
